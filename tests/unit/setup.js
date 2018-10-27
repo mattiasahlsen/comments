@@ -1,0 +1,2 @@
+async function setup(config) {
+}
