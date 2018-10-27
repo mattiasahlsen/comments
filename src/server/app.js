@@ -1,5 +1,5 @@
 import config from './config'
-import logger, { logErr } from './debug'
+import logger, { logErr, debug, debugErr } from './debug'
 
 const log = logger.log
 const express = require('express')
@@ -12,7 +12,7 @@ const mongoose = require('mongoose')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 
-const authControllers = require('./controllers/auth')
+const authController = require('./controllers/auth')
 
 const app = express()
 
@@ -29,18 +29,41 @@ app.use(require('express-session')({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(express.static(path.join(__dirname, 'public')))
-
-app.use('/api', authControllers)
 
 // passport config
 const Account = require('./models/account')
-passport.use(new LocalStrategy(Account.authenticate()))
-passport.serializeUser(Account.serializeUser())
-passport.deserializeUser(Account.deserializeUser())
+const passportLocalMongoStrategy = Account.authenticate()
+passport.use(new LocalStrategy((username, password, done) => {
+  // need to modify passportLocalMongoStrategy to remove password hash and salt
+  // from user object
+  passportLocalMongoStrategy(username, password, (err, user) => {
+    if (user) {
+      user.hash = user.salt = undefined
+    }
+    done(err, user)
+  })
+}))
+passport.serializeUser((user, done) => {
+  done(null, user._id)
+})
+passport.deserializeUser((id, done) => {
+  Account.findById(id, '-hash -salt', (err, user) => {
+    if (err) {
+      debugErr(err)
+      done(err)
+    } else done(null, user)
+  })
+})
 
 // mongoose
 mongoose.connect(config.db.uri, { useNewUrlParser: true })
+
+// routes
+app.use(express.static(path.join(__dirname, 'public')))
+app.use('/api', authController)
+app.get('/api/ping', function(req, res) {
+  res.status(200).send('pong!')
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -9,9 +9,7 @@ const port = config.port
 app.set('port', port)
 const server = http.createServer(app)
 
-server.listen(port, function() {
-  debug('Express server listening on port ' + server.address().port)
-})
+server.listen(port)
 server.on('error', onError)
 server.on('listening', onListening)
 
@@ -49,5 +47,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port
-  debug('Listening on ' + bind)
+  debug('HTTP server listening on ' + bind)
 }

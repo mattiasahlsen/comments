@@ -16,7 +16,6 @@ beforeAll(async () => {
 })
 
 test('auth', async () => {
-  expect.assertions(2)
   const isAuthed = responseCode => {
     return request
       .get('/api/authed')
@@ -36,6 +35,7 @@ test('auth', async () => {
       .post('/api/login')
       .send({ username: 'test@gmail.com', password: 'test' })
       .expect(responseCode)
+      .expect('Content-Type', 'application/json; charset=utf-8')
   }
   const loginWrongUsername = responseCode => {
     return request
@@ -56,7 +56,10 @@ test('auth', async () => {
   }
 
   await isAuthed(401)
-  await register(200)
+  await register(200).then(resp => {
+    expect(typeof resp.body.user._id).toBe('string')
+    expect(resp.body.user.username).toBe('test@gmail.com')
+  })
   await register(500)
   await isAuthed(200)
   await logout(200)
@@ -64,7 +67,10 @@ test('auth', async () => {
   await loginWrongUsername(401)
   await loginWrongPassword(401)
   await isAuthed(401)
-  await login(200)
+  await login(200).then(resp => {
+    expect(typeof resp.body.user._id).toBe('string')
+    expect(resp.body.user.username).toBe('test@gmail.com')
+  })
   await isAuthed(200)
 
   expect(
@@ -72,6 +78,4 @@ test('auth', async () => {
       .expect('Content-Type', 'text/html; charset=utf-8')).text)
     .toBe('pong!')
   await request.get('/boguspath').expect(404)
-
-  expect(true).toBe(true) // done, if no error was thrown we made it
 })

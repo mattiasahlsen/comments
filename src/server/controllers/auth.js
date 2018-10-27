@@ -1,4 +1,4 @@
-import logger, { debug } from '../debug'
+import logger, { debug, logErr } from '../debug'
 const log = logger.log // logging function
 
 const express = require('express')
@@ -20,21 +20,18 @@ router.post('/register', [
     if (err) {
       // we don't want to share these errors to the client,
       // we just want to prevent them in the first place
-      log({
-        level: 'error',
-        message: err.message,
-      })
-      res.status(500).end()
+      logErr(err)
+      return res.status(500).end()
     }
 
     passport.authenticate('local')(req, res, () => {
-      res.status(200).end()
+      res.status(200).json({ user: req.user })
     })
   })
 })
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
-  res.status(200).end()
+  res.status(200).json({ user: req.user })
 })
 
 router.post('/logout', function(req, res) {
@@ -42,13 +39,13 @@ router.post('/logout', function(req, res) {
   res.status(200).end()
 })
 
-router.get('/ping', function(req, res) {
-  res.status(200).send('pong!')
-})
-
 router.get('/authed', (req, res) => {
   if (req.isAuthenticated()) res.status(200).end()
   else res.status(401).end()
+})
+
+router.get('/user', (req, res) => {
+  if (req.isAuthenticated) res.status(200).json({ user: req.user })
 })
 
 module.exports = router
