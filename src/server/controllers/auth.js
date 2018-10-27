@@ -1,4 +1,4 @@
-import logger from '../debug'
+import logger, { debug } from '../debug'
 const log = logger.log // logging function
 
 const express = require('express')

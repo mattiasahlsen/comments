@@ -1,13 +1,29 @@
 const merge = require('webpack-merge')
+const path = require('path')
+const env = require('dotenv')
+
+// simluate https://cli.vuejs.org/guide/mode-and-env.html#modes
+// without vue-cli-service
+// priority should be highest first, i.e. env.local is lowest priority
+if (process.env.NODE_ENV === 'development') {
+  env.config({ path: path.join(__dirname, '../../.env.development.local') })
+  env.config({ path: path.join(__dirname, '../../.env.development') })
+} else if (process.env.NODE_ENV === 'test') {
+  env.config({ path: path.join(__dirname, '../../.env.test.local') })
+  env.config({ path: path.join(__dirname, '../../.env.test') })
+} else if (process.env.NODE_ENV === 'production') {
+  env.config({ path: path.join(__dirname, '../../.env.production.local') })
+  env.config({ path: path.join(__dirname, '../../.env.production') })
+}
+env.config({ path: path.join(__dirname, '../../.env.local') })
+env.config({ path: path.join(__dirname, '../../.env') })
 
 const baseConf = {
-
+  secret: process.env.SECRET,
+  host: process.env.VUE_APP_HOST,
 }
 
 export const devConf = merge(baseConf, {
-  // obviously this shouldn't be stored in cleartext in production
-  secret: '7a4588feca44f607f370551d666c603f9224ca0d0cedf7b9e1914af9451aa85f',
-  host: 'localhost', // url of this server,
   port: normalizePort(process.env.PORT || '3000')
 })
 
