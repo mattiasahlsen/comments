@@ -16,7 +16,7 @@ beforeAll(async () => {
 })
 
 test('auth', async () => {
-  expect.assertions(1)
+  expect.assertions(2)
   const isAuthed = responseCode => {
     return request
       .get('/api/authed')
@@ -67,7 +67,10 @@ test('auth', async () => {
   await login(200)
   await isAuthed(200)
 
-  await request.get('/api/ping').expect(200)
+  expect(
+    (await request.get('/api/ping').expect(200)
+      .expect('Content-Type', 'text/html; charset=utf-8')).text)
+    .toBe('pong!')
   await request.get('/boguspath').expect(404)
 
   expect(true).toBe(true) // done, if no error was thrown we made it
