@@ -1,7 +1,7 @@
 <template>
-  <b-navbar toggleable="md" type="dark" variant="info">
+  <b-navbar toggleable="md" type="dark" variant="dark">
     <b-navbar-brand href="#">
-      <router-link to="/" class="link">Logo</router-link>
+      <router-link to="/" class="logo">Logo</router-link>
     </b-navbar-brand>
 
     <!-- Right aligned nav items -->
@@ -24,7 +24,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
-a {
+.logo, .logo:hover {
   color: white;
+  text-decoration: none;
+  transition: border-bottom 0.2s;
+}
+.logo {
+  border-bottom: 1px solid transparent;
+}
+.logo:hover {
+  border-bottom: 1px solid #3498db;
 }
 </style>

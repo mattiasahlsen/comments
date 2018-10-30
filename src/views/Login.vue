@@ -17,7 +17,7 @@
      <input required v-model="passwordReg" type="password" placeholder="Password"/>
      <input required v-model="passwordConfirm" type="password" placeholder="Confirm password"/>
      <hr/>
-     <button class="btn btn-success" type="submit">Register</button>
+     <button class="btn primary-2" type="submit">Register</button>
    </b-form>
  </div>
 </template>

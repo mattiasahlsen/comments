@@ -1,0 +1,12 @@
+$blue:    #007bff !default;
+
+$primary: #008ae6;
+$primary-2: #33adff;
+$link-color: $blue;
+
+.primary-2 {
+  background-color: $primary-2;
+  color: white;
+}
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
