@@ -6,7 +6,6 @@ const express = require('express')
 const path = require('path')
 const favicon = require('serve-favicon')
 const loggerMiddleware = require('morgan')
-const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const passport = require('passport')
@@ -21,12 +20,22 @@ const app = express()
 app.use(loggerMiddleware('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(cookieParser())
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', config.serverUrl)
+  res.header('Access-Control-Allow-Credentials', 'true')
+  res.header('Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization')
+  next()
+})
 app.use(require('express-session')({
   secret: config.secret,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    maxAge: config.sessionMaxAge,
+  }
 }))
+debug(config.sessionMaxAge)
 app.use(passport.initialize())
 app.use(passport.session())
 

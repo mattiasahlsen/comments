@@ -11,6 +11,14 @@ Vue.use(BootstrapVue)
 
 Vue.config.productionTip = false
 
+if (localStorage.getItem('loggedIn') === 'true') {
+  store.dispatch('getUser')
+    .then(user => store.commit('login', user))
+    .catch(err => {
+      localStorage.removeItem('loggedIn')
+    })
+}
+
 new Vue({
   router,
   store,

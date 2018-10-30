@@ -13,6 +13,7 @@ router.post('/register', [
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     // we want to share these errors to the client
+    debug(errors.array())
     return res.status(422).json({ errors: errors.array() })
   }
 
