@@ -13,8 +13,6 @@
     "dev-api": "NODE_ENV=development DEBUG=app:log,app:error npx babel-node src/server/bin/dev.js"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
-    "@babel/runtime": "^7.1.2",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "bootstrap-vue": "^2.0.0-rc.11",
@@ -39,7 +37,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.1.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
     "@babel/register": "^7.0.0",
+    "@babel/runtime": "^7.1.2",
     "@storybook/addon-actions": "^4.0.0-rc.6",
     "@storybook/addon-links": "^4.0.0-rc.6",
     "@storybook/addons": "^4.0.0-rc.6",
