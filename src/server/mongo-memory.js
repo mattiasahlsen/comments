@@ -5,7 +5,7 @@ async function createDb () {
   const mongod = new MongoMemoryServer({
     instance: {
       ip: '127.0.0.1',
-      dbName: 'comments-mongo-memory-server',
+      dbName: 'mongo-memory-server',
       port: 27018 // standard mongo port + 1
     }
   })
