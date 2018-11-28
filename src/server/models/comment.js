@@ -3,6 +3,7 @@ const Schema = mongoose.Schema
 
 // password hash and salt are added automatically
 const Comment = new Schema({
+  id: Number,
   username: String, // email
   url: String,
   text: String,
