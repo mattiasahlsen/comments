@@ -9482,7 +9482,7 @@ request-promise-native@^1.0.5:
     stealthy-require "^1.1.0"
     tough-cookie ">=2.3.3"
 
-request@^2.87.0, request@^2.88.0:
+request@^2.69.0, request@^2.87.0, request@^2.88.0:
   version "2.88.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   dependencies:
@@ -10824,6 +10824,12 @@ uri-js@^4.2.2:
 urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
+
+url-exists@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/url-exists/-/url-exists-1.0.3.tgz#05b2875baf04950e27ef51e9846f1eff04716893"
+  dependencies:
+    request "^2.69.0"
 
 url-loader@^1.1.0, url-loader@^1.1.2:
   version "1.1.2"

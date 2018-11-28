@@ -5,6 +5,8 @@ const passportLocalMongoose = require('passport-local-mongoose')
 // password hash and salt are added automatically
 const Account = new Schema({
   username: String, // email
+}, {
+  timestamps: true,
 })
 
 Account.plugin(passportLocalMongoose)

@@ -1,40 +1,54 @@
 <template>
-  <div class="home">
-    <h1 class="mt-2">Vue app boilerplate</h1>
-    <h2>Features</h2>
-    <ul>
-      <li v-for="(feature, index) in features" :key="index">
-        <a :href="feature.link">{{feature.text}}</a>
-      </li>
-    </ul>
+  <div class="container">
+    <div class="row justify-content-center">
+      <Search class="mt-5 col-sm-6 col-11" @submit="redirect"/>
+    </div>
+    <div class="row">
+      <div v-if="error" class="alert alert-danger" role="alert">
+        There was a problem: {{error.message}}
+      </div>
+    </div>
+    <div class="row">
+      <CommentField v-if="comments" :comments="comments"></CommentField>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import urlExists from 'url-exists'
+
+import Search from '@/components/Search'
+import CommentField from '@/components/CommentField'
+import axios from 'axios'
+
+function guard(to, from, next) {
+  if (!to.params.url) next()
+  urlExists(to.params.url, (err, exists) => next(exists))
+}
 
 export default {
   name: 'home',
   data() {
     return {
-      features: [
-        { text: 'Bootstrap-vue: ', link: 'https://bootstrap-vue.js.org/' },
-        { text: 'Mongodb with mongoose: ', link: 'https://mongoosejs.com/' },
-        { text: 'Local authentication with passport-local: ', link: 'http://www.passportjs.org/packages/passport-local/' },
-        { text: 'Vue cli features like sass, vuex, eslint, webpack and jest-testing', link: 'https://cli.vuejs.org/guide/' },
-        { text: 'In-memory mongodb database for testing', link: 'https://www.npmjs.com/package/mongodb-memory-server' }
-      ]
+      comments: null,
+      error: null,
     }
-  }
+  },
+  props: ['url'],
+  components: {
+    Search,
+    CommentField,
+  },
+  methods: {
+    redirect(url) {
+      if (url) this.$router.push({ name: 'home', params: { url, } })
+    }
+  },
+  beforeRouteEnter: guard,
+  beforeRouteUpdate: guard,
 }
 </script>
 
-<style scoped lang="scss">
-.home {
-  text-align: center;
-}
-ul {
-  display: inline-block;
-  text-align: left;
-}
+<style scoped>
 </style>
