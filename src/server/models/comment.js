@@ -5,9 +5,10 @@ const Schema = mongoose.Schema
 const Comment = new Schema({
   id: Number,
   username: String, // email
-  url: String,
+  websiteId: Number,
   text: String,
-  parent: String, // _id field of parent comment, comment it's a reply to
+  parent: Number, // _id field of parent comment, comment it's a reply to
+  visible: Boolean
 }, {
   timestamps: true,
 })

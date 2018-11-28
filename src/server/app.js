@@ -12,6 +12,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 
 const authController = require('./controllers/auth')
+const commentsController = require('./controllers/comments')
 
 const app = express()
 
@@ -70,6 +71,8 @@ mongoose.connect(config.db.uri, { useNewUrlParser: true })
 // routes
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/api', authController)
+app.use('/api', commentsController)
+
 app.get('/api/ping', function(req, res) {
   res.status(200).send('pong!')
 })

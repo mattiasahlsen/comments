@@ -17,10 +17,13 @@
 <script>
 // @ is an alias to /src
 import urlExists from 'url-exists'
+import urlencode from 'urlencode'
 
 import Search from '@/components/Search'
 import CommentField from '@/components/CommentField'
 import axios from 'axios'
+
+const URL = process.env.VUE_APP_API_URL
 
 function guard(to, from, next) {
   if (!to.params.url) next()
@@ -42,7 +45,16 @@ export default {
   },
   methods: {
     redirect(url) {
-      if (url) this.$router.push({ name: 'home', params: { url, } })
+      if (url) {
+        axios.get(URL + '/comments/' + urlencode(url)).then(resp => {
+          this.comments = resp.data.comments
+          console.log(this.comments)
+        }).catch(err => {
+          // TODO: handle error
+          console.log(err)
+        })
+        this.$router.push({ name: 'home', params: { url, } })
+      }
     }
   },
   beforeRouteEnter: guard,
