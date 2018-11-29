@@ -8,7 +8,8 @@ export default {
     user: null,
   },
   getters: {
-    isAuthenticated: state => !!state.user
+    isAuthenticated: state => !!state.user,
+    user: state => state.user
   },
   actions: {
     async register({ dispatch, commit }, user) {
@@ -54,7 +55,7 @@ export default {
           throw new Error('You are not logged in.')
         } else throw err
       })
-      return resp
+      return resp.data.user
     },
     async logout({ commit, dispatch }) {
       return axios.post(URL + '/logout').then(resp => {

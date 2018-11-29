@@ -10,6 +10,11 @@ const { check, validationResult } = require('express-validator/check')
 router.post('/register', [
   check('username').isEmail(),
 ], function(req, res) {
+  if (!req.body.username || !req.body.displayName || !req.body.password) {
+    debug('Missing field in register request.')
+    return res.status(400).end()
+  }
+
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     // we want to share these errors to the client
@@ -17,7 +22,10 @@ router.post('/register', [
     return res.status(422).json({ errors: errors.array() })
   }
 
-  Account.register(new Account({ username: req.body.username }), req.body.password, function(err, account) {
+  Account.register(new Account({
+    username: req.body.username,
+    displayName: req.body.displayName
+  }), req.body.password, function(err, account) {
     if (err) {
       // we don't want to share these errors to the client,
       // we just want to prevent them in the first place

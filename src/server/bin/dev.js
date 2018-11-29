@@ -10,11 +10,12 @@ import debug from '../debug'
 
 /* eslint-enable */
 
-Account.register(new Account({ username: 'test@gmail.com' }), 'test',
-  (err, account) => {
-    if (err) debug(err)
-  }
-)
+// Mock data
+
+const accounts = [
+  { username: 'test@gmail.com', displayName: 'Test User', password: 'test' }
+]
+accounts.forEach(el => Account.register(new Account(el), el.password))
 
 const website = new Website({
   url: 'https://www.youtube.com/watch?v=m0psosrTuas',
@@ -22,12 +23,14 @@ const website = new Website({
 })
 website.save()
 
-const comment = new Comment({
-  username: 'test@gmail.com',
-  websiteId: website._id,
-  text: 'This is a comment about this awesome youtube video!'
-})
-comment.save()
+const comments = [
+  {
+    username: 'test@gmail.com',
+    websiteId: website._id,
+    text: 'This is a comment about this awesome youtube video!'
+  },
+]
+comments.forEach(el => new Comment(el).save())
 
 startDb().then(db => {
   config.db = db.config

@@ -14,6 +14,7 @@
    <b-form class="register-form" @submit.prevent="register">
      <h3>Sign up</h3>
      <input required v-model="usernameReg" type="text" placeholder="Username"/>
+     <input required v-model="displayName" type="text" placeholder="Display name"/>
      <input required v-model="passwordReg" type="password" placeholder="Password"/>
      <input required v-model="passwordConfirm" type="password" placeholder="Confirm password"/>
      <hr/>
@@ -30,6 +31,7 @@ export default {
       username: '',
       password: '',
       usernameReg: '',
+      displayName: '',
       passwordReg: '',
       passwordConfirm: '',
       error: ''
@@ -49,11 +51,19 @@ export default {
       })
     },
     register() {
-      const { usernameReg: username, passwordReg: password } = this
-      this.$store.dispatch('register', { username, password }).then(() => {
+      if (this.passwordReg !== this.passwordConfirm) {
+        this.error = 'Passwords don\'t match'
+        return
+      }
+      if (!this.usernameReg.includes('@')) {
+        this.error = 'Make sure username is a valid email address'
+        return
+      }
+
+      const { usernameReg: username, displayName, passwordReg: password } = this
+      this.$store.dispatch('register', { username, displayName, password }).then(() => {
         this.$router.push('/')
       }).catch(err => {
-        console.log('ChECK*')
         this.error = err.message
       })
     }
