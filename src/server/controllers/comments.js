@@ -15,7 +15,7 @@ router.get('/comments/:url', (req, res) => {
       // TODO: create new website or redirect to domain-wide?
       return res.status(404).end()
     }
-    Comment.find({ websiteId: websites[0].id }, (err, comments) => {
+    Comment.find({ websiteId: websites[0]._id }, (err, comments) => {
       if (err) {
         logErr(err)
         return res.status(500).end()

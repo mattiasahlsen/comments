@@ -3,10 +3,9 @@ const Schema = mongoose.Schema
 
 // password hash and salt are added automatically
 const Website = new Schema({
-  id: Number,
-  url: String,
-  domainWide: Boolean,
-  visible: Boolean
+  url: { type: String, required: true, index: true },
+  domainWide: { type: Boolean, default: false },
+  visible: { type: Boolean, default: true }
 }, {
   timestamps: true,
 })
