@@ -66,7 +66,7 @@ passport.deserializeUser((id, done) => {
 })
 
 // mongoose
-mongoose.connect(config.db.uri, { useNewUrlParser: true })
+mongoose.connect(config.db.uri, config.dbOptions)
 
 // routes
 app.use(express.static(path.join(__dirname, 'public')))

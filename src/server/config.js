@@ -25,9 +25,16 @@ const baseConf = {
   serverUrl: process.env.SERVER_URL,
 
   sessionMaxAge: 1000 * 3600 * 24, // 24 hours for now
+
+  dbOptions: {
+    useNewUrlParser: true
+  }
 }
 
 export const devConf = merge(baseConf, {
+  dbOptions: {
+    autoIndex: false,
+  }
 })
 
 export const prodConf = merge(baseConf, {

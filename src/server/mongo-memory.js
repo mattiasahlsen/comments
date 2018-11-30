@@ -1,7 +1,7 @@
 import MongoMemoryServer from 'mongodb-memory-server'
 import { debug } from './debug'
 
-async function createDb () {
+async function startDb () {
   const mongod = new MongoMemoryServer({
     instance: {
       ip: '127.0.0.1',
@@ -27,4 +27,4 @@ async function createDb () {
   }
 }
 
-export default createDb
+export default startDb

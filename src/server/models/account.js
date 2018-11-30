@@ -10,7 +10,8 @@ const Account = new Schema({
 }, {
   timestamps: true,
 })
-
 Account.plugin(passportLocalMongoose)
 
-module.exports = mongoose.model('Account', Account)
+const AccountModel = mongoose.model('Account', Account)
+
+module.exports = AccountModel
