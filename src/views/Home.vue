@@ -8,7 +8,7 @@
         There was a problem: {{error.message}}
       </div>
     </div>
-    <div class="row">
+    <div class="row m-5">
       <CommentField v-if="comments" :comments="comments"></CommentField>
     </div>
   </div>
@@ -48,6 +48,7 @@ export default {
       if (url) {
         axios.get(URL + '/comments/' + urlencode(url)).then(resp => {
           this.comments = resp.data.comments
+          console.log('Comments: ')
           console.log(this.comments)
         }).catch(err => {
           // TODO: handle error

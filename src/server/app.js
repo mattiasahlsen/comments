@@ -36,7 +36,7 @@ app.use(require('express-session')({
     maxAge: config.sessionMaxAge,
   }
 }))
-debug(config.sessionMaxAge)
+debug('Max session age: ' + config.sessionMaxAge + 'ms')
 app.use(passport.initialize())
 app.use(passport.session())
 

@@ -1,6 +1,7 @@
 <template>
   <div class="comment-field">
-    <div v-for="(comment, index) in comments" :key="index">
+    <div v-for="(comment, index) in comments" :key="index" class="comment">
+      <p><strong>{{comment.displayName}}</strong></p>
       <p>{{comment.text}}</p>
     </div>
   </div>
@@ -12,5 +13,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.comment {
+}
 </style>

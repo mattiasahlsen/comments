@@ -6,7 +6,8 @@ const passportLocalMongoose = require('passport-local-mongoose')
 const Account = new Schema({
   username: { type: String, required: true, index: true, unique: true },
   displayName: { type: String, required: true },
-  confirmed: { type: Boolean, default: false } // Confirmed email address
+  confirmed: { type: Boolean, default: false }, // Confirmed email address
+  visible: { type: Boolean, default: true }
 }, {
   timestamps: true,
 })
