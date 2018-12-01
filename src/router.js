@@ -9,13 +9,8 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
+      path: '/:url?',
       name: 'home',
-      component: Home
-    },
-    {
-      path: '/:url',
-      name: 'comments',
       component: Home
     },
     {

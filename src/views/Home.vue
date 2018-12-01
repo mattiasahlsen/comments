@@ -39,15 +39,11 @@ export default {
   },
   methods: {
     redirect(url) {
-      console.log('Redirecting to: ' + url)
       // must call getComments manually, beforeRouteEnter and
       // beforeRouteUpdate bugging
       if (url) {
-        this.$router.push({ name: 'comments', params: { url, } })
-        this.getComments(url)
-      } else {
-        this.$router.push({ name: 'home' })
-        this.comments = []
+        console.log('Redirecting to: ' + url)
+        this.$router.push({ name: 'home', params: { url, } })
       }
     },
     getComments(url) {
@@ -79,11 +75,14 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     console.log('Before route update.')
-    if (to.params.url) this.getComments(to.params.url)
-    else {
+    if (to.params.url) {
+      console.log('Getting comments for url')
+      this.getComments(to.params.url)
+    } else {
       // TODO: "Cache", i.e. save in a variable instead of just throwing away
       this.comments = []
     }
+    next()
   }
 }
 </script>
