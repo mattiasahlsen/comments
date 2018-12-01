@@ -1,15 +1,23 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
+      <div v-if="error" class="alert alert-danger col-12 mb-5" role="alert">
+        There was a problem: {{error}}
+      </div>
+
       <Search class="mt-5 col-sm-6 col-11" @submit="redirect"/>
     </div>
     <div class="row">
-      <div v-if="error" class="alert alert-danger" role="alert">
-        There was a problem: {{error.message}}
-      </div>
     </div>
-    <div class="row m-5">
-      <CommentField v-if="comments" :comments="comments"></CommentField>
+    <div class="row m-5" v-if="comments">
+      <form id="comment-form" class="col-12 col-md-9 col-lg-6 mb-5">
+        <input class="form-control mb-2" placeholder="Write a comment..."
+        v-model="comment"/>
+        <button type="submit" class="btn btn-primary mr-1" @click.prevent="submit(comment)">Submit</button>
+        <button type="submit" class="btn btn-secondary" @click.prevent="comment = ''">Cancel</button>
+      </form>
+
+      <CommentField class="col-12" :comments="comments"></CommentField>
     </div>
   </div>
 </template>
@@ -29,6 +37,7 @@ export default {
   data() {
     return {
       comments: null,
+      comment: '',
       error: null,
     }
   },
@@ -49,7 +58,7 @@ export default {
     getComments(url) {
       if (url) {
         url = urlencode(url)
-        return axios.get(URL + '/comments/' + url).then(resp => {
+        axios.get(URL + '/comments/' + url).then(resp => {
           this.comments = resp.data.comments
           console.log('Comments: ')
           console.log(this.comments)
@@ -59,6 +68,36 @@ export default {
           this.$router.push({ name: 'home', params: {} })
         })
       } else throw new Error('Cannot get comments for undefined url.')
+    },
+    submit(comment, parentId) {
+      if (!this.$route.params.url) {
+        throw new Error('Can\'t comment, params.url not defined.')
+      } else if (comment) {
+        const url = urlencode(this.$route.params.url)
+        axios.post(`${URL}/comments/${url}/submit`, {
+          comment: {
+            text: comment,
+            parentId
+          }
+        }).then(resp => {
+          console.log(resp.data)
+          switch (resp.status) {
+            case 200:
+              this.comments.unshift(resp.data)
+              return
+            case 404:
+              this.error = 'Invalid comment section url'
+              return
+            case 401:
+              this.error = 'Authentication failed'
+              return
+            default:
+              this.error = 'Response status ' + resp.status
+          }
+        }).catch(err => {
+          this.error = err.message
+        })
+      } else console.log('Can\'t submit comment, comment not defined.')
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -69,7 +108,7 @@ export default {
         vm.getComments(to.params.url)
       } else {
         // TODO: "Cache", i.e. save in a variable instead of just throwing away
-        vm.comments = []
+        vm.comments = null
       }
     })
   },
@@ -80,12 +119,14 @@ export default {
       this.getComments(to.params.url)
     } else {
       // TODO: "Cache", i.e. save in a variable instead of just throwing away
-      this.comments = []
+      this.comments = null
     }
     next()
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+#comment-form {
+}
 </style>

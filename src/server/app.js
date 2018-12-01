@@ -33,7 +33,7 @@ app.use(require('express-session')({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: config.sessionMaxAge,
+    maxAge: config.sessionMaxAge, // expiration time
   }
 }))
 debug('Max session age: ' + config.sessionMaxAge + 'ms')
@@ -44,6 +44,7 @@ app.use(passport.session())
 const Account = require('./models/account')
 const passportLocalMongoStrategy = Account.authenticate()
 passport.use(new LocalStrategy((username, password, done) => {
+  debug('Authanticating user without session.')
   // need to modify passportLocalMongoStrategy to remove password hash and salt
   // from user object
   passportLocalMongoStrategy(username, password, (err, user) => {
