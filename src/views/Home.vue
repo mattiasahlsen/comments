@@ -24,14 +24,6 @@ import axios from 'axios'
 
 const URL = process.env.VUE_APP_API_URL
 
-function guard(to, from, next) {
-  next(vm => {
-    if (to.params.url) {
-      vm.getComments(to.params.url)
-    }
-  })
-}
-
 export default {
   name: 'home',
   data() {
@@ -47,7 +39,16 @@ export default {
   },
   methods: {
     redirect(url) {
-      this.$router.push({ name: 'home', params: { url, } })
+      console.log('Redirecting to: ' + url)
+      // must call getComments manually, beforeRouteEnter and
+      // beforeRouteUpdate bugging
+      if (url) {
+        this.$router.push({ name: 'comments', params: { url, } })
+        this.getComments(url)
+      } else {
+        this.$router.push({ name: 'home' })
+        this.comments = []
+      }
     },
     getComments(url) {
       if (url) {
@@ -64,8 +65,26 @@ export default {
       } else throw new Error('Cannot get comments for undefined url.')
     }
   },
-  beforeRouteEnter: guard,
-  beforeRouteUpdate: guard
+  beforeRouteEnter(to, from, next) {
+    console.log('Before route enter.')
+    next(vm => {
+      console.log('Guard next called.')
+      if (to.params.url) {
+        vm.getComments(to.params.url)
+      } else {
+        // TODO: "Cache", i.e. save in a variable instead of just throwing away
+        vm.comments = []
+      }
+    })
+  },
+  beforeRouteUpdate(to, from, next) {
+    console.log('Before route update.')
+    if (to.params.url) this.getComments(to.params.url)
+    else {
+      // TODO: "Cache", i.e. save in a variable instead of just throwing away
+      this.comments = []
+    }
+  }
 }
 </script>
 
