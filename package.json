@@ -30,7 +30,6 @@
     "serve-favicon": "^2.5.0",
     "style-resources-loader": "^1.2.1",
     "supertest-session": "^3.3.0",
-    "url-exists": "^1.0.3",
     "urlencode": "^1.1.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",

@@ -16,7 +16,6 @@
 
 <script>
 // @ is an alias to /src
-import urlExists from 'url-exists'
 import urlencode from 'urlencode'
 
 import Search from '@/components/Search'
@@ -26,8 +25,11 @@ import axios from 'axios'
 const URL = process.env.VUE_APP_API_URL
 
 function guard(to, from, next) {
-  if (!to.params.url) next()
-  urlExists(to.params.url, (err, exists) => next(exists))
+  next(vm => {
+    if (to.params.url) {
+      vm.getComments(to.params.url)
+    }
+  })
 }
 
 export default {
@@ -45,21 +47,25 @@ export default {
   },
   methods: {
     redirect(url) {
+      this.$router.push({ name: 'home', params: { url, } })
+    },
+    getComments(url) {
       if (url) {
-        axios.get(URL + '/comments/' + urlencode(url)).then(resp => {
+        url = urlencode(url)
+        return axios.get(URL + '/comments/' + url).then(resp => {
           this.comments = resp.data.comments
           console.log('Comments: ')
           console.log(this.comments)
         }).catch(err => {
           // TODO: handle error
           console.log(err)
+          this.$router.push({ name: 'home', params: {} })
         })
-        this.$router.push({ name: 'home', params: { url, } })
-      }
+      } else throw new Error('Cannot get comments for undefined url.')
     }
   },
   beforeRouteEnter: guard,
-  beforeRouteUpdate: guard,
+  beforeRouteUpdate: guard
 }
 </script>
 
