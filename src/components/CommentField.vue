@@ -5,18 +5,20 @@
       <h6>{{comment.displayName}}</h6>
       <p class="mb-1">{{comment.text}}</p>
 
-      <img :src="likeImg" height="12" class="mr-1">
-      <span class="mr-3">{{comment.upvotes}}</span>
-
-      <img :src="dislikeImg" height="12" class="mr-1">
-      <span>{{comment.downvotes}}</span>
+      <img :src="likeImg" height="14" class="mr-1 vote" @click="vote(comment, true)">
+      <img :src="dislikeImg" height="14" class="mr-1 vote" @click="vote(comment, false)">
+      <span>{{comment.score}}</span>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 import likeImg from '../assets/like.png'
 import dislikeImg from '../assets/dislike.png'
+
+const URL = process.env.VUE_APP_API_URL
 
 export default {
   props: ['comments'],
@@ -24,6 +26,19 @@ export default {
     return {
       likeImg,
       dislikeImg
+    }
+  },
+  methods: {
+    vote(comment, like) {
+      const endpoint = like ? 'like' : 'dislike'
+      axios.post(URL + '/comment/' + comment._id + '/' + endpoint).then(resp => {
+        if (resp.status === 200) {
+          if (like) comment.score++
+          else comment.score--
+        } else this.$store.commit('status', resp.status)
+      }).catch(err => {
+        this.$store.commit('error', err.message)
+      })
     }
   }
 }
@@ -41,5 +56,10 @@ export default {
 }
 .reply {
   margin-left: 1.5rem;
+}
+.vote {
+  &:hover {
+    cursor: pointer;
+  }
 }
 </style>

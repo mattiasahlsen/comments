@@ -3,9 +3,13 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import jquery from 'jquery'
+window.$ = window.jquery = jquery
+
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'bootstrap'
 
 Vue.use(BootstrapVue)
 

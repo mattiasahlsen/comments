@@ -1,10 +1,6 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <div v-if="error" class="alert alert-danger col-12 mb-5" role="alert">
-        There was a problem: {{error}}
-      </div>
-
       <Search class="mt-5 col-sm-6 col-11" @submit="redirect"/>
     </div>
     <div class="row">
@@ -81,21 +77,10 @@ export default {
           }
         }).then(resp => {
           console.log(resp.data)
-          switch (resp.status) {
-            case 200:
-              this.comments.unshift(resp.data)
-              return
-            case 404:
-              this.error = 'Invalid comment section url'
-              return
-            case 401:
-              this.error = 'Authentication failed'
-              return
-            default:
-              this.error = 'Response status ' + resp.status
-          }
+          if (resp.status === 200) this.comments.unshift(resp.data)
+          else this.$store.commit('status', resp.status)
         }).catch(err => {
-          this.error = err.message
+          this.$store.commit('error', err.message)
         })
       } else console.log('Can\'t submit comment, comment not defined.')
     }

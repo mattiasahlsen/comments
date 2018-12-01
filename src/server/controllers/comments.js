@@ -1,5 +1,7 @@
-import urlencode from 'urlencode'
 import logger, { debug, logErr } from '../debug'
+
+import Vote from '../models/vote'
+
 const log = logger.log // logging function
 
 const Website = require('../models/website')
@@ -12,14 +14,31 @@ const router = express.Router()
 
 // All these routes must belong to a url (Website)
 router.use('/comments/:url*', (req, res, next) => {
-  Website.findOne({ url: urlencode.decode(req.params.url) }, (err, website) => {
+  Website.findOne({ url: req.params.url }, (err, website) => {
     if (err || !website) {
-      if (err) logErr(err)
+      if (err) {
+        logErr(err)
+        return res.status(500).end()
+      }
       // TODO: create new website or redirect to domain-wide?
       return res.status(404).end()
     }
 
     req.website = website
+    next()
+  })
+})
+router.use('/comment/:id*', (req, res, next) => {
+  Comment.findById(req.params.id, (err, comment) => {
+    if (err || !comment) {
+      if (err) {
+        logErr(err)
+        return res.status(500).end()
+      }
+      debug('Didn\'t find comment.')
+      return res.status(404).end()
+    }
+    req.comment = comment
     next()
   })
 })
@@ -33,35 +52,26 @@ router.get('/comments/:url', (req, res) => {
       return res.status(500).end()
     }
 
-    const users = []
     let count = 0
     for (let i = 0; i < comments.length; i++) {
-      comments[i] = comments[i].toObject()
-      const user = users.find(el => el._id.equals(comments[i].userId))
-      if (!user) {
-        Account.findById(comments[i].userId, (err, user) => {
-          if (err) {
-            logErr(err)
-            return res.status(500).end()
-          }
-          users.push(user)
-          comments[i].displayName = user.displayName
-          if (++count === comments.length) {
-            return res.json({ comments })
-          }
-        })
-      } else {
-        comments[i].displayName = user.displayName
+      comments[i].fetchAll().then(comment => {
+        comments[i] = comment.toObject()
+        comments[i].displayName = comment.user.displayName
+        comments[i].score = comment.score
+
         if (++count === comments.length) {
           return res.json({ comments })
         }
-      }
+      }).catch(err => {
+        logErr(err)
+        return res.status(500).end()
+      })
     }
   })
 })
 
 router.post('/comments/:url/submit', (req, res) => {
-  if (!req.isAuthenticated()) return res.status(404).end()
+  if (!req.isAuthenticated()) return res.status(401).end()
   const website = req.website
 
   const comment = new Comment({
@@ -73,6 +83,23 @@ router.post('/comments/:url/submit', (req, res) => {
   comment.save().then(comment => res.json(comment)).catch(err => {
     logErr(err)
     res.status(500).end()
+  })
+})
+
+router.post('/comment/:id/like', (req, res) => {
+  if (!req.isAuthenticated()) return res.status(401).end()
+
+  Vote.like(req.user._id, req.params.id, (err, vote) => {
+    if (err) res.status(500).end()
+    else res.end()
+  })
+})
+router.post('/comment/:id/dislike', (req, res) => {
+  if (!req.isAuthenticated()) return res.status(401).end()
+
+  Vote.dislike(req.user._id, req.params.id, (err, vote) => {
+    if (err) res.status(500).end()
+    else res.end()
   })
 })
 
