@@ -5,9 +5,14 @@
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### Compiles and hot-reloads for development (serves the vue app)
 ```
 yarn run serve
+```
+
+### Run REST API server
+```
+yarn run dev-api
 ```
 
 ### Compiles and minifies for production
