@@ -77,6 +77,7 @@ export default {
           }
         }).then(resp => {
           console.log(resp.data)
+          // add my displayname to new comment
           if (resp.status === 200) this.comments.unshift(resp.data)
           else this.$store.commit('status', resp.status)
         }).catch(err => {

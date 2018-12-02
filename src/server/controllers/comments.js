@@ -54,10 +54,8 @@ router.get('/comments/:url', (req, res) => {
 
     let count = 0
     for (let i = 0; i < comments.length; i++) {
-      comments[i].fetchAll().then(comment => {
-        comments[i] = comment.toObject()
-        comments[i].displayName = comment.user.displayName
-        comments[i].score = comment.score
+      comments[i].toObj().then(comment => {
+        comments[i] = comment
 
         if (++count === comments.length) {
           return res.json({ comments })
@@ -80,7 +78,8 @@ router.post('/comments/:url/submit', (req, res) => {
     parentId: req.body.comment.parentId,
     text: req.body.comment.text,
   })
-  comment.save().then(comment => res.json(comment)).catch(err => {
+  comment.save().then(comment =>
+    comment.toObj().then(commentObj => res.json(commentObj))).catch(err => {
     logErr(err)
     res.status(500).end()
   })

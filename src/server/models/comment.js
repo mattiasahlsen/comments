@@ -62,6 +62,14 @@ Comment.method('fetchAll', function() {
     }).catch(err => reject(err))
   })
 })
+Comment.method('toObj', function() {
+  return this.fetchAll().then(() => {
+    const obj = this.toObject()
+    obj.score = this.score
+    obj.displayName = this.user.displayName
+    return obj
+  })
+})
 
 const CommentModel = mongoose.model('Comment', Comment)
 

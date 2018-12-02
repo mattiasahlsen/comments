@@ -55,7 +55,7 @@ export default {
           throw new Error('You are not logged in.')
         } else throw err
       })
-      return resp.data.user
+      return resp.data
     },
     async logout({ commit, dispatch }) {
       return axios.post(URL + '/logout').then(resp => {
@@ -66,6 +66,8 @@ export default {
   },
   mutations: {
     login(state, user) {
+      console.log('Logging in')
+      console.log(user)
       state.user = user
       localStorage.setItem('loggedIn', 'true')
     },
