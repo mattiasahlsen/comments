@@ -90,7 +90,12 @@ router.post('/comment/:id/like', (req, res) => {
 
   Vote.like(req.user._id, req.params.id, (err, vote) => {
     if (err) res.status(500).end()
-    else res.end()
+    else {
+      if (vote) {
+        if (vote.like) res.json({ scoreChange: 0 })
+        else res.json({ scoreChange: 2 })
+      } else res.json({ scoreChange: 1 })
+    }
   })
 })
 router.post('/comment/:id/dislike', (req, res) => {
@@ -98,7 +103,12 @@ router.post('/comment/:id/dislike', (req, res) => {
 
   Vote.dislike(req.user._id, req.params.id, (err, vote) => {
     if (err) res.status(500).end()
-    else res.end()
+    else {
+      if (vote) {
+        if (vote.like) res.json({ scoreChange: -2 })
+        else res.json({ scoreChange: 0 })
+      } else res.json({ scoreChange: -1 })
+    }
   })
 })
 

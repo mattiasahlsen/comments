@@ -11,7 +11,7 @@ const Vote = new Schema({
 
 const vote = function(model, like, userId, commentId, cb) {
   return model.findOneAndUpdate({ userId, commentId },
-    { like }, { upsert: true, new: true }, cb)
+    { like }, { upsert: true }, cb)
 }
 Vote.statics.like = function(userId, commentId, cb) {
   vote(this, true, userId, commentId, cb)

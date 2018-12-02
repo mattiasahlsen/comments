@@ -33,8 +33,7 @@ export default {
       const endpoint = like ? 'like' : 'dislike'
       axios.post(URL + '/comment/' + comment._id + '/' + endpoint).then(resp => {
         if (resp.status === 200) {
-          if (like) comment.score++
-          else comment.score--
+          comment.score += resp.data.scoreChange
         } else this.$store.commit('status', resp.status)
       }).catch(err => {
         this.$store.commit('error', err.message)
