@@ -3,7 +3,7 @@ require('@babel/register')
 /* eslint-disable */
 import config from '../config'
 import startDb from '../mongo-memory'
-import debug from '../debug'
+import { debug } from '../debug'
 
 import Account from '../models/account'
 /* eslint-enable */

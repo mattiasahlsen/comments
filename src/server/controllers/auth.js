@@ -46,7 +46,13 @@ router.get('/authed', (req, res) => {
 })
 
 router.get('/user', (req, res) => {
-  if (req.isAuthenticated) res.status(200).json({ user: req.user })
+  if (req.isAuthenticated()) {
+    res.status(200).json(req.user)
+  } else {
+    passport.authenticate('local')(req, res, () => {
+      res.status(200).json(req.user)
+    })
+  }
 })
 
 module.exports = router
