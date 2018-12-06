@@ -23,18 +23,23 @@ const Comment = new Schema({
 
 Comment.on('error', err => logErr(err)) // backup
 
-Comment.method('getScore', function() {
+Comment.method('getScore', function(userId) {
   return new Promise((resolve, reject) => {
     Vote.find({ commentId: this._id }, (err, votes) => {
       if (err) reject(err)
-      let score = 0
+      this.score = 0
+      this.hasLiked = this.hasDisliked = false
 
       for (let i = 0; i < votes.length; i++) {
-        if (votes[i].like) score++
-        else score--
+        if (votes[i].like) this.score++
+        else this.score--
+
+        if (votes[i].userId.equals(userId)) {
+          if (votes[i].like) this.hasLiked = true
+          else this.hasDisliked = true
+        }
       }
-      this.score = score
-      resolve(score)
+      resolve()
     })
   })
 })
@@ -48,7 +53,7 @@ Comment.method('getUser', function() {
     })
   })
 })
-Comment.method('fetchAll', function() {
+Comment.method('fetchAll', function(userId) {
   return new Promise((resolve, reject) => {
     let gotScore = false
     let gotUser = false
@@ -56,17 +61,19 @@ Comment.method('fetchAll', function() {
       gotUser = true
       if (gotScore) resolve(this)
     }).catch(err => reject(err))
-    this.getScore().then(() => {
+    this.getScore(userId).then(() => {
       gotScore = true
       if (gotUser) resolve(this)
     }).catch(err => reject(err))
   })
 })
-Comment.method('toObj', function() {
-  return this.fetchAll().then(() => {
+Comment.method('toObj', function(userId) {
+  return this.fetchAll(userId).then(() => {
     const obj = this.toObject()
     obj.score = this.score
     obj.displayName = this.user.displayName
+    obj.hasLiked = this.hasLiked
+    obj.hasDisliked = this.hasDisliked
     return obj
   })
 })

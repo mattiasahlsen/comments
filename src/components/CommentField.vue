@@ -5,8 +5,10 @@
       <h6>{{comment.displayName}}</h6>
       <p class="mb-1">{{comment.text}}</p>
 
-      <img :src="likeImg" height="14" class="mr-1 vote" @click="vote(comment, true)">
-      <img :src="dislikeImg" height="14" class="mr-1 vote" @click="vote(comment, false)">
+      <img :src="likeImg" height="14" class="mr-1 vote"
+      :class="{ blue: comment.hasLiked }" @click="vote(comment, true)">
+      <img :src="dislikeImg" height="14" class="mr-1 vote"
+      :class="{ blue: comment.hasDisliked }" @click="vote(comment, false)">
       <span>{{comment.score}}</span>
     </div>
   </div>
@@ -60,5 +62,7 @@ export default {
   &:hover {
     cursor: pointer;
   }
+}
+.blue {
 }
 </style>
