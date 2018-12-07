@@ -23,58 +23,55 @@ const Comment = new Schema({
 
 Comment.on('error', err => logErr(err)) // backup
 
-Comment.method('getScore', function(userId) {
+Comment.method('getScore', function(obj, userId) {
   return new Promise((resolve, reject) => {
     Vote.find({ commentId: this._id }, (err, votes) => {
       if (err) reject(err)
-      this.score = 0
-      this.hasLiked = this.hasDisliked = false
+      obj.likes = 0
+      obj.dislikes = 0
+      obj.hasLiked = obj.hasDisliked = false
 
       for (let i = 0; i < votes.length; i++) {
-        if (votes[i].like) this.score++
-        else this.score--
+        if (votes[i].like) obj.likes++
+        else obj.dislikes++
 
         if (votes[i].userId.equals(userId)) {
-          if (votes[i].like) this.hasLiked = true
-          else this.hasDisliked = true
+          if (votes[i].like) obj.hasLiked = true
+          else obj.hasDisliked = true
         }
       }
       resolve()
     })
   })
 })
-Comment.method('getUser', function() {
+Comment.method('getUser', function(obj) {
   return new Promise((resolve, reject) => {
     Account.findOne({ _id: this.userId }, (err, user) => {
       if (err) reject(err)
 
-      this.user = user
+      obj.displayName = user.displayName
       resolve(user)
     })
   })
 })
 Comment.method('fetchAll', function(userId) {
   return new Promise((resolve, reject) => {
+    const obj = {}
     let gotScore = false
     let gotUser = false
-    this.getUser().then(() => {
+    this.getUser(obj).then(() => {
       gotUser = true
-      if (gotScore) resolve(this)
+      if (gotScore) resolve(obj)
     }).catch(err => reject(err))
-    this.getScore(userId).then(() => {
+    this.getScore(obj, userId).then(() => {
       gotScore = true
-      if (gotUser) resolve(this)
+      if (gotUser) resolve(obj)
     }).catch(err => reject(err))
   })
 })
 Comment.method('toObj', function(userId) {
-  return this.fetchAll(userId).then(() => {
-    const obj = this.toObject()
-    obj.score = this.score
-    obj.displayName = this.user.displayName
-    obj.hasLiked = this.hasLiked
-    obj.hasDisliked = this.hasDisliked
-    return obj
+  return this.fetchAll(userId).then(obj => {
+    return Object.assign(this.toObject(), obj)
   })
 })
 

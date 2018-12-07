@@ -104,11 +104,15 @@ router.post('/comment/:id/dislike', (req, res) => {
   Vote.dislike(req.user._id, req.params.id, (err, vote) => {
     if (err) res.status(500).end()
     else {
-      if (vote) {
-        if (vote.like) res.json({ scoreChange: -2 })
-        else res.json({ scoreChange: 0 })
-      } else res.json({ scoreChange: -1 })
+      res.end()
     }
+  })
+})
+router.post('/comment/:id/undovote', (req, res) => {
+  if (!req.isAuthenticated()) return res.status(401).end()
+  Vote.deleteOne({ userId: req.user._id, commentId: req.params.id }, err => {
+    if (err) res.status(500).end()
+    else res.end()
   })
 })
 

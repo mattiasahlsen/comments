@@ -5,11 +5,12 @@
       <h6>{{comment.displayName}}</h6>
       <p class="mb-1">{{comment.text}}</p>
 
-      <img :src="likeImg" height="14" class="mr-1 vote"
-      :class="{ blue: comment.hasLiked }" @click="vote(comment, true)">
-      <img :src="dislikeImg" height="14" class="mr-1 vote"
-      :class="{ blue: comment.hasDisliked }" @click="vote(comment, false)">
-      <span>{{comment.score}}</span>
+      <font-awesome-icon icon="thumbs-up" class="mr-1 vote"
+      :class="{ blue: comment.hasLiked }" @click="vote(comment, true)" />
+      <span class="mr-3">{{comment.likes}}</span>
+      <font-awesome-icon icon="thumbs-down" class="vote mt-1 mr-1"
+      :class="{ blue: comment.hasDisliked }" @click="vote(comment, false)" />
+      <span class="mr-3">{{comment.dislikes}}</span>
     </div>
   </div>
 </template>
@@ -32,10 +33,38 @@ export default {
   },
   methods: {
     vote(comment, like) {
-      const endpoint = like ? 'like' : 'dislike'
+      let endpoint
+      if ((like && comment.hasLiked) || (!like && comment.hasDisliked)) endpoint = 'undovote'
+      else if (like) endpoint = 'like'
+      else endpoint = 'dislike'
+
       axios.post(URL + '/comment/' + comment._id + '/' + endpoint).then(resp => {
         if (resp.status === 200) {
-          comment.score += resp.data.scoreChange
+          if (like) {
+            if (comment.hasLiked) {
+              comment.likes--
+              comment.hasLiked = false
+            } else {
+              comment.likes++
+              comment.hasLiked = true
+              if (comment.hasDisliked) {
+                comment.dislikes--
+                comment.hasDisliked = false
+              }
+            }
+          } else {
+            if (comment.hasDisliked) {
+              comment.dislikes--
+              comment.hasDisliked = false
+            } else {
+              comment.dislikes++
+              comment.hasDisliked = true
+              if (comment.hasLiked) {
+                comment.likes--
+                comment.hasLiked = false
+              }
+            }
+          }
         } else this.$store.commit('status', resp.status)
       }).catch(err => {
         this.$store.commit('error', err.message)
@@ -64,5 +93,6 @@ export default {
   }
 }
 .blue {
+  color: #0099e6;
 }
 </style>
