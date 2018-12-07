@@ -23,7 +23,7 @@ export default {
     },
     loggedIn() {
       return this.$store.getters.isAuthenticated
-    }
+    },
   }
 }
 
