@@ -27,35 +27,18 @@ export default {
       return dispatch('authRequest', data)
     },
     async authRequest({ commit, dispatch }, data) {
-      try {
-        const resp = await axios.post(URL + data.endpoint, data.user)
-        commit('login', resp.data.user)
-        return resp
-      } catch (err) {
-        const resp = err.response
-        if (resp) {
-          switch (resp.status) {
-            case 404:
-              throw new Error('User not found.')
-            case 401:
-              throw new Error('Invalid username or password.')
-            case 500:
-              throw new Error('Error on the server.')
-            case 422:
-              throw new Error('Invalid fields.')
-            default:
-              throw err
-          }
-        } throw err
-      }
+      const resp = await axios.post(URL + data.endpoint, data.user)
+      commit('login', resp.data.user)
+      return resp
     },
     async getUser({ commit, dispatch }) {
-      const resp = await axios.get(URL + '/user').catch(err => {
+      try {
+        return (await axios.get(URL + '/user')).data
+      } catch (err) {
         if (err.response && err.response.status === 401) {
           throw new Error('You are not logged in.')
-        } else throw err
-      })
-      return resp.data
+        } else throw new Error(err)
+      }
     },
     async logout({ commit, dispatch }) {
       return axios.post(URL + '/logout').then(resp => {

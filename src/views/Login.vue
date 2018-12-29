@@ -1,8 +1,5 @@
 <template>
  <div class="login">
-  <b-alert :show="error !== ''" variant="danger">
-    {{error}}
-  </b-alert>
    <b-form class="login-form" @submit.prevent="login">
      <h1 class="mt-2">Sign in</h1>
      <input required v-model="username" type="text" placeholder="Email"/>
@@ -34,7 +31,6 @@ export default {
       displayName: '',
       passwordReg: '',
       passwordConfirm: '',
-      error: ''
     }
   },
   methods: {
@@ -47,7 +43,7 @@ export default {
       this.$store.dispatch('login', { username, password }).then(() => {
         this.$router.push('/') // it was succesful
       }).catch(err => {
-        this.error = err.message
+        this.$store.commit('axiosError', err)
       })
     },
     register() {
@@ -64,7 +60,14 @@ export default {
       this.$store.dispatch('register', { username, displayName, password }).then(() => {
         this.$router.push('/')
       }).catch(err => {
-        this.error = err.message
+        if (err.response && err.response.status === 422) {
+          for (let i = 0; i < err.response.data.errors.length; i++) {
+            if (err.response.data.errors[i].param === 'username') {
+              return this.$store.commit('error', 'Make sure the email is valid.')
+            }
+          }
+        }
+        this.$store.commit('axiosError', err)
       })
     }
   }

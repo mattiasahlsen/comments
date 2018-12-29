@@ -17,6 +17,11 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
 export default {
+  computed: {
+    error() {
+      return this.$store.state.error
+    }
+  },
   components: {
     Navbar,
     Footer,
