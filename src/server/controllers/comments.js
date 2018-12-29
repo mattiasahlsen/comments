@@ -117,7 +117,7 @@ router.post('/comment/:id/undovote', (req, res) => {
 })
 
 router.get('/websites', (req, res) => {
-  Website.find({}).sort({ createdAt: -1 }).exec((err, docs) => {
+  Website.find({}, null, { limit: 10, sort: { createdAt: -1 } }, (err, docs) => {
     for (let i = 0; i < docs.length; i++) {
       docs[i] = docs[i].toObject()
       docs[i].creationDate = docs[i].createdAt.toDateString()

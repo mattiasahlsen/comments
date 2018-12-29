@@ -26,11 +26,6 @@ export default {
     Navbar,
     Footer,
   },
-  computed: {
-    error() {
-      return this.$store.state.error
-    }
-  }
 }
 </script>
 

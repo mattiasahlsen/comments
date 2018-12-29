@@ -96,8 +96,8 @@ export default {
     next(vm => {
       console.log('Guard next called.')
       if (to.params.url) {
-        if (this.cache[to.params.url]) this.comments = this.cache[to.params.url]
-        else this.getComments(to.params.url)
+        if (vm.cache[to.params.url]) vm.comments = vm.cache[to.params.url]
+        else vm.getComments(to.params.url)
       } else vm.comments = null
     })
   },
