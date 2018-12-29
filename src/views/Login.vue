@@ -48,19 +48,17 @@ export default {
     },
     register() {
       if (this.passwordReg !== this.passwordConfirm) {
-        this.error = 'Passwords don\'t match'
-        return
+        return this.$store.commit('error', 'Passwords don\'t match')
       }
       if (!this.usernameReg.includes('@')) {
-        this.error = 'Make sure username is a valid email address'
-        return
+        return this.$store.commit('error', 'Make sure username is a valid email address')
       }
 
       const { usernameReg: username, displayName, passwordReg: password } = this
       this.$store.dispatch('register', { username, displayName, password }).then(() => {
         this.$router.push('/')
       }).catch(err => {
-        if (err.response && err.response.status === 422) {
+        if (err.response && err.response.status === 422 && err.response.data.errors) {
           for (let i = 0; i < err.response.data.errors.length; i++) {
             if (err.response.data.errors[i].param === 'username') {
               return this.$store.commit('error', 'Make sure the email is valid.')
