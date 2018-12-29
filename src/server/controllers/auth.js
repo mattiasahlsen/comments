@@ -7,6 +7,16 @@ const Account = require('../models/account')
 const router = express.Router()
 const { check, validationResult } = require('express-validator/check')
 
+// Dev env
+if (process.env.NODE_ENV === 'development') {
+  router.get('/user', (req, res, next) => {
+    if (req.isAuthenticated()) return next()
+    req.body.username = 'test@gmail.com'
+    req.body.password = 'test'
+    passport.authenticate('local')(req, res, next)
+  })
+}
+
 router.post('/register', [
   check('username').isEmail(),
 ], function(req, res) {

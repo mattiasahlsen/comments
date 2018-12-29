@@ -25,6 +25,8 @@ Vue.use(BootstrapVue)
 
 Vue.config.productionTip = false
 
+if (process.env.NODE_ENV === 'development') localStorage.setItem('loggedIn', 'true')
+
 if (localStorage.getItem('loggedIn') === 'true') {
   store.dispatch('getUser')
     .then(user => {
