@@ -2,10 +2,10 @@
   <div id="app">
     <Navbar/>
     <div class="content">
-    <b-alert :show="!!error" variant="danger"
-    @dismissed="$store.commit('clearError')" dismissible>
-      {{error}}
-    </b-alert>
+      <b-alert :show="!!error" variant="danger"
+      @dismissed="$store.commit('clearError')" dismissible>
+        {{error}}
+      </b-alert>
       <router-view/>
     </div>
     <Footer/>
