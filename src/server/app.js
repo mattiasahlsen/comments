@@ -21,7 +21,9 @@ app.use(loggerMiddleware('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', config.serverUrl)
+  if (req.get('origin').includes('localhost')) {
+    res.header('Access-Control-Allow-Origin', req.get('origin'))
+  } else res.header('Access-Control-Allow-Origin', config.serverUrl)
   res.header('Access-Control-Allow-Credentials', 'true')
   res.header('Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization')
@@ -43,6 +45,11 @@ app.use(passport.session())
 const Account = require('./models/account')
 const passportLocalMongoStrategy = Account.authenticate()
 passport.use(new LocalStrategy((username, password, done) => {
+  // prevent mongo injection
+  if (typeof username !== 'string' || typeof password !== 'string') {
+    return done(new Error('Username or password is not a string.'))
+  }
+
   // need to modify passportLocalMongoStrategy to remove password hash and salt
   // from user object
   passportLocalMongoStrategy(username, password, (err, user) => {

@@ -17,6 +17,10 @@ router.post('/register', [
     return res.status(422).json({ errors: errors.array() })
   }
 
+  if (typeof req.body.username !== 'string' || typeof req.body.password !== 'string') {
+    return res.status(422).end()
+  }
+
   Account.register(new Account({ username: req.body.username }), req.body.password, function(err, account) {
     if (err) {
       // we don't want to share these errors to the client,

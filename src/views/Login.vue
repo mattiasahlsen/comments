@@ -47,14 +47,19 @@ export default {
     register() {
       const { usernameReg: username, passwordReg: password, passwordConfirm } = this
       if (password !== passwordConfirm) {
-        return this.$store.commit('error', 'Passwords doesn\'t match')
+        return this.$store.commit('error', 'Passwords don\'t match')
       }
       this.$store.dispatch('register', { username, password }).then(() => {
         this.$router.push('/')
       }).catch(err => {
-        if (err.response && err.response.status === 422) {
-          this.$store.commit('error', 'Make sure the email is valid.')
-        } else this.$store.commit('axiosError', err)
+        if (err.response && err.response.status === 422 && err.response.data.errors) {
+          for (let i = 0; i < err.response.data.errors.length; i++) {
+            if (err.response.data.errors[i].param === 'username') {
+              return this.$store.commit('error', 'Make sure the email is valid.')
+            }
+          }
+        }
+        this.$store.commit('axiosError', err)
       })
     }
   }
