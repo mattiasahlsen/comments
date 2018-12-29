@@ -10,4 +10,6 @@ const Website = new Schema({
   timestamps: true,
 })
 
+Website.index({ createdAt: -1 })
+
 module.exports = mongoose.model('Website', Website)

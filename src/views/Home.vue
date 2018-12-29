@@ -13,8 +13,9 @@
         <button type="submit" class="btn btn-secondary" @click.prevent="comment = ''">Cancel</button>
       </form>
 
-      <CommentField class="col-12" :comments="comments"></CommentField>
+      <CommentField class="col-12" :comments="comments"/>
     </div>
+    <WebsiteList v-else :websites="websites" @redirect="redirect"/>
   </div>
 </template>
 
@@ -24,6 +25,7 @@ import urlencode from 'urlencode'
 
 import Search from '@/components/Search'
 import CommentField from '@/components/CommentField'
+import WebsiteList from '@/components/WebsiteList'
 import axios from 'axios'
 
 const URL = process.env.VUE_APP_API_URL
@@ -35,12 +37,15 @@ export default {
       comments: null,
       comment: '',
       error: null,
+      cache: {},
+      websites: []
     }
   },
   props: ['url'],
   components: {
     Search,
     CommentField,
+    WebsiteList
   },
   methods: {
     redirect(url) {
@@ -60,7 +65,7 @@ export default {
           console.log(this.comments)
         }).catch(err => {
           // TODO: handle error
-          console.log(err)
+          this.$store.commit('axiosError', err)
           this.$router.push({ name: 'home', params: {} })
         })
       } else throw new Error('Cannot get comments for undefined url.')
@@ -91,23 +96,36 @@ export default {
     next(vm => {
       console.log('Guard next called.')
       if (to.params.url) {
-        vm.getComments(to.params.url)
-      } else {
-        // TODO: "Cache", i.e. save in a variable instead of just throwing away
-        vm.comments = null
-      }
+        if (this.cache[to.params.url]) this.comments = this.cache[to.params.url]
+        else this.getComments(to.params.url)
+      } else vm.comments = null
     })
   },
   beforeRouteUpdate(to, from, next) {
     console.log('Before route update.')
     if (to.params.url) {
       console.log('Getting comments for url')
-      this.getComments(to.params.url)
+      if (this.cache[to.params.url]) this.comments = this.cache[to.params.url]
+      else this.getComments(to.params.url)
     } else {
       // TODO: "Cache", i.e. save in a variable instead of just throwing away
+      if (from.params.url) this.cache[from.params.url] = this.comments
       this.comments = null
     }
     next()
+  },
+  beforeRouteLeave(to, from, next) {
+    console.log('Before route leave.')
+    if (from.params.url) this.cache[from.params.url] = this.comments
+  },
+  created() {
+    axios.get(URL + '/websites').then(resp => {
+      this.websites = resp.data.websites
+      console.log('Websites: ')
+      console.log(this.websites)
+    }).catch(err => {
+      this.$store.commit('axiosError', err)
+    })
   }
 }
 </script>
