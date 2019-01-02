@@ -47,9 +47,19 @@ const initDb = async () => {
     url: 'https://www.youtube.com/watch?v=m0psosrTuas',
     domainWide: false
   })
+  const websites = []
+  for (let i = 0; i < 45; i++) {
+    websites.push(new Website({ url: 'http://test' + i + '.com', domainWide: true }))
+    await websites[websites.length - 1].save()
+  }
   await website.save()
 
   // Afer that, create all root comments
+
+  let longText = 'Random line of text\n'
+  for (let i = 0; i < 5; i++) {
+    longText = longText.concat(longText)
+  }
 
   const rootComments = [
     {
@@ -61,8 +71,20 @@ const initDb = async () => {
       userId: accounts[2]._id,
       websiteId: website._id,
       text: 'Cool video.'
+    },
+    {
+      userId: accounts[2]._id,
+      websiteId: website._id,
+      text: longText
     }
   ]
+  for (let i = 0; i < 45; i++) {
+    rootComments.push({
+      userId: accounts[0]._id,
+      websiteId: website._id,
+      text: 'Random text ' + i
+    })
+  }
 
   const replyComments = [
     {
@@ -72,6 +94,20 @@ const initDb = async () => {
       text: 'Yeah, I like it.',
     }
   ]
+  replyComments.push({
+    userId: accounts[1]._id,
+    websiteId: website._id,
+    parentIndex: 2,
+    text: longText
+  })
+  for (let i = 0; i < 20; i++) {
+    replyComments.push({
+      userId: accounts[1]._id,
+      websiteId: website._id,
+      parentIndex: 2,
+      text: 'Test reply ' + i,
+    })
+  }
 
   await new Promise((resolve, reject) => {
     let count = 0

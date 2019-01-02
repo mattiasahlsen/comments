@@ -13,7 +13,7 @@
         <button type="submit" class="btn btn-secondary" @click.prevent="comment = ''">Cancel</button>
       </form>
 
-      <CommentField class="col-12" :comments="comments"/>
+      <CommentField class="col-12" :comments="comments" @loadChildren="loadChildren"/>
     </div>
     <WebsiteList v-else :websites="websites" @redirect="redirect"/>
   </div>
@@ -28,7 +28,17 @@ import CommentField from '@/components/CommentField'
 import WebsiteList from '@/components/WebsiteList'
 import axios from 'axios'
 
+import conf from '../config'
+
 const URL = process.env.VUE_APP_API_URL
+
+const loadComments = (vm, url) => {
+  if (url) {
+    console.log('Getting comments for url')
+    if (vm.cache[url]) vm.comments = vm.cache[url]
+    else vm.getComments(url)
+  } else vm.comments = null
+}
 
 export default {
   name: 'home',
@@ -38,7 +48,9 @@ export default {
       comment: '',
       error: null,
       cache: {},
-      websites: []
+      websites: [],
+      offset: 0,
+      gotAll: false
     }
   },
   props: ['url'],
@@ -48,21 +60,55 @@ export default {
     WebsiteList
   },
   methods: {
+    modify(comment) {
+      comment.showFull = false
+      if ((comment.text.match(/\n/g) || []).length >= 10) {
+        let count = 0
+        let i = 0
+        while (count < 10) {
+          if (comment.text.charAt(i) === '\n') count++
+          i++
+        }
+        comment.someText = comment.text.slice(0, i)
+      } else if (comment.text.length > 100) {
+        comment.someText = comment.text.slice(0, 100)
+      }
+
+      comment.text = comment.text.replace(/\n/g, '<br>')
+      if (comment.someText) comment.someText = comment.someText.replace(/\n/g, '<br>')
+    },
     redirect(url) {
       // must call getComments manually, beforeRouteEnter and
       // beforeRouteUpdate bugging
       if (url) {
         console.log('Redirecting to: ' + url)
-        this.$router.push({ name: 'home', params: { url, } })
+        if (url === this.$route.params.url) loadComments(this, url)
+        else this.$router.push({ name: 'home', params: { url, } })
       }
     },
-    getComments(url) {
+    loadChildren(comment) {
+      if (!comment.gotAllChildren) {
+        this.getComments(this.$route.params.url, comment.children.length || 0, comment)
+      }
+    },
+    getComments(url, offset = 0, parent) {
       if (url) {
         url = urlencode(url)
-        axios.get(URL + '/comments/' + url).then(resp => {
-          this.comments = resp.data.comments
-          console.log('Comments: ')
-          console.log(this.comments)
+        axios.get(URL + '/comments/' + url + '/' +
+          (parent ? parent._id + '/' : '') + offset).then(resp => {
+          resp.data.comments.forEach(comment => {
+            this.modify(comment)
+            if (!parent) comment.children.forEach(child => this.modify(child))
+          })
+          if (parent) {
+            parent.children = parent.children.concat(resp.data.comments)
+            if (resp.data.comments.length < conf.childrenLimit) parent.gotAllChildren = true
+            return
+          }
+
+          if (!this.comments) this.comments = resp.data.comments
+          else this.comments = this.comments.concat(resp.data.comments)
+          if (resp.data.comments.length < conf.commentsLimit) this.gotAll = true
         }).catch(err => {
           // TODO: handle error
           this.$store.commit('axiosError', err)
@@ -93,25 +139,12 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     console.log('Before route enter.')
-    next(vm => {
-      console.log('Guard next called.')
-      if (to.params.url) {
-        if (vm.cache[to.params.url]) vm.comments = vm.cache[to.params.url]
-        else vm.getComments(to.params.url)
-      } else vm.comments = null
-    })
+    next(vm => loadComments(vm, to.params.url))
   },
   beforeRouteUpdate(to, from, next) {
     console.log('Before route update.')
-    if (to.params.url) {
-      console.log('Getting comments for url')
-      if (this.cache[to.params.url]) this.comments = this.cache[to.params.url]
-      else this.getComments(to.params.url)
-    } else {
-      // TODO: "Cache", i.e. save in a variable instead of just throwing away
-      if (from.params.url) this.cache[from.params.url] = this.comments
-      this.comments = null
-    }
+    if (from.params.url) this.cache[from.params.url] = this.comments
+    loadComments(this, to.params.url)
     next()
   },
   beforeRouteLeave(to, from, next) {
@@ -121,11 +154,20 @@ export default {
   created() {
     axios.get(URL + '/websites').then(resp => {
       this.websites = resp.data.websites
-      console.log('Websites: ')
-      console.log(this.websites)
     }).catch(err => {
       this.$store.commit('axiosError', err)
     })
+
+    window.onscroll = ev => {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight &&
+        window.scrollY > 0) {
+        // you're at the bottom of the page
+        if (!this.gotAll && this.$route.params.url) {
+          this.getComments(this.$route.params.url,
+            this.comments ? this.comments.length : 0)
+        }
+      }
+    }
   }
 }
 </script>

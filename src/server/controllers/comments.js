@@ -1,4 +1,5 @@
 import logger, { debug, logErr } from '../debug'
+import conf from '../../config'
 
 import Vote from '../models/vote'
 
@@ -13,14 +14,13 @@ const express = require('express')
 const router = express.Router()
 
 // All these routes must belong to a url (Website)
-router.use('/comments/:url*', (req, res, next) => {
+router.use('/comments/:url/*', (req, res, next) => {
   Website.findOne({ url: req.params.url }, (err, website) => {
     if (err || !website) {
       if (err) {
         logErr(err)
         return res.status(500).end()
       }
-      // TODO: create new website or redirect to domain-wide?
       return res.status(404).end()
     }
 
@@ -28,7 +28,7 @@ router.use('/comments/:url*', (req, res, next) => {
     next()
   })
 })
-router.use('/comment/:id*', (req, res, next) => {
+router.use('/comment/:id/*', (req, res, next) => {
   Comment.findById(req.params.id, (err, comment) => {
     if (err || !comment) {
       if (err) {
@@ -43,13 +43,27 @@ router.use('/comment/:id*', (req, res, next) => {
   })
 })
 
-router.get('/comments/:url', (req, res) => {
+router.get(['/comments/:url/:offset?', '/comments/:url/:parentId/:offset'], (req, res) => {
   const website = req.website
-  Comment.find({ websiteId: website._id }, (err, comments) => {
-    if (err || comments.length === 0) {
-      if (err) logErr(err)
-      else logErr(new Error('Website without comments.'))
+  const offset = parseInt(req.params.offset) || 0
+
+  Comment.find({
+    websiteId: website._id,
+    parentId: req.params.parentId,
+  }, null, {
+    limit: req.params.parentId ? conf.childrenLimit : conf.commentsLimit,
+    skip: offset,
+    sort: {
+      createdAt: -1
+    }
+  }, (err, comments) => {
+    if (err) {
+      logErr(err)
       return res.status(500).end()
+    }
+    if (comments.length === 0) {
+      if (offset === 0) logErr(new Error('Website without comments.'))
+      return res.json({ comments: [] })
     }
 
     let count = 0
@@ -117,7 +131,7 @@ router.post('/comment/:id/undovote', (req, res) => {
 })
 
 router.get('/websites', (req, res) => {
-  Website.find({}, null, { limit: 10, sort: { createdAt: -1 } }, (err, docs) => {
+  Website.find({}, null, { limit: 20, sort: { createdAt: -1 } }, (err, docs) => {
     for (let i = 0; i < docs.length; i++) {
       docs[i] = docs[i].toObject()
       docs[i].creationDate = docs[i].createdAt.toDateString()

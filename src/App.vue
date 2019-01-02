@@ -38,4 +38,8 @@ export default {
 .content {
   flex: 1 0 auto;
 }
+
+.clickable:hover {
+  cursor: pointer;
+}
 </style>
