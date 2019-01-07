@@ -41,10 +41,11 @@ const loadComments = (vm, url) => {
 }
 const sortHot = (c1, c2) => {
   const hotScore = (comment) => {
-    const order = Math.log10(Math.max(Math.abs(comment.score), 1))
+    const order = Math.log10(Math.max(Math.abs(comment.score + 1), 1))
     const sign = comment.score > 0 ? 1 : -1
     // 10 hours newer = x10 score
-    return sign * order + comment.createdAt.getTime() / 36000000
+    const score = sign * order + comment.createdAt.getTime() / 36000000
+    return score
   }
   return hotScore(c2) - hotScore(c1)
 }
@@ -96,6 +97,7 @@ export default {
   methods: {
     modify(comment) {
       comment.showFull = false
+      comment.showChildren = false
       comment.score = comment.likes - comment.dislikes
       // TODO: More sophisticated timezone handling and time displaying
       comment.createdAt = new Date(comment.createdAt)
@@ -134,8 +136,9 @@ export default {
       if (url) {
         url = urlencode(url)
         return axios.get(URL + '/comments/' + url + '/' +
-          (parent ? parent._id + '/' : '') + offset).then(resp => {
+          (parent ? parent._id : 'hot') + '/' + offset).then(resp => {
           if (resp.data.comments.length < conf.commentsLimit) this.gotAll = true
+          if (resp.data.comments.length > 0) console.log(resp.data.comments[0])
 
           resp.data.comments.forEach(comment => {
             this.modify(comment)
@@ -148,7 +151,7 @@ export default {
 
           if (parent) {
             parent.children = parent.children.concat(resp.data.comments)
-              .filter((el, pos, self) => self.indexOf(el) === pos)
+              .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos)
             if (resp.data.comments.length < conf.childrenLimit) parent.gotAllChildren = true
             return
           }
@@ -156,7 +159,7 @@ export default {
           if (!this.comments) this.comments = resp.data.comments
           else this.comments = this.comments.concat(resp.data.comments)
           this.comments = this.comments
-            .filter((el, pos, self) => self.indexOf(el) === pos)
+            .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos)
 
           return resp.data.comments
         }).catch(err => {

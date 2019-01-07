@@ -22,16 +22,16 @@
       <span class="mr-3">{{comment.dislikes}}</span>
 
       <div v-if="comment.children.length > 0" class="ml-3 mt-3">
-        <p v-if="!showChildren" @click="showChildren = true" class="clickable">
+        <p v-if="!comment.showChildren" @click="comment.showChildren = true" class="clickable">
           <strong>Show replies</strong>
         </p>
-        <div v-if="showChildren">
+        <div v-if="comment.showChildren">
           <CommentField :comments="comment.children"/>
           <p v-if="comment.children.length > 0 &&
             comment.children.length % 10 === 0" @click="$emit('loadChildren', comment)"
             class="clickable load-more">Load more...</p>
         </div>
-        <p v-if="showChildren" @click="showChildren = false" class="clickable">
+        <p v-if="comment.showChildren" @click="comment.showChildren = false" class="clickable">
           <strong>Hide replies</strong>
         </p>
       </div>

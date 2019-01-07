@@ -43,43 +43,71 @@ router.use('/comment/:id/*', (req, res, next) => {
   })
 })
 
-router.get(['/comments/:url/:offset?', '/comments/:url/:parentId/:offset'], (req, res) => {
+router.get(['/comments/:url/:sort/:offset?'], (req, res) => {
   const website = req.website
   const offset = parseInt(req.params.offset) || 0
+  const sortMethods = ['hot', 'score', 'new']
+  let parentId
+  let sort
+  if (sortMethods.includes(req.params.sort)) sort = req.params.sort
+  else parentId = req.params.sort
 
-  Comment.find({
-    websiteId: website._id,
-    parentId: req.params.parentId,
-  }, null, {
-    limit: req.params.parentId ? conf.childrenLimit : conf.commentsLimit,
-    skip: offset,
-    sort: {
-      score: -1,
-    }
-  }, (err, comments) => {
-    if (err) {
-      logErr(err)
-      return res.status(500).end()
-    }
-    if (comments.length === 0) {
-      if (offset === 0) logErr(new Error('Website without comments.'))
-      return res.json({ comments: [] })
-    }
+  const fetch = (sortByScore, hot = false) => {
+    return new Promise((resolve, reject) => {
+      const sort = sortByScore ? { score: -1 } : { createdAt: -1 }
+      const limit = parentId ? conf.childrenLimit : conf.commentsLimit
+      Comment.find({
+        websiteId: website._id,
+        parentId
+      }, null, {
+        limit: hot ? Math.floor(limit / 2) : limit,
+        skip: hot ? Math.floor(offset / 2) : offset,
+        sort
+      }, (err, comments) => {
+        if (err) return reject(err)
 
-    let count = 0
-    for (let i = 0; i < comments.length; i++) {
-      comments[i].toObj(req.user && req.user._id).then(comment => {
-        comments[i] = comment
-
-        if (++count === comments.length) {
-          return res.json({ comments })
+        if (comments.length === 0) {
+          if (offset === 0) logErr(new Error('Website without comments.'))
+          return resolve(comments)
         }
-      }).catch(err => {
-        logErr(err)
-        return res.status(500).end()
+
+        let count = 0
+        for (let i = 0; i < comments.length; i++) {
+          comments[i].toObj(req.user && req.user._id).then(comment => {
+            comments[i] = comment
+
+            if (++count === comments.length) {
+              return resolve(comments)
+            }
+          }).catch(err => reject(err))
+        }
       })
+    })
+  }
+
+  try {
+    if (sort === 'score') {
+      fetch(true).then(comments => res.json({ comments }))
+    } else if (sort === 'new') {
+      fetch(false).then(comments => res.json({ comments }))
+    } else if (sort === 'hot' || parentId) {
+      let allComments = []
+      let gotFirst = false
+
+      const callback = comments => {
+        allComments = allComments.concat(comments)
+        if (gotFirst) return res.json({ comments: allComments })
+        else gotFirst = true
+      }
+      fetch(true).then(callback, true)
+      fetch(false).then(callback, true)
+    } else {
+      throw new Error('Unknown error, no sort method or parent id.')
     }
-  })
+  } catch (err) {
+    logErr(err)
+    res.status(500).end()
+  }
 })
 
 router.post('/comments/:url/submit', (req, res) => {
