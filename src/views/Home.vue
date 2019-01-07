@@ -39,6 +39,40 @@ const loadComments = (vm, url) => {
     else vm.getComments(url)
   } else vm.comments = null
 }
+const sortHot = (c1, c2) => {
+  const hotScore = (comment) => {
+    const order = Math.log10(Math.max(Math.abs(comment.score), 1))
+    const sign = comment.score > 0 ? 1 : -1
+    // 10 hours newer = x10 score
+    return sign * order + comment.createdAt.getTime() / 36000000
+  }
+  return hotScore(c2) - hotScore(c1)
+}
+const dateString = (date) => {
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
+  const days = [
+    'Sunday', 'Monday', 'Tuesday', 'Wednesday',
+    'Thursday', 'Friday', 'Saturday'
+  ]
+  const now = new Date()
+
+  if (date.getFullYear() === now.getFullYear()) {
+    if (date.getMonth() === now.getMonth()) {
+      if (date.getDate() === now.getDate()) {
+        return date.toTimeString().split(' ')[0]
+      }
+      if (now.getDate() - date.getDate() < 7) {
+        return days[date.getDay()]
+      }
+      return days[date.getDay()] + ' ' + date.getDate()
+    } else return months[date.getMonth()] + ' ' + date.getDate()
+  } else {
+    return months[date.getMonth()] + ' ' + date.getDate() + ' ' + date.getFullYear()
+  }
+}
 
 export default {
   name: 'home',
@@ -62,6 +96,11 @@ export default {
   methods: {
     modify(comment) {
       comment.showFull = false
+      comment.score = comment.likes - comment.dislikes
+      // TODO: More sophisticated timezone handling and time displaying
+      comment.createdAt = new Date(comment.createdAt)
+      comment.createdText = dateString(comment.createdAt)
+
       if ((comment.text.match(/\n/g) || []).length >= 10) {
         let count = 0
         let i = 0
@@ -94,25 +133,40 @@ export default {
     getComments(url, offset = 0, parent) {
       if (url) {
         url = urlencode(url)
-        axios.get(URL + '/comments/' + url + '/' +
+        return axios.get(URL + '/comments/' + url + '/' +
           (parent ? parent._id + '/' : '') + offset).then(resp => {
+          if (resp.data.comments.length < conf.commentsLimit) this.gotAll = true
+
           resp.data.comments.forEach(comment => {
             this.modify(comment)
-            if (!parent) comment.children.forEach(child => this.modify(child))
+            if (!parent) {
+              comment.children.forEach(child => this.modify(child))
+              comment.children.sort(sortHot)
+            }
           })
+          resp.data.comments.sort(sortHot)
+
           if (parent) {
             parent.children = parent.children.concat(resp.data.comments)
+              .filter((el, pos, self) => self.indexOf(el) === pos)
             if (resp.data.comments.length < conf.childrenLimit) parent.gotAllChildren = true
             return
           }
 
           if (!this.comments) this.comments = resp.data.comments
           else this.comments = this.comments.concat(resp.data.comments)
-          if (resp.data.comments.length < conf.commentsLimit) this.gotAll = true
+          this.comments = this.comments
+            .filter((el, pos, self) => self.indexOf(el) === pos)
+
+          return resp.data.comments
         }).catch(err => {
           // TODO: handle error
-          this.$store.commit('axiosError', err)
+          if (err.response && err.response.status === 404) {
+            this.$store.commit('error', 'There are no comments for this url.')
+          } else this.$store.commit('axiosError', err)
+          this.comments = null
           this.$router.push({ name: 'home', params: {} })
+          return err
         })
       } else throw new Error('Cannot get comments for undefined url.')
     },
@@ -150,6 +204,7 @@ export default {
   beforeRouteLeave(to, from, next) {
     console.log('Before route leave.')
     if (from.params.url) this.cache[from.params.url] = this.comments
+    this.gotAll = false
   },
   created() {
     axios.get(URL + '/websites').then(resp => {

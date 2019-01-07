@@ -11,7 +11,7 @@ const status = (state, code) => {
       state.error = 'Authentication failed'
       return
     case 404:
-      state.error = 'Invalid comment section url'
+      state.error = 'Couldn\'t find resource.'
       return
     case 422:
       state.error = 'Invalid fields.'

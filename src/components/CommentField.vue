@@ -1,7 +1,7 @@
 <template>
   <div class="comment-field">
     <div v-for="(comment, index) in comments" :key="index" class="comment mb-3">
-      <h6>{{comment.displayName}}</h6>
+      <h5>{{comment.displayName}} <span class="date">{{comment.createdText}}</span></h5>
       <div v-if="comment.someText">
         <div v-if="!comment.showFull">
           <p v-html="comment.someText"></p>
@@ -105,9 +105,14 @@ export default {
 
 <style scoped lang="scss">
 .comment {
-  h6 {
-    font-size: 0.8rem;
+  h5 {
+    font-size: 0.9rem;
     font-weight: 600;
+    color: $secondary-2;
+  }
+  .date {
+    font-weight: 400;
+    font-size: 0.8rem;
   }
   p {
     font-size: 0.8rem;
@@ -125,7 +130,7 @@ export default {
   color: #0099e6;
 }
 .load-more {
-  color: $secondary-2;
+  color: $secondary;
   font-weight: 500;
 }
 </style>

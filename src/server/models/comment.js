@@ -17,12 +17,14 @@ const Comment = new Schema({
   text: { type: String, required: true },
   parentId: { type: ObjectId }, // id field of parent comment
   replyTo: { type: ObjectId }, // id field of comment replied to
+  score: { type: Number, default: 0 },
   visible: { type: Boolean, default: true },
 }, {
   timestamps: true,
 })
 
 Comment.index({ websiteId: 1, parentId: 1 })
+Comment.index({ websiteId: 1, score: -1 })
 Comment.index({ websiteId: 1, createdAt: -1 })
 
 Comment.on('error', err => logErr(err)) // backup
@@ -62,7 +64,11 @@ Comment.method('getChildren', function(obj, userId, offset = 0) {
   return new Promise((resolve, reject) => {
     this.constructor.find({ parentId: this._id }, null, {
       limit: 10,
-      skip: offset
+      skip: offset,
+      sort: {
+        score: -1,
+        createdAt: -1
+      }
     }, (err, comments) => {
       if (err) reject(err)
 

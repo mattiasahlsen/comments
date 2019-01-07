@@ -54,7 +54,7 @@ router.get(['/comments/:url/:offset?', '/comments/:url/:parentId/:offset'], (req
     limit: req.params.parentId ? conf.childrenLimit : conf.commentsLimit,
     skip: offset,
     sort: {
-      createdAt: -1
+      score: -1,
     }
   }, (err, comments) => {
     if (err) {
@@ -105,10 +105,20 @@ router.post('/comment/:id/like', (req, res) => {
   Vote.like(req.user._id, req.params.id, (err, vote) => {
     if (err) res.status(500).end()
     else {
+      let scoreChange
       if (vote) {
-        if (vote.like) res.json({ scoreChange: 0 })
-        else res.json({ scoreChange: 2 })
-      } else res.json({ scoreChange: 1 })
+        // if this user already had voted on this comment
+        if (vote.like) scoreChange = 0
+        else scoreChange = 2
+      } else scoreChange = 1
+      Comment.findOneAndUpdate({ _id: req.params.id },
+        { $inc: { score: scoreChange } }, (err, comment) => {
+          if (err) {
+            logErr(err)
+            return res.status(500).end()
+          }
+          res.json({ scoreChange })
+        })
     }
   })
 })
