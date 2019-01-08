@@ -29,8 +29,10 @@ export default new Vuex.Store({
     error: null
   },
   mutations: {
-    error(state, msg) {
-      state.error = msg
+    error(state, err) {
+      if (err.message) state.error = err.message
+      else if (typeof err === 'string') state.error = err
+      else throw new Error('Invalid argument err to error mutation of store.')
     },
     axiosError(state, err) {
       if (err.response) status(state, err.response.status)
