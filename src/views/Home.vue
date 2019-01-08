@@ -14,7 +14,7 @@
       </div>
 
       <div class="row">
-        <select v-model="sort" @change="changeSort" class="btn m-2 sort">
+        <select v-model="sort" @change="changeSort" class="btn m-3 sort">
           <option selected="selected">Hot</option>
           <option>New</option>
           <option>Top</option>
@@ -131,6 +131,7 @@ export default {
 
       comment.text = comment.text.replace(/\n/g, '<br>')
       if (comment.someText) comment.someText = comment.someText.replace(/\n/g, '<br>')
+      return comment
     },
     redirect(url) {
       // must call getComments manually, beforeRouteEnter and
@@ -145,15 +146,6 @@ export default {
       if (!comment.gotAllChildren) {
         this.getComments(this.$route.params.url, comment.children.length, comment)
       }
-    },
-    handleComments(comments, parent) {
-      comments.forEach(comment => {
-        this.modify(comment)
-        if (!parent) {
-          comment.children.forEach(child => this.modify(child))
-          comment.children.sort(sortHot)
-        }
-      })
     },
     getComments(url = this.$route.params.url, offset = this.offset, parent,
       sort = this.sort.toLowerCase()) {
@@ -200,7 +192,7 @@ export default {
             this.$store.commit('error', 'There are no comments for this url.')
           } else this.$store.commit('axiosError', err)
           this.comments = null
-          this.$router.push({ name: 'home', params: {} })
+          this.$router.push('/')
           return err
         })
       } else throw new Error('Cannot get comments for undefined url.')
@@ -216,12 +208,9 @@ export default {
             parentId
           }
         }).then(resp => {
-          console.log(resp.data)
-          // add my displayname to new comment
-          if (resp.status === 200) this.comments.unshift(resp.data)
-          else this.$store.commit('status', resp.status)
+          this.comments.unshift(this.modify(resp.data))
         }).catch(err => {
-          this.$store.commit('error', err.message)
+          this.$store.commit('axiosError', err)
         })
       } else console.log('Can\'t submit comment, comment not defined.')
     },
@@ -230,7 +219,6 @@ export default {
       this.getComments().then(() => {
         if (this.sort === 'New') this.comments.sort(sortNew)
         if (this.sort === 'Top') this.comments.sort(sortTop)
-        console.log(this.comments)
       })
     }
   },
@@ -253,6 +241,7 @@ export default {
   created() {
     axios.get(URL + '/websites').then(resp => {
       this.websites = resp.data.websites
+      console.log(this.websites)
     }).catch(err => {
       this.$store.commit('axiosError', err)
     })

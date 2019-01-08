@@ -1,6 +1,6 @@
 <template>
   <div class="comment-field">
-    <div v-for="(comment, index) in comments" :key="index" class="comment mb-3">
+    <div v-for="comment in comments" :key="comment._id" class="comment mb-3">
       <h5>{{comment.displayName}} <span class="date">{{comment.createdText}}</span></h5>
       <div v-if="comment.someText">
         <div v-if="!comment.showFull">

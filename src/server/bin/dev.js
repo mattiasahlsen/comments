@@ -29,7 +29,7 @@ const initDb = async () => {
     { username: 'mattias.ahlsen@gmail.com', displayName: 'Mattias Ahlsén', password: 'mattias' },
     { username: 'gabriel.lindgren@gmail.com', displayName: 'Gabriel Lindgren', password: 'gabriel' }
   ]
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 20; i++) {
     accounts.push({
       username: 'test' + i + '@gmail.com',
       displayName: 'Test user ' + i,
@@ -129,14 +129,14 @@ const initDb = async () => {
     })
   })
 
-  for (let i = 0; i < 50; i++) {
-    rootComments.forEach((el, index) => {
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
       new Vote({
         userId: accounts[i]._id,
-        commentId: el._id,
+        commentId: rootComments[j]._id,
         like: Math.random() < 0.5
       }).save()
-    })
+    }
   }
 
   await new Promise((resolve, reject) => {

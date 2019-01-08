@@ -4,7 +4,7 @@ const passportLocalMongoose = require('passport-local-mongoose')
 
 // password hash and salt are added automatically
 const Account = new Schema({
-  username: { type: String, required: true, index: true, unique: true },
+  username: { type: String, required: true, index: true, unique: true, maxlength: 30 },
   displayName: { type: String, required: true },
   confirmed: { type: Boolean, default: false }, // Confirmed email address
   visible: { type: Boolean, default: true }

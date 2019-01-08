@@ -32,7 +32,10 @@ router.post('/register', [
     return res.status(422).json({ errors: errors.array() })
   }
 
-  if (typeof req.body.username !== 'string' || typeof req.body.password !== 'string') {
+  if (typeof req.body.username !== 'string' ||
+    typeof req.body.password !== 'string' ||
+    req.body.username.length > 30 ||
+    req.body.password.length > 30) {
     return res.status(422).end()
   }
 

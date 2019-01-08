@@ -14,7 +14,7 @@ const ObjectId = Schema.Types.ObjectId
 const Comment = new Schema({
   userId: { type: ObjectId, required: true }, // email
   websiteId: { type: ObjectId, required: true },
-  text: { type: String, required: true },
+  text: { type: String, required: true, maxlength: 1000 },
   parentId: { type: ObjectId }, // id field of parent comment
   replyTo: { type: ObjectId }, // id field of comment replied to
   score: { type: Number, default: 0 },
