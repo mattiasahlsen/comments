@@ -8,6 +8,7 @@ import { debug } from '../debug'
 import Account from '../models/account'
 import Website from '../models/website'
 import Comment from '../models/comment'
+import Vote from '../models/vote'
 
 const mongoose = require('mongoose')
 // mongoose.set('debug', true)
@@ -28,6 +29,13 @@ const initDb = async () => {
     { username: 'mattias.ahlsen@gmail.com', displayName: 'Mattias Ahlsén', password: 'mattias' },
     { username: 'gabriel.lindgren@gmail.com', displayName: 'Gabriel Lindgren', password: 'gabriel' }
   ]
+  for (let i = 0; i < 50; i++) {
+    accounts.push({
+      username: 'test' + i + '@gmail.com',
+      displayName: 'Test user ' + i,
+      password: 'test'
+    })
+  }
 
   // Create accounts
   await new Promise((resolve, reject) => {
@@ -82,7 +90,8 @@ const initDb = async () => {
     rootComments.push({
       userId: accounts[0]._id,
       websiteId: website._id,
-      text: 'Random text ' + i
+      text: 'Random text ' + i,
+      createdAt: Date.now() - Math.floor(Math.random() * 3600 * 20 * 1000),
     })
   }
 
@@ -119,6 +128,16 @@ const initDb = async () => {
       })
     })
   })
+
+  for (let i = 0; i < 50; i++) {
+    rootComments.forEach((el, index) => {
+      new Vote({
+        userId: accounts[i]._id,
+        commentId: el._id,
+        like: Math.random() < 0.5
+      }).save()
+    })
+  }
 
   await new Promise((resolve, reject) => {
     let count = 0

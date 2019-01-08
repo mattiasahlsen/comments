@@ -94,6 +94,7 @@ export default {
               }
             }
           }
+          comment.score = comment.likes - comment.dislikes
         } else this.$store.commit('status', resp.status)
       }).catch(err => {
         this.$store.commit('error', err.message)

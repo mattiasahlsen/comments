@@ -66,7 +66,6 @@ Comment.method('getChildren', function(obj, userId, offset = 0) {
       limit: 10,
       skip: offset,
       sort: {
-        score: -1,
         createdAt: -1
       }
     }, (err, comments) => {

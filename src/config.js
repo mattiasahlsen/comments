@@ -2,7 +2,8 @@ import merge from 'webpack-merge'
 
 const baseConf = {
   commentsLimit: 20,
-  childrenLimit: 10
+  childrenLimit: 10,
+  hotLimit: 15
 }
 
 export const devConf = merge(baseConf, {
