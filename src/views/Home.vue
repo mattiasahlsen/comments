@@ -220,7 +220,7 @@ export default {
     loadChildren(comment) {
       if (!comment.gotAllChildren) {
         this.getComments(this.$route.params.url, comment.children.length, comment)
-          .then(comments => this.handleComemnts(comments))
+          .then(comments => this.handleComments(comments, comment))
           .catch(this.loadCommentsError)
       }
     },

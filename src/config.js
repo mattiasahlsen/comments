@@ -9,7 +9,6 @@ const baseConf = {
   API_PORT: parseInt(process.env.VUE_APP_API_PORT),
   API_URL: `${process.env.VUE_APP_API_PROTOCOL}://${process.env.VUE_APP_API_HOST}:${process.env.VUE_APP_API_PORT}/api`
 }
-console.log(baseConf.API_URL)
 
 export const devConf = merge(baseConf, {
 })

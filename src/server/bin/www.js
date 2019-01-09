@@ -16,26 +16,16 @@ server.on('listening', onListening)
  */
 
 function onError(error) {
+  debugErr(error)
   if (error.syscall !== 'listen') {
     throw error
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + config.port
-    : 'Port ' + config.port
-
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case 'EACCES':
-      debugErr(bind + ' requires elevated privileges')
-      process.exit(1)
-    case 'EADDRINUSE':
-      debugErr(bind + ' is already in use')
-      config.port++
-      server.listen(config.port)
-      break
-    default:
-      throw error
+    case 'EACCES': throw new Error(config.port + ' requires elevated privileges')
+    case 'EADDRINUSE': throw new Error(config.port + ' is already in use')
+    default: throw error
   }
 }
 

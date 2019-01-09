@@ -1,6 +1,6 @@
 <template>
   <b-navbar toggleable="md" type="dark" variant="dark">
-    <b-navbar-brand href="#">
+    <b-navbar-brand>
       <router-link to="/" class="logo">Logo</router-link>
     </b-navbar-brand>
 

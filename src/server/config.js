@@ -22,7 +22,7 @@ const baseConf = {
   secret: process.env.SECRET,
   host: process.env.VUE_APP_API_HOST,
   port: normalizePort(process.env.VUE_APP_API_PORT || '3000'),
-  serverUrl: `${process.env.SERVER_PROTOCOL}://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}`,
+  serverUrl: `${process.env.SERVER_PROTOCOL}://${process.env.SERVER_HOST}`,
 
   sessionMaxAge: 1000 * 3600 * 24, // 24 hours for now
 
@@ -45,20 +45,12 @@ const conf = process.env.NODE_ENV === 'production' ? prodConf : devConf
 export default conf
 
 /**
- * Normalize a port into a number, string, or false.
+ * Normalize a port into a number.
  */
 function normalizePort(val) {
   var port = parseInt(val, 10)
-
-  if (isNaN(port)) {
-    // named pipe
-    return val
+  if (isNaN(port) || port < 0) {
+    throw new Error('Invalid port.')
   }
-
-  if (port >= 0) {
-    // port number
-    return port
-  }
-
-  return false
+  return port
 }
