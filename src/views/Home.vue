@@ -77,7 +77,7 @@ import axios from 'axios'
 
 import conf from '../config'
 
-const URL = process.env.VUE_APP_API_URL
+const URL = conf.API_URL
 
 const isValid = url => validUrl.isWebUri(url) || validUrl.isWebUri('http://' + url)
 const clean = url => {

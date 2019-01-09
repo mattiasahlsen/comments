@@ -13,6 +13,12 @@ module.exports = {
         path.resolve(__dirname, './src/styles/imports.scss'),
       ]
     }
+  },
+
+  devServer: {
+    host: process.env.SERVER_HOST,
+    port: process.env.SERVER_PORT,
+    https: process.env.SERVER_PROTOCOL === 'https'
   }
 }
 

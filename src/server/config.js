@@ -22,7 +22,7 @@ const baseConf = {
   secret: process.env.SECRET,
   host: process.env.VUE_APP_API_HOST,
   port: normalizePort(process.env.VUE_APP_API_PORT || '3000'),
-  serverUrl: process.env.SERVER_URL,
+  serverUrl: `${process.env.SERVER_PROTOCOL}://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}`,
 
   sessionMaxAge: 1000 * 3600 * 24, // 24 hours for now
 

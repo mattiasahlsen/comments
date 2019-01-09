@@ -41,11 +41,12 @@
 
 <script>
 import axios from 'axios'
+import conf from '../config'
 
 import likeImg from '../assets/like.png'
 import dislikeImg from '../assets/dislike.png'
 
-const URL = process.env.VUE_APP_API_URL
+const URL = conf.API_URL
 
 export default {
   name: 'CommentField',

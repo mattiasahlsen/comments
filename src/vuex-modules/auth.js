@@ -1,7 +1,8 @@
 import axios from 'axios'
+import conf from '../config'
 
 axios.defaults.withCredentials = true
-const URL = process.env.VUE_APP_API_URL
+const URL = conf.API_URL
 
 export default {
   state: {
