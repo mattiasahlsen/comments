@@ -52,12 +52,11 @@ const initDb = async () => {
   // After all accounts are made, create websites
 
   const website = new Website({
-    url: 'https://www.youtube.com/watch?v=m0psosrTuas',
-    domainWide: false
+    url: 'http://www.youtube.com',
   })
   const websites = []
   for (let i = 0; i < 45; i++) {
-    websites.push(new Website({ url: 'http://test' + i + '.com', domainWide: true }))
+    websites.push(new Website({ url: 'http://test' + i + '.com' }))
     await websites[websites.length - 1].save()
   }
   await website.save()

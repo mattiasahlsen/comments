@@ -3,9 +3,42 @@
     <div class="row justify-content-center">
       <Search class="mt-5 col-sm-6 col-11" @submit="redirect"/>
     </div>
-    <div class="m-5" v-if="comments">
+
+    <div v-if="addUrl && parsedUrl">
+      <div class="grey alert alert-dismissible mt-3" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+          @click.prevent="addUrl = false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <p>There is currently no comment field for this URL.</p>
+
+        <p v-if="cache[parsedUrl.origin]">
+          There is a comment field
+          <i>{{parsedUrl.origin}}</i>, do you want to
+          <strong class="clickable" @click="redirect(parsedUrl.origin)">go there?</strong>
+        </p>
+
+        <p>
+          Do you want to
+          <strong class="clickable" @click="newCommentField(parsedUrl.href)">
+            create a new comment field
+          </strong> for <i>{{parsedUrl.href}}</i>?
+        </p>
+
+        <p v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
+          Or
+          <strong class="clickable" @click="newCommentField(parsedUrl.origin)">
+            create a domain-wide
+          </strong> for <i>{{parsedUrl.origin}}</i>?
+        </p>
+        <p v-else>All URLs are normalized to http.<p/>
+      </div>
+    </div>
+
+    <div v-if="comments">
       <div class="row">
-        <form id="comment-form" class="col-12 col-md-9 col-lg-6 mb-5">
+        <form id="comment-form" class="col-12 col-md-9 col-lg-6 my-3">
           <input class="form-control mb-2" placeholder="Write a comment..."
           v-model="comment"/>
           <button type="submit" class="btn btn-primary mr-1" @click.prevent="submit(comment)">Submit</button>
@@ -14,7 +47,7 @@
       </div>
 
       <div class="row">
-        <select v-model="sort" @change="changeSort" class="btn m-3 sort">
+        <select v-model="sort" @change="changeSort" class="btn m-3 grey">
           <option selected="selected">Hot</option>
           <option>New</option>
           <option>Top</option>
@@ -25,13 +58,17 @@
         <CommentField class="col-12" :comments="comments" @loadChildren="loadChildren"/>
       </div>
     </div>
-    <WebsiteList v-else :websites="websites" @redirect="redirect"/>
+    <div v-else class="my-5">
+      <WebsiteList :websites="websites" @redirect="redirect"/>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import urlencode from 'urlencode'
+import parseUrl from 'url-parse'
+import validUrl from 'valid-url'
 
 import Search from '@/components/Search'
 import CommentField from '@/components/CommentField'
@@ -42,14 +79,35 @@ import conf from '../config'
 
 const URL = process.env.VUE_APP_API_URL
 
+const isValid = url => validUrl.isWebUri(url) || validUrl.isWebUri('http://' + url)
+const clean = url => {
+  url = url.replace(/\/$/, '').replace('https', 'http')
+  if (!url.includes('http')) url = 'http://' + url
+  return url
+}
+
 const loadComments = (vm, url) => {
-  if (url) {
-    console.log('Getting comments for url')
-    if (vm.cache[url]) vm.comments = vm.cache[url]
-    else vm.getComments(url)
-  } else vm.comments = null
+  return new Promise((resolve, reject) => {
+    if (url) {
+      console.log('Getting comments for url')
+      if (vm.cache[url]) {
+        vm.comments = vm.cache[url]
+        resolve(vm.comments)
+      } else {
+        vm.getComments(url).then(comments => {
+          resolve(comments)
+        }).catch(err => {
+          reject(err)
+        })
+      }
+    } else {
+      vm.comments = null
+      resolve()
+    }
+  })
 }
 const sortHot = (c1, c2) => {
+  // https://medium.com/hacking-and-gonzo/how-reddit-ranking-algorithms-work-ef111e33d0d9
   const hotScore = (comment) => {
     const order = Math.log10(Math.max(Math.abs(comment.score + 1), 1))
     const sign = comment.score > 0 ? 1 : -1
@@ -100,16 +158,27 @@ export default {
       cache: {},
       websites: [],
       offset: 0,
-      gotAll: false
+      gotAll: false,
+      addUrl: false,
+      parsedUrl: null,
+      domainComments: null
     }
   },
-  props: ['url'],
   components: {
     Search,
     CommentField,
     WebsiteList
   },
   methods: {
+    newCommentField(url) {
+      axios.post(`${URL}/website/${urlencode(clean(url))}`).then(resp => {
+        resp.data.createdAt = new Date(resp.data.createdAt)
+        resp.data.createdText = dateString(resp.data.createdAt)
+        this.websites.unshift(resp.data)
+        this.goHome()
+        this.addUrl = false
+      }).catch(err => this.$store.commit('axiosError', err))
+    },
     modify(comment) {
       comment.showFull = false
       comment.showChildren = false
@@ -134,18 +203,66 @@ export default {
       return comment
     },
     redirect(url) {
+      if (!url) return
+
       // must call getComments manually, beforeRouteEnter and
       // beforeRouteUpdate bugging
-      if (url) {
+      if (!isValid(url)) {
+        return this.$store.commit('error', 'Badly formated url.')
+      }
+      url = clean(url)
+
+      if (url && url !== this.$route.params.url) {
         console.log('Redirecting to: ' + url)
-        if (url === this.$route.params.url) loadComments(this, url)
-        else this.$router.push({ name: 'home', params: { url, } })
+        this.$router.push({ name: 'home', params: { url, } })
       }
     },
     loadChildren(comment) {
       if (!comment.gotAllChildren) {
         this.getComments(this.$route.params.url, comment.children.length, comment)
+          .then(comments => this.handleComemnts(comments))
+          .catch(this.loadCommentsError)
       }
+    },
+    handleComments(comments, parent) {
+      if (!comments) return
+      if (comments.length === 0) {
+        this.comments = []
+        return
+      }
+      if (comments.length < conf.commentsLimit) this.gotAll = true
+
+      comments.forEach(comment => {
+        this.modify(comment)
+        if (!parent) {
+          comment.children.forEach(child => this.modify(child))
+        }
+      })
+
+      if (parent) {
+        parent.children = parent.children.concat(comments)
+          .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos)
+        if (comments.length < conf.childrenLimit) parent.gotAllChildren = true
+        return comments
+      }
+
+      if (!this.comments) this.comments = comments
+      else this.comments = this.comments.concat(comments)
+      this.comments = this.comments
+        .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos)
+      if (this.sort === 'Hot') this.comments.sort(sortHot)
+
+      this.offset = comments.length
+      return comments
+    },
+    goHome() {
+      if (this.$route.params.url) this.$set(this.cache, this.$route.params.url, this.comments)
+      this.comments = null
+      this.$router.push('/')
+    },
+    loadCommentsError(err) {
+      this.$store.commit('axiosError', err)
+      this.goHome()
     },
     getComments(url = this.$route.params.url, offset = this.offset, parent,
       sort = this.sort.toLowerCase()) {
@@ -153,9 +270,7 @@ export default {
         return Promise.all([
           this.getComments(url, offset, parent, 'new'),
           this.getComments(url, offset, parent, 'top')
-        ]).then(() => {
-          if (this.comments) this.comments.sort(sortHot)
-        })
+        ]).then(comments => comments[0].concat(comments[1]))
       }
       if (url) {
         url = urlencode(url)
@@ -163,37 +278,7 @@ export default {
           (parent ? parent._id : sort) + '/' + offset).then(resp => {
           if (resp.data.comments.length > 0) console.log(resp.data.comments[0])
 
-          if (resp.data.comments.length < conf.commentsLimit) this.gotAll = true
-
-          resp.data.comments.forEach(comment => {
-            this.modify(comment)
-            if (!parent) {
-              comment.children.forEach(child => this.modify(child))
-            }
-          })
-
-          if (parent) {
-            parent.children = parent.children.concat(resp.data.comments)
-              .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos)
-            if (resp.data.comments.length < conf.childrenLimit) parent.gotAllChildren = true
-            return resp.data.comments
-          }
-
-          if (!this.comments) this.comments = resp.data.comments
-          else this.comments = this.comments.concat(resp.data.comments)
-          this.comments = this.comments
-            .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos)
-
-          this.offset = resp.data.comments.length
           return resp.data.comments
-        }).catch(err => {
-          // TODO: handle error
-          if (err.response && err.response.status === 404) {
-            this.$store.commit('error', 'There are no comments for this url.')
-          } else this.$store.commit('axiosError', err)
-          this.comments = null
-          this.$router.push('/')
-          return err
         })
       } else throw new Error('Cannot get comments for undefined url.')
     },
@@ -216,32 +301,61 @@ export default {
     },
     changeSort() {
       this.offset = 0
-      this.getComments().then(() => {
+      this.getComments().then(comments => {
+        this.handleComments(comments)
         if (this.sort === 'New') this.comments.sort(sortNew)
-        if (this.sort === 'Top') this.comments.sort(sortTop)
-      })
-    }
+        else if (this.sort === 'Top') this.comments.sort(sortTop)
+      }).catch(this.loadCommentsError)
+    },
+    clean
   },
   beforeRouteEnter(to, from, next) {
     console.log('Before route enter.')
-    next(vm => loadComments(vm, to.params.url))
+    next(vm => loadComments(vm, to.params.url)
+      .then(comments => vm.handleComments(comments))
+      .catch(vm.loadCommentsError))
   },
   beforeRouteUpdate(to, from, next) {
     console.log('Before route update.')
-    if (from.params.url) this.cache[from.params.url] = this.comments
+    this.addUrl = false
+
+    if (from.params.url) this.$set(this.cache, from.params.url, this.comments)
     loadComments(this, to.params.url)
-    next()
+      .then(comments => {
+        this.handleComments(comments)
+        next()
+      })
+      .catch(err => {
+        if (err.response && err.response.status === 404) {
+          if (to.params.url) {
+            this.parsedUrl = parseUrl(to.params.url)
+            console.log(this.parsedUrl)
+            loadComments(this, this.parsedUrl.origin).then(comments => {
+              this.parsedUrl = this.parsedUrl
+              this.$set(this.cache, this.parsedUrl.origin, comments)
+            }).catch(err => this.loadCommentsError)
+
+            this.addUrl = true
+          }
+        } else this.$store.commit('axiosError', err)
+
+        next(false)
+      })
   },
   beforeRouteLeave(to, from, next) {
     console.log('Before route leave.')
-    if (from.params.url) this.cache[from.params.url] = this.comments
+    if (from.params.url) this.$set(this.cache, from.params.url, this.comments)
     this.gotAll = false
+    this.addUrl = false
     next()
   },
   created() {
     axios.get(URL + '/websites').then(resp => {
       this.websites = resp.data.websites
-      console.log(this.websites)
+      this.websites.forEach(el => {
+        el.createdAt = new Date(el.createdAt)
+        el.createdText = dateString(el.createdAt)
+      })
     }).catch(err => {
       this.$store.commit('axiosError', err)
     })
@@ -251,7 +365,8 @@ export default {
         window.scrollY > 0) {
         // you're at the bottom of the page
         if (!this.gotAll && this.$route.params.url) {
-          this.getComments()
+          this.getComments().then(comments => this.handleComments(comments))
+            .catch(this.loadCommentsError)
         }
       }
     }
@@ -260,7 +375,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.sort {
+.grey {
   background-color: rgb(238, 238, 238);
 }
 </style>

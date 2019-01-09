@@ -29,7 +29,7 @@ if (process.env.NODE_ENV !== 'production') {
   }))
 }
 
-logger.log = logger.log.bind(logger)
+logger.log = logger.log.bind(logger, 'info')
 export default logger
 
 const logErr = (err) => {

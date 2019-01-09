@@ -1,10 +1,10 @@
 import logger, { debug, logErr } from '../debug'
 import conf from '../../config'
-
 import Vote from '../models/vote'
 
-const log = logger.log // logging function
+const validUrl = require('valid-url')
 
+const log = logger.log // logging function
 const Website = require('../models/website')
 const Comment = require('../models/comment')
 const Account = require('../models/account')
@@ -69,7 +69,7 @@ router.get(['/comments/:url/:sort/:offset?'], (req, res) => {
       return res.status(500).end()
     }
     if (comments.length === 0) {
-      if (offset === 0) logErr(new Error('Website without comments.'))
+      if (offset === 0) log('Website without comments.')
       return res.json({ comments: [] })
     }
 
@@ -100,7 +100,8 @@ router.post('/comments/:url/submit', (req, res) => {
     text: req.body.comment.text,
   })
   comment.save().then(comment =>
-    comment.toObj(req.user && req.user._id).then(commentObj => res.json(commentObj))).catch(err => {
+    comment.toObj(req.user && req.user._id).then(commentObj => res.json(commentObj))
+  ).catch(err => {
     logErr(err)
     res.status(500).end()
   })
@@ -149,13 +150,17 @@ router.post('/comment/:id/undovote', (req, res) => {
 
 router.get('/websites', (req, res) => {
   Website.find({}, null, { limit: 20, sort: { createdAt: -1 } }, (err, docs) => {
-    for (let i = 0; i < docs.length; i++) {
-      docs[i] = docs[i].toObject()
-      docs[i].creationDate = docs[i].createdAt.toDateString()
-    }
     if (err) return res.status(500).end()
     return res.json({ websites: docs })
   })
+})
+
+router.post('/website/:url', (req, res) => {
+  if (!validUrl.isWebUri(req.params.url)) return res.status(422).end()
+
+  new Website({ url: req.params.url }).save().then(website => {
+    return res.json(website)
+  }).catch(err => res.status(500).end())
 })
 
 module.exports = router
