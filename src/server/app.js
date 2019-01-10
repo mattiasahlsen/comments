@@ -2,6 +2,7 @@ import config from './config'
 import log, { logErr, debug, debugErr } from './debug'
 
 const fs = require('fs')
+const request = require('request')
 const express = require('express')
 const path = require('path')
 const morgan = require('morgan')
@@ -14,6 +15,8 @@ const MongoStore = require('connect-mongo')(session)
 
 const authController = require('./controllers/auth')
 const commentsController = require('./controllers/comments')
+
+const DIST = path.join(__dirname, '../../dist')
 
 const app = express()
 
@@ -91,7 +94,7 @@ passport.deserializeUser((id, done) => {
 })
 
 // routes
-app.use(express.static(path.join(__dirname, '../../dist')))
+app.use(express.static(DIST))
 app.use('/api', authController)
 app.use('/api', commentsController)
 
@@ -100,8 +103,13 @@ app.get('/api/ping', function(req, res) {
 })
 
 // treat 404 as index.html
-app.use(function(req, res, next) {
-  res.redirect('/')
+app.use((req, res, next) => {
+  res.sendFile(DIST + '/index.html', err => {
+    if (err) {
+      logErr(err)
+      res.status(500).end()
+    }
+  })
 })
 
 // error handlers
