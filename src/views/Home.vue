@@ -39,8 +39,8 @@
     <div v-if="comments">
       <div class="row">
         <form id="comment-form" class="col-12 col-md-9 col-lg-6 my-3">
-          <input class="form-control mb-2" placeholder="Write a comment..."
-          v-model="comment"/>
+          <textarea class="form-control mb-2" placeholder="Write a comment..."
+            v-model="comment"></textarea>
           <button type="submit" class="btn btn-primary mr-1" @click.prevent="submit(comment)">Submit</button>
           <button type="submit" class="btn btn-secondary mt-1" @click.prevent="comment = ''">Cancel</button>
         </form>
