@@ -16,21 +16,21 @@
         <p v-if="cache[parsedUrl.origin]">
           There is a comment field
           <i>{{parsedUrl.origin}}</i>, do you want to
-          <strong class="clickable" @click="redirect(parsedUrl.origin)">go there?</strong>
+          <button class="btn btn-dark" @click="redirect(parsedUrl.origin)">go there?</button>
         </p>
 
         <p>
           Do you want to
-          <strong class="clickable" @click="newCommentField(parsedUrl.href)">
-            create a new comment field
-          </strong> for <i>{{parsedUrl.href}}</i>?
+          <button class="btn btn-dark" @click="newCommentField(parsedUrl.href)">
+            create a new one
+          </button> for <i>{{parsedUrl.href}}</i>?
         </p>
 
         <p v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
           Or
-          <strong class="clickable" @click="newCommentField(parsedUrl.origin)">
+          <button class="btn btn-dark" @click="newCommentField(parsedUrl.origin)">
             create a domain-wide
-          </strong> for <i>{{parsedUrl.origin}}</i>?
+          </button> for <i>{{parsedUrl.origin}}</i>?
         </p>
         <p v-else>All URLs are normalized to http.<p/>
       </div>
@@ -58,7 +58,13 @@
         <CommentField class="col-12" :comments="comments" @loadChildren="loadChildren"/>
       </div>
     </div>
+
     <div v-else class="my-5">
+      <div class="mb-3">
+        <h2>Comment fields for any URL.</h2>
+        <p>Just type in a URL above to go to a comment field or create a new one</p>
+      </div>
+
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
   </div>
@@ -175,7 +181,8 @@ export default {
         resp.data.createdAt = new Date(resp.data.createdAt)
         resp.data.createdText = dateString(resp.data.createdAt)
         this.websites.unshift(resp.data)
-        this.goHome()
+
+        this.redirect(url)
         this.addUrl = false
       }).catch(err => {
         if (err.response && err.response.status === 401) {

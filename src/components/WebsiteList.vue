@@ -4,7 +4,7 @@
     class="list-group-item py-1"
     @click="redirect(website.url)">
       <h6 class="m-0">{{website.createdText}}</h6>
-      <a :href="website.url" @click.stop class="m-0">{{website.url}}</a>
+      <p @click.stop class="m-0"><i>{{website.url}}</i></p>
     </li>
   </ul>
 </template>
@@ -24,6 +24,7 @@ export default {
 .list-group-item {
   &:hover {
     cursor: pointer;
+    background-color: rgb(245, 245, 245);
   }
 }
 </style>

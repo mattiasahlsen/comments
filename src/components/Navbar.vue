@@ -1,7 +1,7 @@
 <template>
   <b-navbar toggleable="md" type="dark" variant="dark">
     <b-navbar-brand>
-      <router-link to="/" class="logo">Logo</router-link>
+      <router-link to="/" class="logo">Comments</router-link>
     </b-navbar-brand>
 
     <!-- Right aligned nav items -->
