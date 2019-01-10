@@ -17,7 +17,7 @@ import('bootstrap/dist/css/bootstrap.css')
 import('bootstrap-vue/dist/bootstrap-vue.css')
 /* eslint-enable */
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && !process.env.VUE_APP_DEBUG) {
   console.log = () => {}
 }
 

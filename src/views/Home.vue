@@ -216,6 +216,8 @@ export default {
     redirect(url) {
       if (!url) return
 
+      console.log('Redirect called with url parameter ' + url)
+
       // must call getComments manually, beforeRouteEnter and
       // beforeRouteUpdate bugging
       if (!isValid(url)) {

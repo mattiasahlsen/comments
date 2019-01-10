@@ -23,7 +23,7 @@ const app = express()
 // uncomment after placing your favicon in /public
 // app.use(favicon(__dirname + '/public/favicon.ico'))
 
-if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
+if (process.env.NODE_ENV === 'development' || process.env.DEBUG) app.use(morgan('dev'))
 else {
   // create a write stream (in append mode)
   var accessLogStream = fs.createWriteStream(

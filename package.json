@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "server": "VUE_CLI_BABEL_TARGET_NODE=true NODE_ENV=production npx babel-node src/server/bin/www",
-    "server-debug": "VUE_CLI_BABEL_TARGET_NODE=true NODE_ENV=production DEBUG=app:log,app:error npx babel-node src/server/bin/www",
+    "server-debug": "VUE_CLI_BABEL_TARGET_NODE=true NODE_ENV=production DEBUG=app:log,app:error VUE_APP_DEBUG=true npx babel-node src/server/bin/www",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
