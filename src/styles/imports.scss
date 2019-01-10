@@ -1,15 +1,15 @@
 $blue:    #007bff !default;
 
 $primary: #008ae6;
-$primary-2: #33adff;
+$primary-2: #0099ff;
 $secondary: #666666;
 $secondary-2: #333333;
 $link-color: $blue;
 $grey-background: rgb(230, 230, 230);
 
 .primary-2 {
-  background-color: $primary-2;
-  color: white;
+  background-color: $primary-2 !important;
+  color: white !important;
 }
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
