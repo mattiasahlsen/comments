@@ -270,7 +270,6 @@ export default {
         .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos)
       if (this.sort === 'Hot') this.comments.sort(sortHot)
 
-      this.offset = comments.length
       return comments
     },
     goHome() {
@@ -282,8 +281,14 @@ export default {
       this.$store.commit('axiosError', err)
       this.goHome()
     },
-    getComments(url = this.$route.params.url, offset = this.offset, parent,
+    getComments(url = this.$route.params.url, offset, parent,
       sort = this.sort.toLowerCase()) {
+      if (offset === undefined) {
+        if (parent) offset = parent.children.length
+        else if (this.comments) offset = this.comments.length
+        else offset = 0
+      }
+
       this.loading = true
       if (sort === 'hot') {
         return this.getComments(url, offset, parent, 'new').then(newComments => {
@@ -323,7 +328,6 @@ export default {
       } else console.log('Can\'t submit comment, comment not defined.')
     },
     changeSort() {
-      this.offset = 0
       this.getComments().then(comments => {
         this.handleComments(comments)
         if (this.sort === 'New') this.comments.sort(sortNew)
