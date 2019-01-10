@@ -63,41 +63,55 @@ export default {
       comment.showFull = true
     },
     vote(comment, like) {
+      const likes = comment.likes
+      const dislikes = comment.dislikes
+      const hasLiked = comment.hasLiked
+      const reset = comment => {
+        comment.likes = likes
+        comment.dislikes = dislikes
+        comment.hasLiked = hasLiked
+        comment.score = likes - dislikes
+      }
       let endpoint
+
       if ((like && comment.hasLiked) || (!like && comment.hasDisliked)) endpoint = 'undovote'
       else if (like) endpoint = 'like'
       else endpoint = 'dislike'
 
-      axios.post(URL + '/comment/' + comment._id + '/' + endpoint).then(resp => {
-        if (resp.status === 200) {
-          if (like) {
-            if (comment.hasLiked) {
-              comment.likes--
-              comment.hasLiked = false
-            } else {
-              comment.likes++
-              comment.hasLiked = true
-              if (comment.hasDisliked) {
-                comment.dislikes--
-                comment.hasDisliked = false
-              }
-            }
-          } else {
-            if (comment.hasDisliked) {
-              comment.dislikes--
-              comment.hasDisliked = false
-            } else {
-              comment.dislikes++
-              comment.hasDisliked = true
-              if (comment.hasLiked) {
-                comment.likes--
-                comment.hasLiked = false
-              }
-            }
+      if (like) {
+        if (comment.hasLiked) {
+          comment.likes--
+          comment.hasLiked = false
+        } else {
+          comment.likes++
+          comment.hasLiked = true
+          if (comment.hasDisliked) {
+            comment.dislikes--
+            comment.hasDisliked = false
           }
-          comment.score = comment.likes - comment.dislikes
-        } else this.$store.commit('status', resp.status)
+        }
+      } else {
+        if (comment.hasDisliked) {
+          comment.dislikes--
+          comment.hasDisliked = false
+        } else {
+          comment.dislikes++
+          comment.hasDisliked = true
+          if (comment.hasLiked) {
+            comment.likes--
+            comment.hasLiked = false
+          }
+        }
+      }
+      comment.score = comment.likes - comment.dislikes
+
+      axios.post(URL + '/comment/' + comment._id + '/' + endpoint).then(resp => {
+        if (resp.status !== 200) {
+          reset(comment)
+          this.$store.commit('status', resp.status)
+        }
       }).catch(err => {
+        reset(comment)
         this.$store.commit('error', err.message)
       })
     }
