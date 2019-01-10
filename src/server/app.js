@@ -1,15 +1,16 @@
 import config from './config'
-import logger, { logErr, debug, debugErr } from './debug'
+import log, { logErr, debug, debugErr } from './debug'
 
-const log = logger.log
+const fs = require('fs')
 const express = require('express')
 const path = require('path')
-const favicon = require('serve-favicon')
-const loggerMiddleware = require('morgan')
+const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
 
 const authController = require('./controllers/auth')
 const commentsController = require('./controllers/comments')
@@ -18,25 +19,42 @@ const app = express()
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(__dirname + '/public/favicon.ico'))
-app.use(loggerMiddleware('dev'))
+
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
+else {
+  // create a write stream (in append mode)
+  var accessLogStream = fs.createWriteStream(
+    path.join(__dirname, '../../logs/combined.log'), { flags: 'a' }
+  )
+  // setup the logger
+  app.use(morgan('combined', { stream: accessLogStream }))
+}
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(function(req, res, next) {
-  if (req.get('origin').includes('localhost')) {
+  const origin = req.get('origin')
+  if (origin && origin.includes('localhost')) {
     res.header('Access-Control-Allow-Origin', req.get('origin'))
-  } else res.header('Access-Control-Allow-Origin', config.serverUrl)
+  } else {
+    res.header('Access-Control-Allow-Origin', config.serverUrl)
+  }
   res.header('Access-Control-Allow-Credentials', 'true')
   res.header('Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization')
   next()
 })
-app.use(require('express-session')({
+
+// mongoose
+mongoose.connect(config.db.uri, config.dbOptions)
+app.use(session({
   secret: config.secret,
   resave: false,
   saveUninitialized: false,
   cookie: {
     maxAge: config.sessionMaxAge, // expiration time
-  }
+  },
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
 }))
 debug('Max session age: ' + config.sessionMaxAge + 'ms')
 app.use(passport.initialize())
@@ -72,11 +90,8 @@ passport.deserializeUser((id, done) => {
   })
 })
 
-// mongoose
-mongoose.connect(config.db.uri, config.dbOptions)
-
 // routes
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, '../../dist')))
 app.use('/api', authController)
 app.use('/api', commentsController)
 
@@ -84,11 +99,9 @@ app.get('/api/ping', function(req, res) {
   res.status(200).send('pong!')
 })
 
-// catch 404 and forward to error handler
+// treat 404 as index.html
 app.use(function(req, res, next) {
-  const err = new Error('Not Found')
-  err.status = 404
-  next(err)
+  res.redirect('/')
 })
 
 // error handlers

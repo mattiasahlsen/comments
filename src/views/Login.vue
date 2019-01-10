@@ -15,7 +15,7 @@
      <input required v-model="passwordReg" type="password" placeholder="Password"/>
      <input required v-model="passwordConfirm" type="password" placeholder="Confirm password"/>
      <hr/>
-     <button class="btn primary-2" type="submit">Register</button>
+     <button class="btn primary-2 my-3" type="submit">Register</button>
    </b-form>
  </div>
 </template>
@@ -58,11 +58,15 @@ export default {
       this.$store.dispatch('register', { username, displayName, password }).then(() => {
         this.$router.push('/')
       }).catch(err => {
-        if (err.response && err.response.status === 422 && err.response.data.errors) {
-          for (let i = 0; i < err.response.data.errors.length; i++) {
-            if (err.response.data.errors[i].param === 'username') {
-              return this.$store.commit('error', 'Make sure the email is valid.')
+        if (err.response) {
+          if (err.response.status === 422 && err.response.data.errors) {
+            for (let i = 0; i < err.response.data.errors.length; i++) {
+              if (err.response.data.errors[i].param === 'username') {
+                return this.$store.commit('error', 'Make sure the email is valid.')
+              }
             }
+          } else if (err.response.status === 409) {
+            return this.$store.commit('error', 'There already exists an account for that email address.')
           }
         }
         this.$store.commit('axiosError', err)

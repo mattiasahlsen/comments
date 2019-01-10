@@ -39,6 +39,6 @@ export default {
   border-bottom: 1px solid transparent;
 }
 .logo:hover {
-  border-bottom: 1px solid #3498db;
+  border-bottom: 1px solid #f2f2f2;
 }
 </style>

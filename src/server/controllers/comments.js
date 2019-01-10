@@ -1,10 +1,9 @@
-import logger, { debug, logErr } from '../debug'
+import log, { debug, logErr } from '../debug'
 import conf from '../../config'
 import Vote from '../models/vote'
 
 const validUrl = require('valid-url')
 
-const log = logger.log // logging function
 const Website = require('../models/website')
 const Comment = require('../models/comment')
 const Account = require('../models/account')
@@ -156,6 +155,7 @@ router.get('/websites', (req, res) => {
 })
 
 router.post('/website/:url', (req, res) => {
+  if (!req.isAuthenticated()) return res.status(401).end()
   if (!validUrl.isWebUri(req.params.url)) return res.status(422).end()
 
   new Website({ url: req.params.url }).save().then(website => {

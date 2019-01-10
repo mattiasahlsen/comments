@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "server": "VUE_CLI_BABEL_TARGET_NODE=true NODE_ENV=production npx babel-node src/server/bin/www",
+    "server-debug": "VUE_CLI_BABEL_TARGET_NODE=true NODE_ENV=production DEBUG=app:log,app:error npx babel-node src/server/bin/www",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
@@ -20,6 +22,7 @@
     "body-parser": "^1.18.3",
     "bootstrap": "^4.1.3",
     "bootstrap-vue": "^2.0.0-rc.11",
+    "connect-mongo": "^2.0.3",
     "debug": "^4.1.0",
     "dotenv": "^6.1.0",
     "express": "^4.16.4",

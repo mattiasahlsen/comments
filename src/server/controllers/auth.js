@@ -1,5 +1,4 @@
-import logger, { debug, logErr } from '../debug'
-const log = logger.log // logging function
+import log, { debug, logErr } from '../debug'
 
 const express = require('express')
 const passport = require('passport')
@@ -47,7 +46,9 @@ router.post('/register', [
       // we don't want to share these errors to the client,
       // we just want to prevent them in the first place
       logErr(err)
-      return res.status(500).end()
+      debug(err.name)
+      if (err.name === 'UserExistsError') return res.status(409).end()
+      else return res.status(500).end()
     }
 
     passport.authenticate('local')(req, res, () => {

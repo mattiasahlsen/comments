@@ -12,10 +12,14 @@ window.$ = window.jquery = jquery
 
 /* eslint-disable */
 import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'bootstrap'
+import('bootstrap/dist/css/bootstrap.css')
+import('bootstrap-vue/dist/bootstrap-vue.css')
 /* eslint-enable */
+
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => {}
+}
 
 library.add(faThumbsUp)
 library.add(faThumbsDown)

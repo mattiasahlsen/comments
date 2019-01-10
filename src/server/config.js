@@ -18,6 +18,7 @@ if (process.env.NODE_ENV === 'development') {
 env.config({ path: path.join(__dirname, '../../.env.local') })
 env.config({ path: path.join(__dirname, '../../.env') })
 
+if (!process.env.SECRET) throw new Error('You need to defined env variable SECRET.')
 const baseConf = {
   secret: process.env.SECRET,
   host: process.env.VUE_APP_API_HOST,
@@ -38,7 +39,10 @@ export const devConf = merge(baseConf, {
 })
 
 export const prodConf = merge(baseConf, {
-
+  db: {
+    uri: `mongodb://${process.env.VUE_APP_API_HOST}:27017/comments`,
+    sessionCollection: 'sessions'
+  }
 })
 
 const conf = process.env.NODE_ENV === 'production' ? prodConf : devConf

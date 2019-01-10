@@ -19,7 +19,8 @@ module.exports = {
     host: process.env.SERVER_HOST,
     port: process.env.SERVER_PORT,
     https: process.env.SERVER_PROTOCOL === 'https'
-  }
+  },
+  productionSourceMap: false
 }
 
 function addStyleResource (rule) {

@@ -177,7 +177,11 @@ export default {
         this.websites.unshift(resp.data)
         this.goHome()
         this.addUrl = false
-      }).catch(err => this.$store.commit('axiosError', err))
+      }).catch(err => {
+        if (err.response && err.response.status === 401) {
+          this.$store.commit('error', 'You must be logged in to add new comment fields.')
+        } else this.$store.commit('axiosError', err)
+      })
     },
     modify(comment) {
       comment.showFull = false
@@ -267,10 +271,11 @@ export default {
     getComments(url = this.$route.params.url, offset = this.offset, parent,
       sort = this.sort.toLowerCase()) {
       if (sort === 'hot') {
-        return Promise.all([
-          this.getComments(url, offset, parent, 'new'),
-          this.getComments(url, offset, parent, 'top')
-        ]).then(comments => comments[0].concat(comments[1]))
+        return this.getComments(url, offset, parent, 'new').then(newComments => {
+          return this.getComments(url, offset, parent, 'top').then(topComments => {
+            return newComments.concat(topComments)
+          })
+        })
       }
       if (url) {
         url = urlencode(url)
@@ -293,9 +298,12 @@ export default {
             parentId
           }
         }).then(resp => {
+          this.comment = ''
           this.comments.unshift(this.modify(resp.data))
         }).catch(err => {
-          this.$store.commit('axiosError', err)
+          if (err.response && err.response.status === 401) {
+            return this.$store.commit('error', 'You must be logged in to comment.')
+          } else this.$store.commit('axiosError', err)
         })
       } else console.log('Can\'t submit comment, comment not defined.')
     },
@@ -329,11 +337,12 @@ export default {
         if (err.response && err.response.status === 404) {
           if (to.params.url) {
             this.parsedUrl = parseUrl(to.params.url)
-            console.log(this.parsedUrl)
-            loadComments(this, this.parsedUrl.origin).then(comments => {
-              this.parsedUrl = this.parsedUrl
-              this.$set(this.cache, this.parsedUrl.origin, comments)
-            }).catch(err => this.loadCommentsError)
+            if (to.params.url !== this.parsedUrl.origin) {
+              loadComments(this, this.parsedUrl.origin).then(comments => {
+                this.parsedUrl = this.parsedUrl
+                this.$set(this.cache, this.parsedUrl.origin, comments)
+              }).catch(err => this.loadCommentsError)
+            }
 
             this.addUrl = true
           }
