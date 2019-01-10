@@ -9,7 +9,7 @@
       <router-link v-if="!loggedIn" to="/login" class="btn btn-primary">Log in</router-link>
       <div v-else>
         <button class="btn btn-secondary mr-2" @click="$store.dispatch('logout')">Log out</button>
-        <button class="btn btn-light">{{user.displayName}}</button>
+        <button class="btn btn-light mt-1">{{user.displayName}}</button>
       </div>
     </b-navbar-nav>
   </b-navbar>

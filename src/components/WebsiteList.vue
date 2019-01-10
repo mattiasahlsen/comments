@@ -4,7 +4,7 @@
     class="list-group-item py-1"
     @click="redirect(website.url)">
       <h6 class="m-0">{{website.createdText}}</h6>
-      <p class="m-0"><i>{{website.url}}</i></p>
+      <p class="m-0 scroll"><i>{{website.url}}</i></p>
     </li>
   </ul>
 </template>

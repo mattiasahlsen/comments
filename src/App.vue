@@ -42,4 +42,7 @@ export default {
 .clickable:hover {
   cursor: pointer;
 }
+.scroll {
+  overflow: auto;
+}
 </style>

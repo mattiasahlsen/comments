@@ -42,7 +42,7 @@
           <input class="form-control mb-2" placeholder="Write a comment..."
           v-model="comment"/>
           <button type="submit" class="btn btn-primary mr-1" @click.prevent="submit(comment)">Submit</button>
-          <button type="submit" class="btn btn-secondary" @click.prevent="comment = ''">Cancel</button>
+          <button type="submit" class="btn btn-secondary mt-1" @click.prevent="comment = ''">Cancel</button>
         </form>
       </div>
 
@@ -59,7 +59,7 @@
       </div>
     </div>
 
-    <div v-else class="my-5">
+    <div v-else-if="!loading" class="my-5">
       <div class="mb-3">
         <h2>Comment fields for any URL.</h2>
         <p>Just type in a URL above to go to a comment field or create a new one</p>
@@ -67,6 +67,8 @@
 
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
+
+    <clip-loader class="my-3 loader" :loading="loading" color="#008ae6"></clip-loader>
   </div>
 </template>
 
@@ -75,6 +77,7 @@
 import urlencode from 'urlencode'
 import parseUrl from 'url-parse'
 import validUrl from 'valid-url'
+import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 
 import Search from '@/components/Search'
 import CommentField from '@/components/CommentField'
@@ -167,13 +170,15 @@ export default {
       gotAll: false,
       addUrl: false,
       parsedUrl: null,
-      domainComments: null
+      domainComments: null,
+      loading: false
     }
   },
   components: {
     Search,
     CommentField,
-    WebsiteList
+    WebsiteList,
+    ClipLoader
   },
   methods: {
     newCommentField(url) {
@@ -279,12 +284,13 @@ export default {
     },
     getComments(url = this.$route.params.url, offset = this.offset, parent,
       sort = this.sort.toLowerCase()) {
+      this.loading = true
       if (sort === 'hot') {
         return this.getComments(url, offset, parent, 'new').then(newComments => {
           return this.getComments(url, offset, parent, 'top').then(topComments => {
             return newComments.concat(topComments)
           })
-        })
+        }).finally(() => { this.loading = false })
       }
       if (url) {
         url = urlencode(url)
@@ -293,7 +299,7 @@ export default {
           if (resp.data.comments.length > 0) console.log(resp.data.comments[0])
 
           return resp.data.comments
-        })
+        }).finally(() => { this.loading = false })
       } else throw new Error('Cannot get comments for undefined url.')
     },
     submit(comment, parentId) {
