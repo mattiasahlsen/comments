@@ -38,9 +38,14 @@ export const devConf = merge(baseConf, {
   }
 })
 
+const userAndPass = (process.env.DB_USER && process.env.DB_PASS)
+  ? `${process.env.DB_USER}:${process.env.DB_PASS}@` : ''
+
+const uri = `mongodb://${userAndPass}${process.env.DB_HOST || '127.0.0.1'}:27017/comments`
+
 export const prodConf = merge(baseConf, {
   db: {
-    uri: `mongodb://${process.env.VUE_APP_API_HOST}:27017/comments`,
+    uri: `mongodb://${userAndPass}${process.env.DB_HOST || '127.0.0.1'}:27017/comments?authSource=admin`,
     sessionCollection: 'sessions'
   }
 })
