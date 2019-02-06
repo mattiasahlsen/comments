@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       features: [
-        { text: 'Bootstrap-vue: ', link: 'https://bootstrap-vue.js.org/' },
+        { text: 'Pure css: ', link: 'https://purecss.io/' },
         { text: 'Mongodb with mongoose: ', link: 'https://mongoosejs.com/' },
         { text: 'Local authentication with passport-local: ', link: 'http://www.passportjs.org/packages/passport-local/' },
         { text: 'Vue cli features like sass, vuex, eslint, webpack and jest-testing', link: 'https://cli.vuejs.org/guide/' },

@@ -3,17 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import jquery from 'jquery'
-window.$ = window.jquery = jquery
+import 'modern-normalize/modern-normalize.css'
+import 'purecss/build/pure.css'
 
-/* eslint-disable */
-import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import 'bootstrap'
-/* eslint-enable */
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-Vue.use(BootstrapVue)
+library.add(faTimes)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false
 

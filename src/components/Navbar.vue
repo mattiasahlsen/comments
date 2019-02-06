@@ -1,18 +1,17 @@
 <template>
-  <b-navbar toggleable="md" type="dark" variant="dark">
-    <b-navbar-brand href="#">
-      <router-link to="/" class="logo">Logo</router-link>
-    </b-navbar-brand>
+  <nav class="navbar">
+    <router-link to='/'>
+      <h2 class="logo">Logo</h2>
+    </router-link>
 
-    <!-- Right aligned nav items -->
-    <b-navbar-nav class="ml-auto">
-      <router-link v-if="!loggedIn" to="/login" class="btn btn-primary">Log in</router-link>
+    <div class="links">
+      <router-link class="pure-button" v-if="!loggedIn" to="/login">Log in</router-link>
       <div v-else>
-        <button class="btn btn-secondary mr-2" @click="$store.dispatch('logout')">Log out</button>
-        <button class="btn btn-light">{{user.username}}</button>
+        <button class="pure-button mr" @click="$store.dispatch('logout')">Log out</button>
+        <button class="pure-button">{{user.username}}</button>
       </div>
-    </b-navbar-nav>
-  </b-navbar>
+    </div>
+  </nav>
 </template>
 
 <script>
@@ -24,21 +23,36 @@ export default {
     user() {
       return this.$store.getters.user
     }
-  }
+  },
 }
 
 </script>
 
 <style scoped lang="scss">
+.navbar {
+  background-color: #4d4d4d;
+  display: flex;
+  justify-content: space-between;
+  align-items: 'center';
+  padding: 0 10px;
+}
+.links {
+  display: flex;
+  align-items: center;
+}
 .logo, .logo:hover {
   color: white;
   text-decoration: none;
   transition: border-bottom 0.2s;
 }
 .logo {
+  display: inline-block;
   border-bottom: 1px solid transparent;
 }
 .logo:hover {
   border-bottom: 1px solid #3498db;
+}
+.mr {
+  margin-right: 5px;
 }
 </style>

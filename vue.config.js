@@ -11,6 +11,7 @@ module.exports = {
       preProcessor: 'scss',
       patterns: [
         path.resolve(__dirname, './src/styles/imports.scss'),
+        path.resolve(__dirname, './src/styles/main.scss'),
       ]
     }
   }
@@ -22,6 +23,7 @@ function addStyleResource (rule) {
     .options({
       patterns: [
         path.resolve(__dirname, './src/styles/imports.scss'),
+        path.resolve(__dirname, './src/styles/main.scss'),
       ],
     })
 }

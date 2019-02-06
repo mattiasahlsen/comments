@@ -1,13 +1,13 @@
 <template>
-  <footer class="footer bg-dark container-fluid">
-    <div class="text-light text-center small">All rights reserved &copy; domain.com</div>
-    <div class="row mt-2">
-      <div class="col-6 text-light text-left">
-        <router-link to="/legal/terms-of-use" class="link">Terms of Use</router-link> -
-        <router-link to="/legal/privacy-policy" class="link">Privacy Policy</router-link> -
-        <router-link to="/legal/use-of-cookies" class="link">Use of cookies</router-link>
+  <footer class="footer">
+    <div class="rights">All rights reserved &copy; domain.com</div>
+    <div class="flex">
+      <div>
+        <router-link to="/legal/terms-of-use">Terms of Use</router-link> -
+        <router-link to="/legal/privacy-policy">Privacy Policy</router-link> -
+        <router-link to="/legal/use-of-cookies">Use of cookies</router-link>
       </div>
-      <div class="col-6 text-light text-right">
+      <div>
         <router-link to="/about" class="link">About</router-link> -
         <router-link to="/press" class="link">Press</router-link>
       </div>
@@ -20,21 +20,27 @@
   width: 100%;
   height:5%;
   padding:1%;
-  flex-shrink: 0; /*Prevents shrinking on some browsers*/
-  font-weight:300;
+  flex-shrink: 0; //Prevents shrinking on some browsers
+  text-align: center;
+  background-color: $dark-1;
+  color: $light-2;
 }
-.row{
-  margin:0;
+.flex {
+  display: flex;
+  justify-content: space-between;
 }
 a {
-  color: white;
+  color: $light-2;
+}
+.rights {
+  margin-top: 3px;
 }
 
-@media (max-width: 575px) {
-  .footer {
-    text-align: center;
+@media (max-width: $sm) {
+  .rights {
+    margin-bottom: 3px;
   }
-  .link {
+  .flex a {
     display: block;
   }
 }

@@ -1,25 +1,27 @@
 <template>
  <div class="login">
-   <b-form class="login-form" @submit.prevent="login">
+   <form class="pure-form" @submit.prevent="login">
      <h1 class="mt-2">Sign in</h1>
      <input required v-model="username" type="text" placeholder="Email"/>
      <input required v-model="password" type="password" placeholder="Password"/>
      <hr>
-     <button class="btn btn-primary" type="submit">Login</button>
-   </b-form>
+     <button class="pure-button" type="submit">Login</button>
+   </form>
    <h2 class="mt-5 mb-1">Don't have an account?</h2>
-   <b-form class="register-form" @submit.prevent="register">
+   <form class="pure-form" @submit.prevent="register">
      <h3>Sign up</h3>
      <input required v-model="usernameReg" type="text" placeholder="Email"/>
      <input required v-model="passwordReg" type="password" placeholder="Password"/>
      <input required v-model="passwordConfirm" type="password" placeholder="Confirm password"/>
      <hr/>
-     <button class="btn primary-2" type="submit">Register</button>
-   </b-form>
+     <button class="pure-button" type="submit">Register</button>
+   </form>
  </div>
 </template>
 
 <script>
+import store from '../store'
+
 export default {
   name: 'Login',
   data() {
@@ -62,6 +64,10 @@ export default {
         this.$store.commit('axiosError', err)
       })
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    if (store.getters.user) next(false)
+    else next()
   }
 }
 </script>
