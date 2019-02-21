@@ -9,7 +9,6 @@ const Comment = require('../models/comment')
 const Account = require('../models/account')
 
 const express = require('express')
-
 const router = express.Router()
 
 // All these routes must belong to a url (Website)
