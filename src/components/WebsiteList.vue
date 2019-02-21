@@ -1,10 +1,13 @@
 <template>
   <ul class="list-group mt-2">
     <li v-for="(website, index) in websites" :key="index"
-    class="list-group-item py-1"
+    class="list-group-item py-1 "
     @click="redirect(website.url)">
-      <h6 class="m-0">{{website.createdText}}</h6>
-      <p class="m-0 scroll"><i>{{website.url}}</i></p>
+
+			<div class="website-item">
+				<div class="website-item-date">{{website.createdText}}</div>
+				<div class="website-item-url">{{website.url}}</div>
+			</div>
     </li>
   </ul>
 </template>

@@ -1,15 +1,17 @@
 <template>
   <div id="app">
-    <Navbar/>
-    <div class="content">
-      <b-alert :show="!!error" variant="danger"
+		<div class="notification warning" v-if="error" :show="!!error"
       @dismissed="$store.commit('clearError')" dismissible>
         {{error}}
-      </b-alert>
-      <router-view/>
-    </div>
-    <Footer/>
-  </div>
+      </div>
+			<Navbar/>
+		<div class="wrapper">
+    	<div class="content">
+      	<router-view/>
+    	</div>
+    	<Footer/>
+  	</div>
+	</div>
 </template>
 
 <script>
@@ -28,21 +30,13 @@ export default {
   },
 }
 </script>
-
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css?family=Raleway:100,400,700');
 #app {
-  min-height: 100vh;
+	width: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
 }
-.content {
-  flex: 1 0 auto;
-}
 
-.clickable:hover {
-  cursor: pointer;
-}
-.scroll {
-  overflow: auto;
-}
 </style>

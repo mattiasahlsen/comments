@@ -10,8 +10,30 @@
   <body>
     <noscript>
       <strong>We're sorry but comments doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
+		</noscript>
+
     <div id="app"></div>
-    <!-- built files will be auto injected -->
+		<!-- built files will be auto injected -->
+		</div>
+
+
+		<!-- For clearing up a little - has margin bottom-->
+		<div class="clear"></div>
+
+		<!-- FOOTER START-->
+		<footer>
+			<div>
+			All rights reserved &copy; domain.com
+			</div>
+
+			<div>
+				<!-- TODO Can these be normal anchor tags, or should they be router-links? -->
+				<router-link to="/about" class="link">About</router-link> -
+				<router-link to="/legal/terms-of-use" class="link">Terms of Use</router-link> -
+				<router-link to="/legal/privacy-policy" class="link">Privacy Policy</router-link> -
+				<router-link to="/legal/use-of-cookies" class="link">Use of cookies</router-link>
+			</div>
+		</footer>
+
   </body>
 </html>

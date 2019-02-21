@@ -1,53 +1,57 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <Search class="mt-5 col-sm-6 col-11" @submit="redirect"/>
+      <Search @submit="redirect"/>
     </div>
 
     <div v-if="addUrl && parsedUrl">
-      <div class="grey alert alert-dismissible mt-3" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+
+      <div class="blockNote alert">
+        <button type="button" class="blockNoteClose" data-dismiss="alert" aria-label="Close"
           @click.prevent="addUrl = false">
-          <span aria-hidden="true">&times;</span>
+          &times;
         </button>
+				<div class="blockNoteInfo">
+					<h2>There is currently no comment thread for the entered URL</h2>
 
-        <p>There is currently no comment field for this URL.</p>
+					<div v-if="cache[parsedUrl.origin]">
+						There is a comment field
+						<i>{{parsedUrl.origin}}</i>, do you want to
+						<button class="inline" @click="redirect(parsedUrl.origin)">go there?</button>
+					</div>
 
-        <p v-if="cache[parsedUrl.origin]">
-          There is a comment field
-          <i>{{parsedUrl.origin}}</i>, do you want to
-          <button class="btn btn-dark" @click="redirect(parsedUrl.origin)">go there?</button>
-        </p>
+					<div>
+						Do you want to
+						<button class="inline" @click="newCommentField(parsedUrl.href)">
+							create a new comment thread
+						</button> for <i>{{parsedUrl.href}}</i>?
+					</div>
 
-        <p>
-          Do you want to
-          <button class="btn btn-dark" @click="newCommentField(parsedUrl.href)">
-            create a new one
-          </button> for <i>{{parsedUrl.href}}</i>?
-        </p>
+					<div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
+						Or
+						<button class="" @click="newCommentField(parsedUrl.origin)">
+							create a domain-wide
+						</button> for <i>{{parsedUrl.origin}}</i>?
+					</div>
+					<div class="small" v-else><i>All URLs are normalized to http</i></div>
+				</div>
+		  </div>
 
-        <p v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
-          Or
-          <button class="btn btn-dark" @click="newCommentField(parsedUrl.origin)">
-            create a domain-wide
-          </button> for <i>{{parsedUrl.origin}}</i>?
-        </p>
-        <p v-else>All URLs are normalized to http.<p/>
-      </div>
     </div>
 
     <div v-if="comments">
       <div class="row">
-        <form id="comment-form" class="col-12 col-md-9 col-lg-6 my-3">
-          <textarea class="form-control mb-2" placeholder="Write a comment..."
-            v-model="comment"></textarea>
-          <button type="submit" class="btn btn-primary mr-1" @click.prevent="submit(comment)">Submit</button>
-          <button type="submit" class="btn btn-secondary mt-1" @click.prevent="comment = ''">Cancel</button>
+        <form id="comment-form" class="comment-form">
+          <input class="form-control" placeholder="Write a comment..."
+            v-model="comment" type="text" />
+          <button type="submit" class="" @click.prevent="submit(comment)" :disabled="comment===''">Submit</button>
+          <!-- <button type="submit" class="" @click.prevent="comment = ''">Cancel</button> -->
         </form>
       </div>
 
-      <div class="row">
-        <select v-model="sort" @change="changeSort" class="btn m-3 grey">
+      <div class="sorter">
+				Sort comments by:
+        <select v-model="sort" @change="changeSort" class="">
           <option selected="selected">Hot</option>
           <option>New</option>
           <option>Top</option>
@@ -60,10 +64,11 @@
     </div>
 
     <div v-else-if="!loading" class="my-5">
-      <div class="mb-3">
+
+			<!-- <div class="mb-3">
         <h2>Comment fields for any URL.</h2>
         <p>Just type in a URL above to go to a comment field or create a new one</p>
-      </div>
+      </div> -->
 
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
@@ -179,7 +184,7 @@ export default {
     CommentField,
     WebsiteList,
     ClipLoader
-  },
+	},
   methods: {
     newCommentField(url) {
       axios.post(`${URL}/website/${urlencode(clean(url))}`).then(resp => {
@@ -376,7 +381,7 @@ export default {
     this.gotAll = false
     this.addUrl = false
     next()
-  },
+	},
   created() {
     axios.get(URL + '/websites').then(resp => {
       this.websites = resp.data.websites
@@ -402,8 +407,3 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.grey {
-  background-color: rgb(238, 238, 238);
-}
-</style>

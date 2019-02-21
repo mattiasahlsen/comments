@@ -1,22 +1,21 @@
 <template>
  <div class="login">
-   <b-form class="login-form" @submit.prevent="login">
-     <h1 class="mt-2">Sign in</h1>
+   <form class="login-form" @submit.prevent="login">
+     <h1>Sign in</h1>
      <input required v-model="username" type="text" placeholder="Email"/>
      <input required v-model="password" type="password" placeholder="Password"/>
-     <hr>
-     <button class="btn btn-primary" type="submit">Login</button>
-   </b-form>
-   <h2 class="mt-5 mb-1">Don't have an account?</h2>
-   <b-form class="register-form" @submit.prevent="register">
-     <h3>Sign up</h3>
-     <input required v-model="usernameReg" type="text" placeholder="Email"/>
-     <input required v-model="displayName" type="text" placeholder="Display name"/>
-     <input required v-model="passwordReg" type="password" placeholder="Password"/>
-     <input required v-model="passwordConfirm" type="password" placeholder="Confirm password"/>
-     <hr/>
-     <button class="btn primary-2 my-3" type="submit">Register</button>
-   </b-form>
+     <button type="submit">Login</button>
+   </form>
+	 <hr>
+   <form class="registration-form" @submit.prevent="register">
+			<h1>Sign up</h1>
+			<input required v-model="usernameReg" type="text" placeholder="Email"/>
+			<input required v-model="displayName" type="text" placeholder="Display name"/>
+			<input required v-model="passwordReg" type="password" placeholder="Password"/>
+			<input required v-model="passwordConfirm" type="password" placeholder="Confirm password"/>
+			<button class="" type="submit">Register</button>
+			<span class="small">By clicking "Register" you accept the <router-link to="">Terms of Use</router-link></span>
+   </form>
  </div>
 </template>
 
@@ -75,9 +74,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.login {
-  text-align: center;
-}
-</style>

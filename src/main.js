@@ -7,15 +7,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import jquery from 'jquery'
-window.$ = window.jquery = jquery
-
-/* eslint-disable */
-import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap'
-import('bootstrap/dist/css/bootstrap.css')
-import('bootstrap-vue/dist/bootstrap-vue.css')
-/* eslint-enable */
 
 if (process.env.NODE_ENV === 'production' && !process.env.VUE_APP_DEBUG) {
   console.log = () => {}
@@ -24,8 +15,6 @@ if (process.env.NODE_ENV === 'production' && !process.env.VUE_APP_DEBUG) {
 library.add(faThumbsUp)
 library.add(faThumbsDown)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-
-Vue.use(BootstrapVue)
 
 Vue.config.productionTip = false
 

@@ -1,9 +1,7 @@
 <template>
-  <input
-  class="search form-control"
-  placeholder="Enter url..."
-  v-model="url"
-  v-on:keyup.enter.prevent="$emit('submit', url)"/>
+	<div>
+		<input class="search" placeholder="Enter URL for comments..." v-model="url" v-on:keyup.enter.prevent="$emit('submit', url)" spellcheck="false"/>
+	</div>
 </template>
 
 <script>
@@ -16,10 +14,3 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.search{
-  /*TODO Fix this later*/
-  height:60px;
-  display: block;
-}
-</style>

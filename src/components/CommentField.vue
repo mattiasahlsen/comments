@@ -1,40 +1,62 @@
 <template>
   <div class="comment-field">
-    <div v-for="comment in comments" :key="comment._id" class="comment mb-3">
-      <h5>{{comment.displayName}} <span class="date">{{comment.createdText}}</span></h5>
-      <div v-if="comment.someText">
-        <div v-if="!comment.showFull">
-          <p v-html="comment.someText"></p>
-          <p @click="comment.showFull = true" class="clickable"><strong>Show more</strong></p>
-        </div>
-        <div v-else>
-          <p v-html="comment.text"></p>
-          <p @click="comment.showFull = false" class="clickable"><strong>Show less</strong></p>
-        </div>
-      </div>
-      <p v-else class="mb-1" v-html="comment.text"></p>
+    <div v-for="comment in comments" :key="comment._id" class="mb-3">
+			<div class="comment">
+				<div class="comment-score">
+					{{comment.likes - comment.dislikes}}
+				</div>
 
-      <font-awesome-icon icon="thumbs-up" class="mr-1 vote"
-      :class="{ blue: comment.hasLiked }" @click="vote(comment, true)" />
-      <span class="mr-3">{{comment.likes}}</span>
-      <font-awesome-icon icon="thumbs-down" class="vote mt-1 mr-1"
-      :class="{ blue: comment.hasDisliked }" @click="vote(comment, false)" />
-      <span class="mr-3">{{comment.dislikes}}</span>
+				<div class="comment-body">
+					<!-- <div class="commenter">{{comment.displayName}} <span class="date">{{comment.createdText}}</span></div> -->
+					<div v-if="comment.someText" class="comment-text">
+						<div v-if="!comment.showFull">
+							<div v-html="comment.someText" class="comment-text"></div>
+							<div @click="comment.showFull = true"><div class="clickable">Show more</div></div>
+						</div>
+						<div v-else>
+							<div v-html="comment.text" class="comment-text"></div>
+							<div @click="comment.showFull = false"><div class="clickable">Show less</div></div>
+						</div>
+					</div>
 
-      <div v-if="comment.children.length > 0" class="ml-3 mt-3">
-        <p v-if="!comment.showChildren" @click="comment.showChildren = true" class="clickable">
-          <strong>Show replies</strong>
-        </p>
-        <div v-if="comment.showChildren">
-          <CommentField :comments="comment.children"/>
-          <p v-if="comment.children.length > 0 &&
-            comment.children.length % 10 === 0" @click="$emit('loadChildren', comment)"
-            class="clickable load-more">Load more...</p>
-        </div>
-        <p v-if="comment.showChildren" @click="comment.showChildren = false" class="clickable">
-          <strong>Hide replies</strong>
-        </p>
-      </div>
+					<div v-else v-html="comment.text" class="comment-text"></div>
+				</div>
+
+				<div class="comment-info">
+
+					<div class="commenter">{{comment.displayName}}</div>
+
+					<div class="comment-date">{{comment.createdText}}</div>
+
+					<div class="comment-rating">
+						<font-awesome-icon icon="thumbs-up" class="mr-1 vote"
+						:class="{ blue: comment.hasLiked }" @click="vote(comment, true)" />
+						<span class="mr-3">{{comment.likes}}</span>
+						<font-awesome-icon icon="thumbs-down" class="vote mt-1 mr-1"
+						:class="{ blue: comment.hasDisliked }" @click="vote(comment, false)" />
+						<span class="mr-3">{{comment.dislikes}}</span>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="comment-replies">
+				<div v-if="comment.children.length > 0" class="ml-3 mt-3">
+					<div v-if="!comment.showChildren" @click="comment.showChildren = true">
+						<div class="clickable">Show replies</div>
+					</div>
+					<div v-if="comment.showChildren">
+						<CommentField :comments="comment.children"/>
+						<div v-if="comment.children.length > 0 &&
+							comment.children.length % 10 === 0" @click="$emit('loadChildren', comment)"
+							class="clickable load-more">Load more...</div>
+					</div>
+					<div v-if="comment.showChildren" @click="comment.showChildren = false">
+						<div class="clickable">Hide replies</div>
+					</div>
+				</div>
+			</div>
+
     </div>
   </div>
 </template>
@@ -118,35 +140,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.comment {
-  h5 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: $secondary-2;
-  }
-  .date {
-    font-weight: 400;
-    font-size: 0.8rem;
-  }
-  p {
-    font-size: 0.8rem;
-  }
-}
-.child {
-  margin-left: 1.5rem;
-}
-.vote {
-  &:hover {
-    cursor: pointer;
-  }
-}
-.blue {
-  color: #0099e6;
-}
-.load-more {
-  color: $secondary;
-  font-weight: 500;
-}
-</style>

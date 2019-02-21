@@ -1,18 +1,17 @@
 <template>
-  <b-navbar toggleable="md" type="dark" variant="dark">
-    <b-navbar-brand>
-      <router-link to="/" class="logo">Comments</router-link>
-    </b-navbar-brand>
+  <nav class="main">
+    <div class="logo">
+      <router-link to="/"><img src="../assets/logo.png" alt="Logotype" /></router-link>
+    </div>
 
-    <!-- Right aligned nav items -->
-    <b-navbar-nav class="ml-auto">
-      <router-link v-if="!loggedIn" to="/login" class="btn btn-primary">Log in</router-link>
-      <div v-else>
-        <button class="btn btn-secondary mr-2" @click="$store.dispatch('logout')">Log out</button>
-        <button class="btn btn-light mt-1">{{user.displayName}}</button>
+    <nav>
+			<router-link class="linkButton" v-if="!loggedIn" to="/login">Log in</router-link>
+      <div class="loginout" v-else>
+				<button class="linkButton" >{{user.displayName}}</button>
+        <button style="margin-left: 0.5%;" class="linkButton" @click="$store.dispatch('logout')">Log out</button>
       </div>
-    </b-navbar-nav>
-  </b-navbar>
+    </nav>
+  </nav>
 </template>
 
 <script>
@@ -23,22 +22,7 @@ export default {
     },
     loggedIn() {
       return this.$store.getters.isAuthenticated
-    },
-  }
+		}
+	}
 }
-
 </script>
-
-<style scoped lang="scss">
-.logo, .logo:hover {
-  color: white;
-  text-decoration: none;
-  transition: border-bottom 0.2s;
-}
-.logo {
-  border-bottom: 1px solid transparent;
-}
-.logo:hover {
-  border-bottom: 1px solid #f2f2f2;
-}
-</style>
