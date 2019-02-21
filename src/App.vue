@@ -15,10 +15,18 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import conf from './config'
+const URL = conf.API_URL
 
 export default {
+  data() {
+    return {
+      image: null
+    }
+  },
   computed: {
     error() {
       return this.$store.state.error
@@ -28,6 +36,11 @@ export default {
     Navbar,
     Footer,
   },
+  /*created() {
+    axios.get(URL + '/thumbnail').then(resp => {
+      this.image = resp.data
+    })
+  }*/
 }
 </script>
 <style lang="scss">

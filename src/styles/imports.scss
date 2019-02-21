@@ -144,7 +144,7 @@ footer{
 	/*Flex item*/
 	flex: 0 1 5%;
 
-	/*Flex container*/
+
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -189,7 +189,7 @@ nav.main{
 	height: auto;
 	padding: 2%;
 
-	/*Flex container*/
+
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -208,7 +208,7 @@ nav.main .logo img{
 }
 
 .loginout{
-	/*Flex container*/
+
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
@@ -226,7 +226,7 @@ nav.main .logo img{
 	padding: 0% 2%;
 	margin:0 auto;
 
-	/*Flex container*/
+
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -244,7 +244,7 @@ nav.main .logo img{
 }
 
 .login{
-	/*Flex container*/
+
 	display: flex;
 	flex-direction: column;
 	align-content: center;
@@ -256,7 +256,7 @@ nav.main .logo img{
 	width: 50%;
 	margin-bottom: 5%;
 
-	/*Flex container*/
+
 	display: flex;
 	flex-direction: column;
 	justify-content: space-evenly;
@@ -291,7 +291,7 @@ nav.main .logo img{
 	line-height: 40px;
 	margin-bottom: 1%;
 
-	/*Flex container*/
+
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-start;
@@ -334,7 +334,6 @@ button.inline{
 	background: $light-background;
 	margin-bottom: 5%;
 
-	/*Flex container*/
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-start;
@@ -356,7 +355,6 @@ button.inline{
 
 
 .comment-form{
-	/*Flex container*/
 	display: flex;
 	flex-direction: row;
 	margin-bottom: 2%;
@@ -382,7 +380,6 @@ button.inline{
 .comment{
 	margin-bottom: 2%;
 
-	/*Flex container*/
 	display: flex;
 	flex-direction: row;
 }
@@ -393,7 +390,6 @@ button.inline{
 	font-size: 3em;
 	font-weight: 200;
 
-	/*Flex container*/
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -405,7 +401,7 @@ button.inline{
 	padding: 1%;
 	background: $light-background;
 
-	/*Flex container*/
+
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -428,7 +424,6 @@ button.inline{
 	margin-right: 2%;
 	border-bottom: 1px solid $light-background;
 
-	/*Flex container*/
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

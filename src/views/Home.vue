@@ -29,7 +29,7 @@
 
 					<div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
 						Or
-						<button class="" @click="newCommentField(parsedUrl.origin)">
+						<button class="inline" @click="newCommentField(parsedUrl.origin)">
 							create a domain-wide
 						</button> for <i>{{parsedUrl.origin}}</i>?
 					</div>
