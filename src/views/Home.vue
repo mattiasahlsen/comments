@@ -11,31 +11,31 @@
           @click.prevent="addUrl = false">
           &times;
         </button>
-				<div class="blockNoteInfo">
-					<h2>There is currently no comment thread for the entered URL</h2>
+        <div class="blockNoteInfo">
+          <h2>There is currently no comment thread for the entered URL</h2>
 
-					<div v-if="cache[parsedUrl.origin]">
-						There is a comment field
-						<i>{{parsedUrl.origin}}</i>, do you want to
-						<button class="inline" @click="redirect(parsedUrl.origin)">go there?</button>
-					</div>
+          <div v-if="cache[parsedUrl.origin]">
+            There is a comment field
+            <i>{{parsedUrl.origin}}</i>, do you want to
+            <button class="inline" @click="redirect(parsedUrl.origin)">go there?</button>
+          </div>
 
-					<div>
-						Do you want to
-						<button class="inline" @click="newCommentField(parsedUrl.href)">
-							create a new comment thread
-						</button> for <i>{{parsedUrl.href}}</i>?
-					</div>
+          <div>
+            Do you want to
+            <button class="inline" @click="newCommentField(parsedUrl.href)">
+              create a new comment thread
+            </button> for <br><i class="big">{{shortHref}}</i>?
+          </div>
 
-					<div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
-						Or
-						<button class="inline" @click="newCommentField(parsedUrl.origin)">
-							create a domain-wide
-						</button> for <i>{{parsedUrl.origin}}</i>?
-					</div>
-					<div class="small" v-else><i>All URLs are normalized to http</i></div>
-				</div>
-		  </div>
+          <div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
+            Or
+            <button class="inline" @click="newCommentField(parsedUrl.origin)">
+              create a domain-wide
+            </button> for <i>{{parsedUrl.origin}}</i>?
+          </div>
+          <div class="small" v-else><i>All URLs are normalized to http</i></div>
+        </div>
+      </div>
 
     </div>
 
@@ -50,7 +50,7 @@
       </div>
 
       <div class="sorter">
-				Sort comments by:
+        Sort comments by:
         <select v-model="sort" @change="changeSort" class="">
           <option selected="selected">Hot</option>
           <option>New</option>
@@ -65,7 +65,7 @@
 
     <div v-else-if="!loading" class="my-5">
 
-			<!-- <div class="mb-3">
+      <!-- <div class="mb-3">
         <h2>Comment fields for any URL.</h2>
         <p>Just type in a URL above to go to a comment field or create a new one</p>
       </div> -->
@@ -179,12 +179,18 @@ export default {
       loading: false
     }
   },
+  computed: {
+    shortHref() {
+      const url = this.parsedUrl.href
+      return url.length > 55 ? url.substring(0, 55) + '...' : url
+    }
+  },
   components: {
     Search,
     CommentField,
     WebsiteList,
     ClipLoader
-	},
+  },
   methods: {
     newCommentField(url) {
       axios.post(`${URL}/website/${urlencode(clean(url))}`).then(resp => {
@@ -381,7 +387,7 @@ export default {
     this.gotAll = false
     this.addUrl = false
     next()
-	},
+  },
   created() {
     axios.get(URL + '/websites').then(resp => {
       this.websites = resp.data.websites
@@ -406,4 +412,3 @@ export default {
   }
 }
 </script>
-

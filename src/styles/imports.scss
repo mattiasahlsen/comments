@@ -35,16 +35,6 @@ $button-bg-hover: #576574;
   color: white !important;
 }
 
-
-// .wrapper,
-// .search,
-// nav,
-// button,
-// {
-// 	border: 3px solid red;
-// }
-
-
 *{
 	font-family:'Raleway', 'Helvetica Neue', sans-serif;
 	font-weight:normal;
@@ -74,8 +64,6 @@ a:hover,
 	font-weight: 200;
 	display: inline-block;
 }
-
-
 
 html,
 body{
@@ -330,23 +318,28 @@ button.inline{
 	margin-top: 1%;
 }
 
+.big{
+	font-size: 1.2em;
+	margin-top: 1%;
+}
+
 .blockNote{
 	background: $light-background;
 	margin-bottom: 5%;
+	line-height: 1.5em;
 
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-start;
-	align-items: center;
 }
 
 .blockNoteClose{
 	font-size: 3em;
-	height: 100px;
+	min-height: 100%;
 	background: $dark;
 	color: $white;
 	margin-right: 2%;
-	padding: 0 1%;
+	padding: 1% 1%;
 }
 
 .blockNoteInfo button{
