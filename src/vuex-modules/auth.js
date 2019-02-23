@@ -50,8 +50,8 @@ export default {
   },
   mutations: {
     login(state, user) {
-      console.log('Logging in')
-      console.log(user)
+      // console.log('Logging in')
+      // console.log(user)
       state.user = user
       localStorage.setItem('loggedIn', 'true')
     },

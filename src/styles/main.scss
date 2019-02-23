@@ -33,14 +33,6 @@ a:hover,
   display: inline-block;
 }
 
-
-
-html,
-body{
-  width: 100%;
-  height: 100%;
-}
-
 h1,
 h2,
 h3,
@@ -298,28 +290,34 @@ button.inline{
   font-size: 0.8em;
   margin-top: 1%;
 }
+.big{
+  font-size: 1.2em;
+  margin-top: 1%;
+}
 
 .blockNote{
   background: $light-background;
   margin-bottom: 5%;
+  line-height: 1.5em;
 
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: center;
 }
 
 .blockNoteClose{
   font-size: 3em;
-  height: 100px;
   background: $dark;
   color: $white;
   margin-right: 2%;
   padding: 0 1%;
 }
 
-.blockNoteInfo button{
-  padding: 1%;
+.blockNoteInfo{
+  padding: 0.5em 0;
+  button {
+    padding: 1%;
+  }
 }
 
 
@@ -338,7 +336,8 @@ button.inline{
 }
 
 .comment-form button{
-  width: 5%;
+  min-width: 5%;
+  padding: 0.5em;
   margin-left: 2%;
 }
 
@@ -366,7 +365,7 @@ button.inline{
 }
 
 .comment-info{
-  width: 16%;
+  min-width: 16%;
   padding: 1%;
   background: $light-background;
 
@@ -377,8 +376,20 @@ button.inline{
   align-content: center;
   align-items: center;
 }
+.comment-rating {
+  margin-top: 0.2em;
+}
+.vote-box {
+  margin: 0.1em;
+  .vote {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
 
 .comment-date{
+  margin-top: 0.2em;
   font-size: 0.8em;
 }
 
@@ -421,5 +432,8 @@ button.inline{
   }
   .search {
     font-size: 1.5em;
+  }
+  .comment-score{
+    font-size: 2em;
   }
 }

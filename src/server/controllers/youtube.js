@@ -52,22 +52,22 @@ callback = (err, resp) => {
   }, callback)
 }
 
-youtube.videos.list({
-  part: 'player,id,snippet',
-  chart: 'mostPopular',
-  maxResults: 50
-}, callback)
+// youtube.videos.list({
+//   part: 'player,id,snippet',
+//   chart: 'mostPopular',
+//   maxResults: 50
+// }, callback)
 
-const myCallback = (err, resp) => {
-  const video = resp.data.items[0]
-  console.log(video.snippet.thumbnails)
-  axios.get(video.snippet.thumbnails.default.url,
-    { responseType: 'arraybuffer' }).then(resp => {
-    console.log('Got image')
-    image = Buffer.from(resp.data, 'binary').toString('base64')
-    console.log(image)
-  }).catch(err => console.log(err))
-}
+// const myCallback = (err, resp) => {
+//   const video = resp.data.items[0]
+//   console.log(video.snippet.thumbnails)
+//   axios.get(video.snippet.thumbnails.default.url,
+//     { responseType: 'arraybuffer' }).then(resp => {
+//     console.log('Got image')
+//     image = Buffer.from(resp.data, 'binary').toString('base64')
+//     console.log(image)
+//   }).catch(err => console.log(err))
+// }
 
 router.get('/thumbnail', (req, res, next) => {
   return res.send(image)

@@ -29,12 +29,16 @@
           <div class="comment-date">{{comment.createdText}}</div>
 
           <div class="comment-rating">
-            <font-awesome-icon icon="thumbs-up" class="mr-1 vote"
-            :class="{ blue: comment.hasLiked }" @click="vote(comment, true)" />
-            <span class="mr-3">{{comment.likes}}</span>
-            <font-awesome-icon icon="thumbs-down" class="vote mt-1 mr-1"
-            :class="{ blue: comment.hasDisliked }" @click="vote(comment, false)" />
-            <span class="mr-3">{{comment.dislikes}}</span>
+            <span class="vote-box">
+              <font-awesome-icon icon="thumbs-up" class="vote"
+              :class="{ blue: comment.hasLiked }" @click="vote(comment, true)" />
+              <span class="mr-3">{{comment.likes}}</span>
+            </span>
+            <span class="vote-box">
+                <font-awesome-icon icon="thumbs-down" class="vote"
+              :class="{ blue: comment.hasDisliked }" @click="vote(comment, false)" />
+              <span class="mr-3">{{comment.dislikes}}</span>
+            </span>
           </div>
 
         </div>

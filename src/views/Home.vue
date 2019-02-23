@@ -24,7 +24,7 @@
             Do you want to
             <button class="inline" @click="newCommentField(parsedUrl.href)">
               create a new comment thread
-            </button> for <i>{{parsedUrl.href}}</i>?
+            </button> for <br><i class="big">{{shortHref}}</i>?
           </div>
 
           <div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
@@ -173,6 +173,12 @@ export default {
       loading: false
     }
   },
+  computed: {
+    shortHref() {
+      const url = this.parsedUrl.href
+      return url.length > 55 ? url.substring(0, 55) + '...' : url
+    }
+  },
   components: {
     Search,
     CommentField,
@@ -294,7 +300,7 @@ export default {
           return this.getComments(url, offset, parent, 'top').then(topComments => {
             return newComments.concat(topComments)
           })
-        }).finally(() => { this.loading = false })
+        }).finally(() => setTimeout(() => { this.loading = false }, 1000)) // min 500ms loading for reduced lag
       }
       if (url) {
         url = urlencode(url)
