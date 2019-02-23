@@ -6,7 +6,6 @@ const validUrl = require('valid-url')
 
 const Website = require('../models/website')
 const Comment = require('../models/comment')
-const Account = require('../models/account')
 
 const express = require('express')
 const router = express.Router()
@@ -47,6 +46,7 @@ router.get(['/comments/:url/:sort/:offset?'], (req, res) => {
 
   let parentId
   let sort
+  console.log(req.params.sort)
   if (req.params.sort === 'new') sort = { createdAt: -1 }
   else if (req.params.sort === 'top') sort = { score: -1 }
   else {

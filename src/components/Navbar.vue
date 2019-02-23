@@ -5,9 +5,9 @@
     </div>
 
     <nav>
-			<router-link class="linkButton" v-if="!loggedIn" to="/login">Log in</router-link>
+      <router-link class="linkButton" v-if="!loggedIn" to="/login">Log in</router-link>
       <div class="loginout" v-else>
-				<button class="linkButton" >{{user.displayName}}</button>
+        <button class="linkButton" >{{user.displayName}}</button>
         <button style="margin-left: 0.5%;" class="linkButton" @click="$store.dispatch('logout')">Log out</button>
       </div>
     </nav>
@@ -22,7 +22,7 @@ export default {
     },
     loggedIn() {
       return this.$store.getters.isAuthenticated
-		}
-	}
+    }
+  }
 }
 </script>

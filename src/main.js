@@ -4,15 +4,14 @@ import router from './router'
 import store from './store'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
+import { faThumbsUp, faThumbsDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
-if (process.env.NODE_ENV === 'production' && !process.env.VUE_APP_DEBUG) {
-  console.log = () => {}
-}
+import 'modern-normalize/modern-normalize.css'
 
 library.add(faThumbsUp)
 library.add(faThumbsDown)
+
+library.add(faTimes)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false

@@ -11,31 +11,31 @@
           @click.prevent="addUrl = false">
           &times;
         </button>
-				<div class="blockNoteInfo">
-					<h2>There is currently no comment thread for the entered URL</h2>
+        <div class="blockNoteInfo">
+          <h2>There is currently no comment thread for the entered URL</h2>
 
-					<div v-if="cache[parsedUrl.origin]">
-						There is a comment field
-						<i>{{parsedUrl.origin}}</i>, do you want to
-						<button class="inline" @click="redirect(parsedUrl.origin)">go there?</button>
-					</div>
+          <div v-if="cache[parsedUrl.origin]">
+            There is a comment field
+            <i>{{parsedUrl.origin}}</i>, do you want to
+            <button class="inline" @click="redirect(parsedUrl.origin)">go there?</button>
+          </div>
 
-					<div>
-						Do you want to
-						<button class="inline" @click="newCommentField(parsedUrl.href)">
-							create a new comment thread
-						</button> for <i>{{parsedUrl.href}}</i>?
-					</div>
+          <div>
+            Do you want to
+            <button class="inline" @click="newCommentField(parsedUrl.href)">
+              create a new comment thread
+            </button> for <i>{{parsedUrl.href}}</i>?
+          </div>
 
-					<div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
-						Or
-						<button class="inline" @click="newCommentField(parsedUrl.origin)">
-							create a domain-wide
-						</button> for <i>{{parsedUrl.origin}}</i>?
-					</div>
-					<div class="small" v-else><i>All URLs are normalized to http</i></div>
-				</div>
-		  </div>
+          <div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
+            Or
+            <button class="inline" @click="newCommentField(parsedUrl.origin)">
+              create a domain-wide
+            </button> for <i>{{parsedUrl.origin}}</i>?
+          </div>
+          <div class="small" v-else><i>All URLs are normalized to http</i></div>
+        </div>
+      </div>
 
     </div>
 
@@ -50,7 +50,7 @@
       </div>
 
       <div class="sorter">
-				Sort comments by:
+        Sort comments by:
         <select v-model="sort" @change="changeSort" class="">
           <option selected="selected">Hot</option>
           <option>New</option>
@@ -64,12 +64,6 @@
     </div>
 
     <div v-else-if="!loading" class="my-5">
-
-			<!-- <div class="mb-3">
-        <h2>Comment fields for any URL.</h2>
-        <p>Just type in a URL above to go to a comment field or create a new one</p>
-      </div> -->
-
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
 
@@ -103,7 +97,7 @@ const clean = url => {
 const loadComments = (vm, url) => {
   return new Promise((resolve, reject) => {
     if (url) {
-      console.log('Getting comments for url')
+      // console.log('Getting comments for url')
       if (vm.cache[url]) {
         vm.comments = vm.cache[url]
         resolve(vm.comments)
@@ -184,7 +178,7 @@ export default {
     CommentField,
     WebsiteList,
     ClipLoader
-	},
+  },
   methods: {
     newCommentField(url) {
       axios.post(`${URL}/website/${urlencode(clean(url))}`).then(resp => {
@@ -226,7 +220,7 @@ export default {
     redirect(url) {
       if (!url) return
 
-      console.log('Redirect called with url parameter ' + url)
+      // console.log('Redirect called with url parameter ' + url)
 
       // must call getComments manually, beforeRouteEnter and
       // beforeRouteUpdate bugging
@@ -236,7 +230,7 @@ export default {
       url = clean(url)
 
       if (url && url !== this.$route.params.url) {
-        console.log('Redirecting to: ' + url)
+        // console.log('Redirecting to: ' + url)
         this.$router.push({ name: 'home', params: { url, } })
       }
     },
@@ -249,7 +243,7 @@ export default {
     },
     handleComments(comments, parent) {
       if (!comments) return
-      if (comments.length === 0) {
+      if (comments.length === 0 && this.offset === 0) {
         this.comments = []
         return
       }
@@ -306,8 +300,7 @@ export default {
         url = urlencode(url)
         return axios.get(URL + '/comments/' + url + '/' +
           (parent ? parent._id : sort) + '/' + offset).then(resp => {
-          if (resp.data.comments.length > 0) console.log(resp.data.comments[0])
-
+          // if (resp.data.comments.length > 0) console.log(resp.data.comments[0])
           return resp.data.comments
         }).finally(() => { this.loading = false })
       } else throw new Error('Cannot get comments for undefined url.')
@@ -333,22 +326,25 @@ export default {
       } else console.log('Can\'t submit comment, comment not defined.')
     },
     changeSort() {
-      this.getComments().then(comments => {
-        this.handleComments(comments)
-        if (this.sort === 'New') this.comments.sort(sortNew)
-        else if (this.sort === 'Top') this.comments.sort(sortTop)
-      }).catch(this.loadCommentsError)
+      if (!this.gotAll) {
+        this.getComments().then(comments => {
+          // console.log(comments)
+          this.handleComments(comments)
+        }).catch(this.loadCommentsError)
+      }
+      if (this.sort === 'New') this.comments.sort(sortNew)
+      else if (this.sort === 'Top') this.comments.sort(sortTop)
     },
     clean
   },
   beforeRouteEnter(to, from, next) {
-    console.log('Before route enter.')
+    // console.log('Before route enter.')
     next(vm => loadComments(vm, to.params.url)
       .then(comments => vm.handleComments(comments))
       .catch(vm.loadCommentsError))
   },
   beforeRouteUpdate(to, from, next) {
-    console.log('Before route update.')
+    // console.log('Before route update.')
     this.addUrl = false
 
     if (from.params.url) this.$set(this.cache, from.params.url, this.comments)
@@ -376,12 +372,12 @@ export default {
       })
   },
   beforeRouteLeave(to, from, next) {
-    console.log('Before route leave.')
+    // console.log('Before route leave.')
     if (from.params.url) this.$set(this.cache, from.params.url, this.comments)
     this.gotAll = false
     this.addUrl = false
     next()
-	},
+  },
   created() {
     axios.get(URL + '/websites').then(resp => {
       this.websites = resp.data.websites
@@ -406,4 +402,3 @@ export default {
   }
 }
 </script>
-
