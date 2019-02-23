@@ -12,6 +12,7 @@ const youtube = google.youtube({
 })
 const router = express.Router()
 
+/*
 let image
 let counter = 0
 let callback
@@ -71,5 +72,6 @@ const myCallback = (err, resp) => {
 router.get('/thumbnail', (req, res, next) => {
   return res.send(image)
 })
+*/
 
 module.exports = router

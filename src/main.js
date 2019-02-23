@@ -7,7 +7,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-
 if (process.env.NODE_ENV === 'production' && !process.env.VUE_APP_DEBUG) {
   console.log = () => {}
 }

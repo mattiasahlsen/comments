@@ -1,17 +1,30 @@
 <template>
   <div id="app">
-		<div class="notification warning" v-if="error" :show="!!error"
+    <div class="notification warning" v-if="error" :show="!!error"
       @dismissed="$store.commit('clearError')" dismissible>
-        {{error}}
+      {{error}}
+    </div>
+      <Navbar/>
+    <div class="wrapper">
+      <div class="content">
+        <router-view/>
       </div>
-			<Navbar/>
-		<div class="wrapper">
-    	<div class="content">
-      	<router-view/>
-    	</div>
-    	<Footer/>
-  	</div>
-	</div>
+    </div>
+
+    <footer class="page-footer">
+      <div>
+      All rights reserved &copy; domain.com
+      </div>
+
+      <div>
+        <!-- TODO Can these be normal anchor tags, or should they be router-links? -->
+        <router-link to="/about" class="link">About</router-link> -
+        <router-link to="/legal/terms-of-use" class="link">Terms of Use</router-link> -
+        <router-link to="/legal/privacy-policy" class="link">Privacy Policy</router-link> -
+        <router-link to="/legal/use-of-cookies" class="link">Use of cookies</router-link>
+      </div>
+    </footer>
+  </div>
 </template>
 
 <script>
@@ -45,11 +58,15 @@ export default {
 </script>
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css?family=Raleway:100,400,700');
+
 #app {
-	width: 100%;
-  min-height: 100%;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
+.page-footer {
+  margin-top: 5vh;
+}
 </style>
