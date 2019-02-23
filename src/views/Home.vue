@@ -84,6 +84,7 @@ import WebsiteList from '@/components/WebsiteList'
 import axios from 'axios'
 
 import conf from '../config'
+import { dateString } from '../lib'
 
 const URL = conf.API_URL
 
@@ -127,33 +128,6 @@ const sortHot = (c1, c2) => {
 }
 const sortNew = (c1, c2) => c2.createdAt.getTime() - c1.createdAt.getTime()
 const sortTop = (c1, c2) => c2.score - c1.score
-
-const dateString = (date) => {
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ]
-  const days = [
-    'Sunday', 'Monday', 'Tuesday', 'Wednesday',
-    'Thursday', 'Friday', 'Saturday'
-  ]
-  const now = new Date()
-
-  if (date.getFullYear() === now.getFullYear()) {
-    if (date.getMonth() === now.getMonth()) {
-      if (date.getDate() === now.getDate()) {
-        const parts = date.toTimeString().split(':')
-        return parts[0] + ':' + parts[1]
-      }
-      if (now.getDate() - date.getDate() < 7) {
-        return days[date.getDay()]
-      }
-      return days[date.getDay()] + ' ' + date.getDate()
-    } else return months[date.getMonth()] + ' ' + date.getDate()
-  } else {
-    return months[date.getMonth()] + ' ' + date.getDate() + ' ' + date.getFullYear()
-  }
-}
 
 export default {
   name: 'home',

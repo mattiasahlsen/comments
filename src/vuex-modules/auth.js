@@ -52,6 +52,7 @@ export default {
     login(state, user) {
       // console.log('Logging in')
       // console.log(user)
+      user.createdAt = new Date(user.createdAt)
       state.user = user
       localStorage.setItem('loggedIn', 'true')
     },

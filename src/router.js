@@ -28,6 +28,11 @@ export default new Router({
       name: 'login',
       component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')
     },
+    {
+      path: '/account',
+      name: 'account',
+      component: () => import(/* webpackChunkName: "account" */ './views/Account.vue')
+    },
     { path: '*', component: NotFound }
   ]
 })

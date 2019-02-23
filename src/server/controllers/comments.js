@@ -46,7 +46,6 @@ router.get(['/comments/:url/:sort/:offset?'], (req, res) => {
 
   let parentId
   let sort
-  console.log(req.params.sort)
   if (req.params.sort === 'new') sort = { createdAt: -1 }
   else if (req.params.sort === 'top') sort = { score: -1 }
   else {

@@ -5,7 +5,11 @@
 
 *{
   font-family:'Raleway', 'Helvetica Neue', sans-serif;
-  font-weight:normal;
+  font-weight: normal;
+  strong {
+    font-weight: bold;
+  }
+
   color: $primary;
   box-sizing: border-box;
   outline: 0;
