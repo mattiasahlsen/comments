@@ -9,8 +9,20 @@
     	<div class="content">
       	<router-view/>
     	</div>
-    	<Footer/>
   	</div>
+			<!-- FOOTER START-->
+		<footer>
+			<div>
+			All rights reserved &copy; domain.com
+			</div>
+			<div>
+				<!-- TODO Can these be normal anchor tags, or should they be router-links? -->
+				<router-link to="/about" class="link">About</router-link> -
+				<router-link to="/legal/terms-of-use" class="link">Terms of Use</router-link> -
+				<router-link to="/legal/privacy-policy" class="link">Privacy Policy</router-link> -
+				<router-link to="/legal/use-of-cookies" class="link">Use of cookies</router-link>
+			</div>
+		</footer>
 	</div>
 </template>
 
@@ -44,12 +56,16 @@ export default {
 }
 </script>
 <style lang="scss">
+
 @import url('https://fonts.googleapis.com/css?family=Raleway:100,400,700');
+
 #app {
 	width: 100%;
-  min-height: 100%;
+	height: 100%;
   display: flex;
   flex-direction: column;
 }
+
+
 
 </style>

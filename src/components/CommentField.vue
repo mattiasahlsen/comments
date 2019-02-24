@@ -29,10 +29,10 @@
 					<div class="comment-date">{{comment.createdText}}</div>
 
 					<div class="comment-rating">
-						<font-awesome-icon icon="thumbs-up" class="mr-1 vote"
+						<font-awesome-icon icon="thumbs-up" class="thumbs-up"
 						:class="{ blue: comment.hasLiked }" @click="vote(comment, true)" />
 						<span class="mr-3">{{comment.likes}}</span>
-						<font-awesome-icon icon="thumbs-down" class="vote mt-1 mr-1"
+						<font-awesome-icon icon="thumbs-down" class="thumbs-down"
 						:class="{ blue: comment.hasDisliked }" @click="vote(comment, false)" />
 						<span class="mr-3">{{comment.dislikes}}</span>
 					</div>
@@ -79,10 +79,10 @@ export default {
       likeImg,
       dislikeImg
     }
-  },
+	},
   methods: {
     showFull(comment) {
-      comment.showFull = true
+			comment.showFull = true
     },
     vote(comment, like) {
       const likes = comment.likes
