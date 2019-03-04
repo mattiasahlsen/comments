@@ -6,7 +6,6 @@ const validUrl = require('valid-url')
 
 const Website = require('../models/website')
 const Comment = require('../models/comment')
-const Account = require('../models/account')
 
 const express = require('express')
 const router = express.Router()

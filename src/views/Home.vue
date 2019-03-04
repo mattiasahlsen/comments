@@ -64,12 +64,6 @@
     </div>
 
     <div v-else-if="!loading" class="my-5">
-
-      <!-- <div class="mb-3">
-        <h2>Comment fields for any URL.</h2>
-        <p>Just type in a URL above to go to a comment field or create a new one</p>
-      </div> -->
-
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
 
@@ -90,6 +84,7 @@ import WebsiteList from '@/components/WebsiteList'
 import axios from 'axios'
 
 import conf from '../config'
+import { dateString } from '../lib'
 
 const URL = conf.API_URL
 
@@ -103,7 +98,7 @@ const clean = url => {
 const loadComments = (vm, url) => {
   return new Promise((resolve, reject) => {
     if (url) {
-      console.log('Getting comments for url')
+      // console.log('Getting comments for url')
       if (vm.cache[url]) {
         vm.comments = vm.cache[url]
         resolve(vm.comments)
@@ -133,33 +128,6 @@ const sortHot = (c1, c2) => {
 }
 const sortNew = (c1, c2) => c2.createdAt.getTime() - c1.createdAt.getTime()
 const sortTop = (c1, c2) => c2.score - c1.score
-
-const dateString = (date) => {
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ]
-  const days = [
-    'Sunday', 'Monday', 'Tuesday', 'Wednesday',
-    'Thursday', 'Friday', 'Saturday'
-  ]
-  const now = new Date()
-
-  if (date.getFullYear() === now.getFullYear()) {
-    if (date.getMonth() === now.getMonth()) {
-      if (date.getDate() === now.getDate()) {
-        const parts = date.toTimeString().split(':')
-        return parts[0] + ':' + parts[1]
-      }
-      if (now.getDate() - date.getDate() < 7) {
-        return days[date.getDay()]
-      }
-      return days[date.getDay()] + ' ' + date.getDate()
-    } else return months[date.getMonth()] + ' ' + date.getDate()
-  } else {
-    return months[date.getMonth()] + ' ' + date.getDate() + ' ' + date.getFullYear()
-  }
-}
 
 export default {
   name: 'home',
@@ -232,7 +200,7 @@ export default {
     redirect(url) {
       if (!url) return
 
-      console.log('Redirect called with url parameter ' + url)
+      // console.log('Redirect called with url parameter ' + url)
 
       // must call getComments manually, beforeRouteEnter and
       // beforeRouteUpdate bugging
@@ -242,7 +210,7 @@ export default {
       url = clean(url)
 
       if (url && url !== this.$route.params.url) {
-        console.log('Redirecting to: ' + url)
+        // console.log('Redirecting to: ' + url)
         this.$router.push({ name: 'home', params: { url, } })
       }
     },
@@ -255,7 +223,7 @@ export default {
     },
     handleComments(comments, parent) {
       if (!comments) return
-      if (comments.length === 0) {
+      if (comments.length === 0 && this.offset === 0) {
         this.comments = []
         return
       }
@@ -306,14 +274,13 @@ export default {
           return this.getComments(url, offset, parent, 'top').then(topComments => {
             return newComments.concat(topComments)
           })
-        }).finally(() => { this.loading = false })
+        }).finally(() => setTimeout(() => { this.loading = false }, 1000)) // min 500ms loading for reduced lag
       }
       if (url) {
         url = urlencode(url)
         return axios.get(URL + '/comments/' + url + '/' +
           (parent ? parent._id : sort) + '/' + offset).then(resp => {
-          if (resp.data.comments.length > 0) console.log(resp.data.comments[0])
-
+          // if (resp.data.comments.length > 0) console.log(resp.data.comments[0])
           return resp.data.comments
         }).finally(() => { this.loading = false })
       } else throw new Error('Cannot get comments for undefined url.')
@@ -339,22 +306,25 @@ export default {
       } else console.log('Can\'t submit comment, comment not defined.')
     },
     changeSort() {
-      this.getComments().then(comments => {
-        this.handleComments(comments)
-        if (this.sort === 'New') this.comments.sort(sortNew)
-        else if (this.sort === 'Top') this.comments.sort(sortTop)
-      }).catch(this.loadCommentsError)
+      if (!this.gotAll) {
+        this.getComments().then(comments => {
+          // console.log(comments)
+          this.handleComments(comments)
+        }).catch(this.loadCommentsError)
+      }
+      if (this.sort === 'New') this.comments.sort(sortNew)
+      else if (this.sort === 'Top') this.comments.sort(sortTop)
     },
     clean
   },
   beforeRouteEnter(to, from, next) {
-    console.log('Before route enter.')
+    // console.log('Before route enter.')
     next(vm => loadComments(vm, to.params.url)
       .then(comments => vm.handleComments(comments))
       .catch(vm.loadCommentsError))
   },
   beforeRouteUpdate(to, from, next) {
-    console.log('Before route update.')
+    // console.log('Before route update.')
     this.addUrl = false
 
     if (from.params.url) this.$set(this.cache, from.params.url, this.comments)
@@ -382,7 +352,7 @@ export default {
       })
   },
   beforeRouteLeave(to, from, next) {
-    console.log('Before route leave.')
+    // console.log('Before route leave.')
     if (from.params.url) this.$set(this.cache, from.params.url, this.comments)
     this.gotAll = false
     this.addUrl = false

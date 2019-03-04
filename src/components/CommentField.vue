@@ -1,61 +1,65 @@
 <template>
   <div class="comment-field">
     <div v-for="comment in comments" :key="comment._id" class="mb-3">
-			<div class="comment">
-				<div class="comment-score">
-					{{comment.likes - comment.dislikes}}
-				</div>
+      <div class="comment">
+        <div class="comment-score">
+          {{comment.likes - comment.dislikes}}
+        </div>
 
-				<div class="comment-body">
-					<!-- <div class="commenter">{{comment.displayName}} <span class="date">{{comment.createdText}}</span></div> -->
-					<div v-if="comment.someText" class="comment-text">
-						<div v-if="!comment.showFull">
-							<div v-html="comment.someText" class="comment-text"></div>
-							<div @click="comment.showFull = true"><div class="clickable">Show more</div></div>
-						</div>
-						<div v-else>
-							<div v-html="comment.text" class="comment-text"></div>
-							<div @click="comment.showFull = false"><div class="clickable">Show less</div></div>
-						</div>
-					</div>
+        <div class="comment-body">
+          <!-- <div class="commenter">{{comment.displayName}} <span class="date">{{comment.createdText}}</span></div> -->
+          <div v-if="comment.someText" class="comment-text">
+            <div v-if="!comment.showFull">
+              <div v-html="comment.someText" class="comment-text"></div>
+              <div @click="comment.showFull = true"><div class="clickable">Show more</div></div>
+            </div>
+            <div v-else>
+              <div v-html="comment.text" class="comment-text"></div>
+              <div @click="comment.showFull = false"><div class="clickable">Show less</div></div>
+            </div>
+          </div>
 
-					<div v-else v-html="comment.text" class="comment-text"></div>
-				</div>
+          <div v-else v-html="comment.text" class="comment-text"></div>
+        </div>
 
-				<div class="comment-info">
+        <div class="comment-info">
 
-					<div class="commenter">{{comment.displayName}}</div>
+          <div class="commenter">{{comment.displayName}}</div>
 
-					<div class="comment-date">{{comment.createdText}}</div>
+          <div class="comment-date">{{comment.createdText}}</div>
 
-					<div class="comment-rating">
-						<font-awesome-icon icon="thumbs-up" class="thumbs-up"
-						:class="{ blue: comment.hasLiked }" @click="vote(comment, true)" />
-						<span class="mr-3">{{comment.likes}}</span>
-						<font-awesome-icon icon="thumbs-down" class="thumbs-down"
-						:class="{ blue: comment.hasDisliked }" @click="vote(comment, false)" />
-						<span class="mr-3">{{comment.dislikes}}</span>
-					</div>
+          <div class="comment-rating">
+            <span class="vote-box">
+              <font-awesome-icon icon="thumbs-up" class="vote"
+              :class="{ blue: comment.hasLiked }" @click="vote(comment, true)" />
+              <span class="mr-3">{{comment.likes}}</span>
+            </span>
+            <span class="vote-box">
+                <font-awesome-icon icon="thumbs-down" class="vote"
+              :class="{ blue: comment.hasDisliked }" @click="vote(comment, false)" />
+              <span class="mr-3">{{comment.dislikes}}</span>
+            </span>
+          </div>
 
-				</div>
-			</div>
+        </div>
+      </div>
 
-			<div class="comment-replies">
-				<div v-if="comment.children.length > 0" class="ml-3 mt-3">
-					<div v-if="!comment.showChildren" @click="comment.showChildren = true">
-						<div class="clickable">Show replies</div>
-					</div>
-					<div v-if="comment.showChildren">
-						<CommentField :comments="comment.children"/>
-						<div v-if="comment.children.length > 0 &&
-							comment.children.length % 10 === 0" @click="$emit('loadChildren', comment)"
-							class="clickable load-more">Load more...</div>
-					</div>
-					<div v-if="comment.showChildren" @click="comment.showChildren = false">
-						<div class="clickable">Hide replies</div>
-					</div>
-				</div>
-			</div>
+      <div class="comment-replies">
+        <div v-if="comment.children.length > 0" class="ml-3 mt-3">
+          <div v-if="!comment.showChildren" @click="comment.showChildren = true">
+            <div class="clickable">Show replies</div>
+          </div>
+          <div v-if="comment.showChildren">
+            <CommentField :comments="comment.children"/>
+            <div v-if="comment.children.length > 0 &&
+              comment.children.length % 10 === 0" @click="$emit('loadChildren', comment)"
+              class="clickable load-more">Load more...</div>
+          </div>
+          <div v-if="comment.showChildren" @click="comment.showChildren = false">
+            <div class="clickable">Hide replies</div>
+          </div>
+        </div>
+      </div>
 
     </div>
   </div>

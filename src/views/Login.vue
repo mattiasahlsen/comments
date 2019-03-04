@@ -6,20 +6,22 @@
      <input required v-model="password" type="password" placeholder="Password"/>
      <button type="submit">Login</button>
    </form>
-	 <hr>
+   <hr>
    <form class="registration-form" @submit.prevent="register">
-			<h1>Sign up</h1>
-			<input required v-model="usernameReg" type="text" placeholder="Email"/>
-			<input required v-model="displayName" type="text" placeholder="Display name"/>
-			<input required v-model="passwordReg" type="password" placeholder="Password"/>
-			<input required v-model="passwordConfirm" type="password" placeholder="Confirm password"/>
-			<button class="" type="submit">Register</button>
-			<span class="small">By clicking "Register" you accept the <router-link to="">Terms of Use</router-link></span>
+      <h1>Sign up</h1>
+      <input required v-model="usernameReg" type="text" placeholder="Email"/>
+      <input required v-model="displayName" type="text" placeholder="Display name"/>
+      <input required v-model="passwordReg" type="password" placeholder="Password"/>
+      <input required v-model="passwordConfirm" type="password" placeholder="Confirm password"/>
+      <button class="" type="submit">Register</button>
+      <span class="small">By clicking "Register" you accept the <router-link to="">Terms of Use</router-link></span>
    </form>
  </div>
 </template>
 
 <script>
+import store from '../store'
+
 export default {
   name: 'Login',
   data() {
@@ -71,6 +73,10 @@ export default {
         this.$store.commit('axiosError', err)
       })
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    if (store.getters.user) next(false)
+    else next()
   }
 }
 </script>
