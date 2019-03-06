@@ -8,7 +8,7 @@
       <router-link class="linkButton" v-if="!loggedIn" to="/login">Log in</router-link>
       <div class="loginout" v-else>
         <router-link to="/account" class="linkButton">{{user.displayName}}</router-link>
-        <button style="margin-left: 0.5%;" class="linkButton" @click="$store.dispatch('logout')">Log out</button>
+        <button class="linkButton" @click="$store.dispatch('logout')">Log out</button>
       </div>
     </nav>
   </nav>

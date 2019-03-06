@@ -31,12 +31,12 @@
           <div class="comment-rating">
             <span class="vote-box">
               <font-awesome-icon icon="thumbs-up" class="vote"
-              :class="{ blue: comment.hasLiked }" @click="vote(comment, true)" />
+              :class="{ isVoted: comment.hasLiked }" @click="vote(comment, true)" />
               <span class="mr-3">{{comment.likes}}</span>
             </span>
             <span class="vote-box">
                 <font-awesome-icon icon="thumbs-down" class="vote"
-              :class="{ blue: comment.hasDisliked }" @click="vote(comment, false)" />
+              :class="{ isVoted: comment.hasDisliked }" @click="vote(comment, false)" />
               <span class="mr-3">{{comment.dislikes}}</span>
             </span>
           </div>
@@ -144,3 +144,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+
+.isVoted path{
+	color: $secondary;
+}
+
+</style>
