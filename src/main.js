@@ -32,11 +32,11 @@ if (localStorage.getItem('loggedIn') === 'true') {
 window.cookieconsent.initialise({
   'palette': {
     'popup': {
-      'background': '#000'
+      'background': '#222f3e'
     },
     'button': {
-      'background': '#f1d600'
-    }
+      'background': '#1abc9c'
+		}
   }
 })
 

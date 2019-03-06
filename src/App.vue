@@ -124,4 +124,19 @@ export default {
   width: 100vw;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+
+.cc-message{
+	color: #ffffff;
+}
+
+.cc-link{
+	text-decoration: none !important;
+	opacity: 1 !important;
+	color: #ecf0f1 !important;
+	&:hover {
+		color: $secondary !important;
+	}
+}
+
 </style>
