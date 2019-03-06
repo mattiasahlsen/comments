@@ -6,35 +6,35 @@
 
     <div v-if="addUrl && parsedUrl">
 
-		<div class="blockNote alert">
-			<button type="button" class="blockNoteClose" data-dismiss="alert" aria-label="Close"
-				@click.prevent="addUrl = false">
-				&times;
-			</button>
-				<div class="blockNoteInfo">
-					<h2>There is currently no comment thread for the entered URL</h2>
+    <div class="blockNote alert">
+      <button type="button" class="blockNoteClose" data-dismiss="alert" aria-label="Close"
+        @click.prevent="addUrl = false">
+        &times;
+      </button>
+        <div class="blockNoteInfo">
+          <h2>There is currently no comment thread for the entered URL</h2>
 
-					<div v-if="cache[parsedUrl.origin]">
-						There is a comment field
-						<i>{{parsedUrl.origin}}</i>, do you want to
-						<button class="inline" @click="redirect(parsedUrl.origin)">go there?</button>
-					</div>
+          <div v-if="cache[parsedUrl.origin]">
+            There is a comment field
+            <i>{{parsedUrl.origin}}</i>, do you want to
+            <button class="inline" @click="redirect(parsedUrl.origin)">go there?</button>
+          </div>
 
-					<div>
-						Do you want to
-						<button class="inline" @click="newCommentField(parsedUrl.href)">
-							create a new comment thread
-						</button> for <br><i class="big">{{shortHref}}</i>?
-					</div>
+          <div>
+            Do you want to
+            <button class="inline" @click="newCommentField(parsedUrl.href)">
+              create a new comment thread
+            </button> for <br><i class="big">{{shortHref}}</i>?
+          </div>
 
-					<div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
-						Or
-						<button class="inline" @click="newCommentField(parsedUrl.origin)">
-							create a domain-wide
-						</button> for <i>{{parsedUrl.origin}}</i>?
-					</div>
-					<div class="small" v-else><i>All URLs are normalized to http</i></div>
-				</div>
+          <div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
+            Or
+            <button class="inline" @click="newCommentField(parsedUrl.origin)">
+              create a domain-wide
+            </button> for <i>{{parsedUrl.origin}}</i>?
+          </div>
+          <div class="small" v-else><i>All URLs are normalized to http</i></div>
+        </div>
       </div>
 
     </div>

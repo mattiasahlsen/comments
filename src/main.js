@@ -36,7 +36,7 @@ window.cookieconsent.initialise({
     },
     'button': {
       'background': '#1abc9c'
-		}
+    }
   }
 })
 

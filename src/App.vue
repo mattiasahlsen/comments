@@ -127,16 +127,16 @@ export default {
 
 
 .cc-message{
-	color: #ffffff;
+  color: #ffffff;
 }
 
 .cc-link{
-	text-decoration: none !important;
-	opacity: 1 !important;
-	color: #ecf0f1 !important;
-	&:hover {
-		color: $secondary !important;
-	}
+  text-decoration: none !important;
+  opacity: 1 !important;
+  color: #ecf0f1 !important;
+  &:hover {
+    color: $secondary !important;
+  }
 }
 
 </style>
