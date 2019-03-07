@@ -417,7 +417,6 @@ button.inline{
 	cursor: pointer;
 }
 
-
 .commenter{
 	font-size: 1.1em;
 	font-weight: 200;
@@ -452,53 +451,4 @@ button.inline{
 
 .comment-replies{
 	margin-left: 12%;
-}
-
-@media (max-width: $lg) {
-
-	h1{
-		font-size: 2em;
-	}
-
-  .search {
-    font-size: 2.5em;
-	}
-
-	.comment-form input[type="text"]{
-		width: 100%;
-	}
-
-
-	footer{
-		flex-direction: column;
-	}
-}
-@media (max-width: $md) {
-  .wrapper {
-    width: 80%;
-  }
-  .search {
-    font-size: 2em;
-  }
-}
-
-@media (max-width: $sm) {
-	nav.main .logo img{
-		max-height: 40px;
-		height:100%;
-	}
-
-	.wrapper {
-    width: 90%;
-  }
-
-  .comment-score{
-    font-size: 2em;
-	}
-
-	.loginout button,
-	.linkButton{
-		width: 5em;
-	}
-
 }

@@ -1,7 +1,7 @@
 <template>
   <nav class="main">
     <div class="logo">
-      <router-link to="/"><img src="../assets/logo-demo3.png" alt="Logotype" /></router-link>
+      <router-link to="/"><img :src="logo" alt="Logotype" /></router-link>
     </div>
 
     <nav>
@@ -15,7 +15,15 @@
 </template>
 
 <script>
+
+import logo from '../assets/logo.png'
+
 export default {
+	data() {
+    return {
+      logo: logo
+    }
+	},
   computed: {
     user() {
       return this.$store.getters.user

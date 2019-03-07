@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input class="search" placeholder="Enter URL for comments..." v-model="url" v-on:keyup.enter.prevent="$emit('submit', url)" spellcheck="false"/>
+    <input class="search" v-bind:placeholder="currentUrl()" v-model="url" v-on:keyup.enter.prevent="$emit('submit', url)" spellcheck="false"/>
   </div>
 </template>
 
@@ -8,8 +8,14 @@
 export default {
   data() {
     return {
-      url: '',
+			url: '',
     }
-  },
+	},
+	methods: {
+		currentUrl() {
+			const page = this.$route.fullPath.substring(10)
+			return page == "" ? "Enter URL for comments..." : decodeURIComponent(page)
+		}
+	},
 }
 </script>
