@@ -19,11 +19,11 @@
 import logo from '../assets/logo.png'
 
 export default {
-	data() {
+  data() {
     return {
       logo: logo
     }
-	},
+  },
   computed: {
     user() {
       return this.$store.getters.user

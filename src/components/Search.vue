@@ -8,14 +8,14 @@
 export default {
   data() {
     return {
-			url: '',
+      url: '',
     }
-	},
-	methods: {
-		currentUrl() {
-			const page = this.$route.fullPath.substring(10)
-			return page == "" ? "Enter URL for comments..." : decodeURIComponent(page)
-		}
-	},
+  },
+  methods: {
+    currentUrl() {
+      const page = this.$route.params.url
+      return page === '' ? 'Enter URL for comments...' : page
+    }
+  },
 }
 </script>

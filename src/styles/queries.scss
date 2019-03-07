@@ -1,22 +1,22 @@
 
 @media (max-width: $lg) {
 
-	h1{
-		font-size: 2em;
-	}
+  h1{
+    font-size: 2em;
+  }
 
   .search {
     font-size: 2.5em;
-	}
+  }
 
-	.comment-form input[type="text"]{
-		width: 100%;
-	}
+  .comment-form input[type="text"]{
+    width: 100%;
+  }
 
 
-	footer{
-		flex-direction: column;
-	}
+  footer{
+    flex-direction: column;
+  }
 }
 
 @media (max-width: $md) {
@@ -29,22 +29,27 @@
 }
 
 @media (max-width: $sm) {
-	nav.main .logo img{
-		max-height: 40px;
-		height:100%;
-	}
+  nav.main .logo img{
+    max-height: 40px;
+    height:100%;
+  }
 
-	.wrapper {
+  .wrapper {
     width: 90%;
   }
 
   .comment-score{
     font-size: 2em;
-	}
+  }
 
-	.loginout button,
-	.linkButton{
-		width: 5em;
-	}
+  .loginout button,
+  .linkButton{
+    width: 5em;
+  }
+
+  .login-form,
+  .registration-form{
+    width: 100%;
+  }
 
 }

@@ -69,7 +69,6 @@
 import axios from 'axios'
 import conf from '../config'
 
-
 const URL = conf.API_URL
 
 export default {
@@ -79,10 +78,10 @@ export default {
     return {
       showChildren: false,
     }
-	},
+  },
   methods: {
     showFull(comment) {
-			comment.showFull = true
+      comment.showFull = true
     },
     vote(comment, like) {
       const likes = comment.likes
@@ -144,7 +143,7 @@ export default {
 <style lang="scss" scoped>
 
 .isVoted path{
-	color: $secondary;
+  color: $secondary;
 }
 
 </style>
