@@ -1,4 +1,7 @@
-export const dateString = (date) => {
+import parseUrl from 'url-parse'
+import validUrl from 'valid-url'
+
+export function dateString(date) {
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -23,4 +26,25 @@ export const dateString = (date) => {
   } else {
     return months[date.getMonth()] + ' ' + date.getDate() + ' ' + date.getFullYear()
   }
+}
+
+export function normalizeUrl(url) {
+  const parsed = parseUrl(url)
+  if (parsed.hostname === window.location.hostname) {
+    return parsed.pathname.slice(1)
+  }
+  return parsed.hostname.replace('www.', '') + parsed.pathname
+}
+export function normHostname(url) {
+  const parsed = parseUrl(url)
+  if (parsed.hostname === window.location.hostname) {
+    return parseUrl('http://' + parsed.pathname.slice(1)).hostname
+  } else return parsed.hostname
+}
+
+export function isValid(url) {
+  const parsed = parseUrl(url)
+  url = parsed.hostname === window.location.hostname
+    ? 'http://' + parsed.pathname.slice(1) : parsed.href
+  return validUrl.isWebUri(url) && parseUrl(url).hostname.search(/\./) !== -1
 }

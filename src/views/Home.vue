@@ -4,7 +4,7 @@
       <Search @submit="redirect"/>
     </div>
 
-    <div v-if="addUrl && parsedUrl">
+    <div v-if="addUrl && normUrl && normHostname">
 
     <div class="blockNote alert">
       <button type="button" class="blockNoteClose" data-dismiss="alert" aria-label="Close"
@@ -14,24 +14,24 @@
         <div class="blockNoteInfo">
           <h2>There is currently no comment thread for the entered URL</h2>
 
-          <div v-if="cache[parsedUrl.origin]">
+          <div v-if="cache[normHostname]">
             There is a comment field
-            <i>{{parsedUrl.origin}}</i>, do you want to
-            <button class="inline" @click="redirect(parsedUrl.origin)">go there?</button>
+            <i>{{normHostname}}</i>, do you want to
+            <button class="inline" @click="redirect(normHostname)">go there?</button>
           </div>
 
           <div>
             Do you want to
-            <button class="inline" @click="newCommentField(parsedUrl.href)">
+            <button class="inline" @click="newCommentField(normUrl)">
               create a new comment thread
             </button> for <br><i class="big">{{shortHref}}</i>?
           </div>
 
-          <div v-if="!cache[parsedUrl.origin] && parsedUrl.origin !== parsedUrl.href">
+          <div v-if="!cache[normHostname] && normUrl !== normHostname">
             Or
-            <button class="inline" @click="newCommentField(parsedUrl.origin)">
+            <button class="inline" @click="newCommentField(normHostname)">
               create a domain-wide
-            </button> for <i>{{parsedUrl.origin}}</i>?
+            </button> for <i>{{normHostname}}</i>?
           </div>
           <div class="small" v-else><i>All URLs are normalized to http</i></div>
         </div>
@@ -75,7 +75,6 @@
 // @ is an alias to /src
 import urlencode from 'urlencode'
 import parseUrl from 'url-parse'
-import validUrl from 'valid-url'
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 
 import Search from '@/components/Search'
@@ -84,11 +83,10 @@ import WebsiteList from '@/components/WebsiteList'
 import axios from 'axios'
 
 import conf from '../config'
-import { dateString } from '../lib'
+import { dateString, normalizeUrl, normHostname, isValid } from '../lib'
 
 const URL = conf.API_URL
 
-const isValid = url => validUrl.isWebUri(url) || validUrl.isWebUri('http://' + url)
 const clean = url => {
   url = url.replace(/\/$/, '').replace('https', 'http')
   if (!url.includes('http')) url = 'http://' + url
@@ -142,15 +140,28 @@ export default {
       offset: 0,
       gotAll: false,
       addUrl: false,
-      parsedUrl: null,
       domainComments: null,
-      loading: false
+      loading: false,
+      url: null, // the url to create
     }
   },
   computed: {
     shortHref() {
-      const url = this.parsedUrl.href
-      return url.length > 55 ? url.substring(0, 55) + '...' : url
+      if (!this.normUrl) return ''
+      return this.normUrl.length > 55 ? this.normUrl.substring(0, 55) + '...' : this.normUrl
+    },
+    parsedUrl() {
+      if (!this.$route.params.url && !this.url) return null
+      const url = this.$route.params.url || this.url
+      return parseUrl(url)
+    },
+    normUrl() {
+      if (!this.parsedUrl) return null
+      return normalizeUrl(this.parsedUrl.href)
+    },
+    normHostname() {
+      if (!this.parsedUrl) return null
+      return normHostname(this.parsedUrl.href)
     }
   },
   components: {
@@ -315,13 +326,17 @@ export default {
       if (this.sort === 'New') this.comments.sort(sortNew)
       else if (this.sort === 'Top') this.comments.sort(sortTop)
     },
-    clean
+
+    clean,
+    normalizeUrl,
   },
   beforeRouteEnter(to, from, next) {
     // console.log('Before route enter.')
-    next(vm => loadComments(vm, to.params.url)
-      .then(comments => vm.handleComments(comments))
-      .catch(vm.loadCommentsError))
+    next(vm => {
+      loadComments(vm, to.params.url)
+        .then(comments => vm.handleComments(comments))
+        .catch(vm.loadCommentsError)
+    })
   },
   beforeRouteUpdate(to, from, next) {
     // console.log('Before route update.')
@@ -336,11 +351,12 @@ export default {
       .catch(err => {
         if (err.response && err.response.status === 404) {
           if (to.params.url) {
-            this.parsedUrl = parseUrl(to.params.url)
-            if (to.params.url !== this.parsedUrl.origin) {
-              loadComments(this, this.parsedUrl.origin).then(comments => {
-                this.parsedUrl = this.parsedUrl
-                this.$set(this.cache, this.parsedUrl.origin, comments)
+            this.url = normalizeUrl(to.params.url)
+            const normUrl = normalizeUrl(to.params.url)
+            const normHostname = normalizeUrl(parseUrl(to.params.url).hostname)
+            if (normUrl !== normHostname) {
+              loadComments(this, normHostname).then(comments => {
+                this.$set(this.cache, normHostname, comments)
               }).catch(err => this.loadCommentsError)
             }
 
