@@ -83,12 +83,6 @@ import { dateString, normalizeUrl, normHostname, isValid } from '../lib'
 
 const URL = conf.API_URL
 
-const clean = url => {
-  url = url.replace(/\/$/, '').replace('https', 'http')
-  if (!url.includes('http')) url = 'http://' + url
-  return url
-}
-
 const loadComments = (vm, url) => {
   return new Promise((resolve, reject) => {
     if (url) {
@@ -168,7 +162,7 @@ export default {
   },
   methods: {
     newCommentField(url) {
-      axios.post(`${URL}/website/${urlencode(clean(url))}`).then(resp => {
+      axios.post(`${URL}/website/${urlencode(normalizeUrl(url))}`).then(resp => {
         resp.data.createdAt = new Date(resp.data.createdAt)
         resp.data.createdText = dateString(resp.data.createdAt)
         this.websites.unshift(resp.data)
@@ -215,7 +209,7 @@ export default {
       if (!isValid(url)) {
         return this.$store.commit('error', 'Badly formated url.')
       }
-      url = clean(url)
+      url = normalizeUrl(url)
 
       if (url && url !== this.$route.params.url) {
         // console.log('Redirecting to: ' + url)
@@ -285,8 +279,7 @@ export default {
         }).finally(() => setTimeout(() => { this.loading = false }, 1000)) // min 500ms loading for reduced lag
       }
       if (url) {
-        url = urlencode(url)
-        return axios.get(URL + '/comments/' + url + '/' +
+        return axios.get(URL + '/comments/' + urlencode(url) + '/' +
           (parent ? parent._id : sort) + '/' + offset).then(resp => {
           // if (resp.data.comments.length > 0) console.log(resp.data.comments[0])
           return resp.data.comments
@@ -324,7 +317,6 @@ export default {
       else if (this.sort === 'Top') this.comments.sort(sortTop)
     },
 
-    clean,
     normalizeUrl,
   },
   beforeRouteEnter(to, from, next) {
@@ -350,10 +342,10 @@ export default {
           if (to.params.url) {
             this.url = normalizeUrl(to.params.url)
             const normUrl = normalizeUrl(to.params.url)
-            const normHostname = normalizeUrl(parseUrl(to.params.url).hostname)
-            if (normUrl !== normHostname) {
-              loadComments(this, normHostname).then(comments => {
-                this.$set(this.cache, normHostname, comments)
+            const normHost = normHostname(to.params.url)
+            if (normUrl !== normHost) {
+              loadComments(this, normHost).then(comments => {
+                this.$set(this.cache, normHost, comments)
               }).catch(err => this.loadCommentsError)
             }
 

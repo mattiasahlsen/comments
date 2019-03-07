@@ -33,7 +33,7 @@ export function absPath(url) {
   else return url
 }
 export function normalizeUrl(url) {
-  const parsed = parseUrl(absPath(url))
+  const parsed = parseUrl(absPath(url).replace(/\/$/, ''))
   return parsed.hostname.replace('www.', '') + parsed.pathname
 }
 export function normHostname(url) {
