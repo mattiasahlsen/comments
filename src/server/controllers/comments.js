@@ -1,8 +1,7 @@
 import log, { debug, logErr } from '../debug'
 import conf from '../../config'
 import Vote from '../models/vote'
-
-const validUrl = require('valid-url')
+import { normalizeUrl, isValid } from '../../lib'
 
 const Website = require('../models/website')
 const Comment = require('../models/comment')
@@ -154,9 +153,11 @@ router.get('/websites', (req, res) => {
 
 router.post('/website/:url', (req, res) => {
   if (!req.isAuthenticated()) return res.status(401).end()
-  if (!validUrl.isWebUri(req.params.url)) return res.status(422).end()
+  if (!isValid(req.params.url)) return res.status(422).end()
 
-  new Website({ url: req.params.url }).save().then(website => {
+  console.log(normalizeUrl(req.params.url))
+
+  new Website({ url: normalizeUrl(req.params.url) }).save().then(website => {
     return res.json(website)
   }).catch(err => res.status(500).end())
 })

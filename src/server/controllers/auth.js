@@ -23,6 +23,7 @@ router.post('/register', [
     debug('Missing field in register request.')
     return res.status(400).end()
   }
+  req.body.username = req.body.username.toLowerCase()
 
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
@@ -57,6 +58,10 @@ router.post('/register', [
   })
 })
 
+router.post('/login', (req, res, next) => {
+  req.body.username = req.body.username.toLowerCase()
+  next()
+})
 router.post('/login', passport.authenticate('local'), function(req, res) {
   res.status(200).json({ user: req.user })
 })
