@@ -30,6 +30,7 @@ export function dateString(date) {
 
 export function absPath(url) {
   if (!validUrl.isWebUri(url)) return 'http://' + url
+  else return url
 }
 export function normalizeUrl(url) {
   const parsed = parseUrl(absPath(url))
