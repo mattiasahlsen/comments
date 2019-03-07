@@ -140,12 +140,12 @@ export default {
       return shortString(this.normUrl, 55)
     },
     normUrl() {
-      if (!this.$route.params.url && !this.url) return null
-      return normalizeUrl(this.$route.params.url || this.url)
+      if (!this.url) return null
+      return normalizeUrl(this.url)
     },
     normHostname() {
-      if (!this.$route.params.url && !this.url) return null
-      return normHostname(this.$route.params.url || this.url)
+      if (!this.url) return null
+      return normHostname(this.url)
     }
   },
   components: {
