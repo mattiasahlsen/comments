@@ -11,10 +11,9 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/comments/:url?',
+      path: '/:url?',
       name: 'home',
       component: Home,
-      alias: '/'
     },
     {
       path: '/about',
