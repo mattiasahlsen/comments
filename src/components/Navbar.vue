@@ -8,7 +8,7 @@
       <router-link class="linkButton" v-if="!loggedIn" to="/login">Log in</router-link>
       <div class="loginout" v-else>
         <router-link to="/account" class="linkButton">{{user.displayName}}</router-link>
-        <button class="linkButton" @click="$store.dispatch('logout')">Log out</button>
+        <button class="linkButton" @click="logOut">Log out</button>
       </div>
     </nav>
   </nav>
@@ -30,6 +30,12 @@ export default {
     },
     loggedIn() {
       return this.$store.getters.isAuthenticated
+    }
+  },
+  methods: {
+    logOut() {
+      this.$store.dispatch('logout')
+      this.$router.push({ path: '/' })
     }
   }
 }
