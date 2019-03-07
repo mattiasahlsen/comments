@@ -210,6 +210,7 @@ export default {
     },
     redirect(url) {
       if (!url) return
+      this.addUrl = false
 
       // console.log('Redirect called with url parameter ' + url)
 
