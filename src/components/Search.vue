@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     currentUrl() {
-      const page = this.$route.params.url ? shortString(this.$route.params.url, 10) : ''
+      const page = this.$route.params.url ? shortString(this.$route.params.url, 20) : ''
       return page === '' ? 'Enter URL for comments...' : page
     }
   },
