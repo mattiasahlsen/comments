@@ -11,11 +11,6 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/:url?',
-      name: 'home',
-      component: Home,
-    },
-    {
       path: '/about',
       name: 'about',
       // route level code-splitting
@@ -32,6 +27,11 @@ const router = new Router({
       path: '/account',
       name: 'account',
       component: () => import(/* webpackChunkName: "account" */ './views/Account.vue')
+    },
+    {
+      path: '/:url?',
+      name: 'home',
+      component: Home,
     },
     { path: '*', component: NotFound }
   ]

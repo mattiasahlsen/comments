@@ -29,8 +29,8 @@ function addStyleResource (rule) {
     .options({
       patterns: [
         path.resolve(__dirname, './src/styles/imports.scss'),
-				path.resolve(__dirname, './src/styles/main.scss'),
-				path.resolve(__dirname, './src/styles/queries.scss'),
+        path.resolve(__dirname, './src/styles/main.scss'),
+        path.resolve(__dirname, './src/styles/queries.scss'),
       ],
     })
 }

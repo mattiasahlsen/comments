@@ -1,7 +1,5 @@
 import Account from './account'
-import Website from './website'
 import Vote from './vote'
-import { idValidator } from './validators'
 
 import { logErr } from '../debug'
 
@@ -117,9 +115,5 @@ Comment.method('toObj', function(userId, hasChildren = true) {
 })
 
 const CommentModel = mongoose.model('Comment', Comment)
-
-Comment.path('userId').validate(idValidator(Account))
-Comment.path('websiteId').validate(idValidator(Website))
-Comment.path('parentId').validate(idValidator(CommentModel))
 
 module.exports = CommentModel
