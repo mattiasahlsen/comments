@@ -118,7 +118,7 @@ button{
 	display: block;
 	text-align: center;
 	color: $white;
-	font-weight: 200;
+	font-weight: 300;
 	background: $button-bg-1;
 	white-space:nowrap;
 }
@@ -149,7 +149,6 @@ button[disabled]:hover{
 .linkButton:hover,
 button:hover{
 	color: $primary;
-	font-weight: 200;
 	cursor: pointer;
 	background: $button-bg-hover;
 	color: white;
