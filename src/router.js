@@ -37,9 +37,8 @@ const router = new Router({
     { path: '*', component: NotFound }
   ]
 })
-router.beforeEach((to, from, next) => {
+router.afterEach((to, from) => {
   store.commit('clearError')
-  next()
 })
 
 export default router

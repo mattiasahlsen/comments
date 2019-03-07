@@ -28,6 +28,10 @@ export function dateString(date) {
   }
 }
 
+export function shortString(str, max) {
+  return str.length > max ? str.substring(0, max) + '...' : str
+}
+
 export function absPath(url) {
   if (!validUrl.isWebUri(url)) return 'http://' + url
   else return url

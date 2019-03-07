@@ -70,7 +70,6 @@
 <script>
 // @ is an alias to /src
 import urlencode from 'urlencode'
-import parseUrl from 'url-parse'
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 
 import Search from '@/components/Search'
@@ -79,7 +78,7 @@ import WebsiteList from '@/components/WebsiteList'
 import axios from 'axios'
 
 import conf from '../config'
-import { dateString, normalizeUrl, normHostname, isValid } from '../lib'
+import { dateString, normalizeUrl, normHostname, isValid, shortString } from '../lib'
 
 const URL = conf.API_URL
 
@@ -138,20 +137,15 @@ export default {
   computed: {
     shortHref() {
       if (!this.normUrl) return ''
-      return this.normUrl.length > 55 ? this.normUrl.substring(0, 55) + '...' : this.normUrl
-    },
-    parsedUrl() {
-      if (!this.$route.params.url && !this.url) return null
-      const url = this.$route.params.url || this.url
-      return parseUrl(url)
+      return shortString(this.normUrl, 55)
     },
     normUrl() {
-      if (!this.parsedUrl) return null
-      return normalizeUrl(this.parsedUrl.href)
+      if (!this.$route.params.url && !this.url) return null
+      return normalizeUrl(this.$route.params.url || this.url)
     },
     normHostname() {
-      if (!this.parsedUrl) return null
-      return normHostname(this.parsedUrl.href)
+      if (!this.$route.params.url && !this.url) return null
+      return normHostname(this.$route.params.url || this.url)
     }
   },
   components: {
