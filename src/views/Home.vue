@@ -4,39 +4,35 @@
       <Search @submit="redirect"/>
     </div>
 
-    <div v-if="addUrl && normUrl && normHostname">
-
-    <div class="blockNote alert">
+    <div v-if="addUrl && normUrl && normHostname" class="blockNote alert">
       <button type="button" class="blockNoteClose" data-dismiss="alert" aria-label="Close"
         @click.prevent="addUrl = false">
         &times;
       </button>
-        <div class="blockNoteInfo">
-          <h2>There is currently no comment thread for the entered URL</h2>
+      <div class="blockNoteInfo">
+        <h2>There is currently no comment thread for the entered URL</h2>
 
-          <div v-if="cache[normHostname]">
-            There is a comment field
-            <i>{{normHostname}}</i>, do you want to
-            <button class="inline" @click="redirect(normHostname)">go there?</button>
-          </div>
-
-          <div>
-            Do you want to
-            <button class="inline" @click="newCommentField(normUrl)">
-              create a new comment thread
-            </button> for <br><i class="big">{{shortHref}}</i>?
-          </div>
-
-          <div v-if="!cache[normHostname] && normUrl !== normHostname">
-            Or
-            <button class="inline" @click="newCommentField(normHostname)">
-              create a domain-wide
-            </button> for <i>{{normHostname}}</i>?
-          </div>
-          <div class="small" v-else><i>All URLs are normalized to http</i></div>
+        <div v-if="cache[normHostname]">
+          There is a comment field
+          <i>{{normHostname}}</i>, do you want to
+          <button class="inline" @click="redirect(normHostname)">go there?</button>
         </div>
-      </div>
 
+        <div>
+          Do you want to
+          <button class="inline" @click="newCommentField(normUrl)">
+            create a new comment thread
+          </button> for <br><i class="big">{{shortHref}}</i>?
+        </div>
+
+        <div v-if="!cache[normHostname] && normUrl !== normHostname">
+          Or
+          <button class="inline" @click="newCommentField(normHostname)">
+            create a domain-wide
+          </button> for <i>{{normHostname}}</i>?
+        </div>
+        <div class="small" v-else><i>All URLs are normalized to http</i></div>
+      </div>
     </div>
 
     <div v-if="comments">
