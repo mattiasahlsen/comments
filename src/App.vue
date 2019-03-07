@@ -13,7 +13,7 @@
 
     <footer class="page-footer">
       <div>
-      All rights reserved &copy; domain.com
+      All rights reserved &copy; urlexp.com
       </div>
 
       <div>
@@ -47,7 +47,7 @@ export default {
   components: {
     Navbar,
   },
-  /*created() {
+  /* created() {
     axios.get(URL + '/thumbnail').then(resp => {
       this.image = resp.data
     })
@@ -115,7 +115,6 @@ export default {
   width: 100vw;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
 
 .cc-message{
   color: #ffffff;
