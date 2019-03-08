@@ -63,7 +63,7 @@
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
 
-    <clip-loader class="my-3 loader" :loading="loading" color="#008ae6"></clip-loader>
+    <clip-loader :loading="loading" color="#008ae6"></clip-loader>
   </div>
 </template>
 
@@ -172,6 +172,7 @@ export default {
     modify(comment) {
       comment.showFull = false
       comment.showChildren = false
+      comment.loadingChildren = false
       comment.score = comment.likes - comment.dislikes
       comment.createdAt = new Date(comment.createdAt)
       comment.createdText = dateString(comment.createdAt)
@@ -212,9 +213,15 @@ export default {
     },
     loadChildren(comment) {
       if (!comment.gotAllChildren) {
+        console.log('loading children')
+        comment.loadingChildren = true
         this.getComments(this.$route.params.url, comment.children.length, comment)
           .then(comments => this.handleComments(comments, comment))
           .catch(this.loadCommentsError)
+          .finally(() => {
+            console.log('not loading children')
+            comment.loadingChildren = false
+          })
       }
     },
     handleComments(comments, parent) {

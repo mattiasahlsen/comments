@@ -11,11 +11,11 @@
           <div v-if="comment.someText" class="comment-text">
             <div v-if="!comment.showFull">
               <div v-html="comment.someText" class="comment-text"></div>
-              <div @click="comment.showFull = true"><div class="clickable">Show more</div></div>
+              <div @click="comment.showFull = true"><div class="clickable my-2">Show more</div></div>
             </div>
             <div v-else>
               <div v-html="comment.text" class="comment-text"></div>
-              <div @click="comment.showFull = false"><div class="clickable">Show less</div></div>
+              <div @click="comment.showFull = false"><div class="clickable my-2">Show less</div></div>
             </div>
           </div>
 
@@ -56,6 +56,13 @@
             <div v-if="comment.children.length > 0 &&
               comment.children.length % 10 === 0" @click="$emit('loadChildren', comment)"
               class="clickable load-more">Load more...</div>
+
+              <clip-loader
+                :loading="comment.loadingChildren"
+                color="#008ae6"
+                size="25px"
+              >
+              </clip-loader>
           </div>
           <div v-if="comment.showChildren" @click="comment.showChildren = false">
             <div class="clickable hideReplies">Hide Replies</div>
@@ -70,12 +77,16 @@
 <script>
 import axios from 'axios'
 import conf from '../config'
+import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 
 const URL = conf.API_URL
 
 export default {
   name: 'CommentField',
   props: ['comments'],
+  components: {
+    ClipLoader
+  },
   data() {
     return {
       showChildren: false,
