@@ -231,6 +231,9 @@ nav.main img {
   font-size: 1.8em;
   font-weight: 200;
   order: 1;
+  flex: 1 1 auto;
+  overflow: hidden;
+  margin-right: 0.1em;
 }
 
 button.nostyle {

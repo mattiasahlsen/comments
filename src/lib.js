@@ -38,7 +38,7 @@ export function absPath(url) {
 }
 export function normalizeUrl(url) {
   const parsed = parseUrl(absPath(url).replace(/\/$/, ''))
-  return parsed.hostname.replace('www.', '') + parsed.pathname
+  return parsed.hostname.replace('www.', '') + parsed.pathname + parsed.query
 }
 export function normHostname(url) {
   const parsed = parseUrl(absPath(url))
