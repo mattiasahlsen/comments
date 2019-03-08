@@ -53,6 +53,7 @@ export default {
       font-weight: bold;
       width: 40em;
     }
+
     .account-value {
       white-space: nowrap;
     }

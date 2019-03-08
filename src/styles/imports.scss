@@ -1,4 +1,4 @@
-$blue:    #007bff !default;
+$blue: #007bff !default;
 $white: #ecf0f1;
 $dark: #222f3e;
 
@@ -10,13 +10,11 @@ $grey-background: rgb(230, 230, 230);
 $grey: #576574;
 $warning: #e74c3c;
 
-/*For links*/
 $link-color:#222f3e;
 $link-color-hover:$secondary;
 $link-color-focus:none;
 $link-color-active:none;
 
-/*Backgrounds*/
 $light-background: rgba(0,0,0,0.1);
 $button-bg-1: $primary;
 $button-bg-hover: $secondary;
