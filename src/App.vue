@@ -17,6 +17,7 @@
       </div>
 
       <div>
+        <router-link to="/support" class="link">Support</router-link> -
         <router-link to="/about" class="link">About</router-link> -
         <router-link to="/legal/terms-of-use" class="link">Terms of Use</router-link> -
         <router-link to="/legal/privacy-policy" class="link">Privacy Policy</router-link> -

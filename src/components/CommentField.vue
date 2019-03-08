@@ -49,7 +49,7 @@
       <div class="comment-replies">
         <div v-if="comment.children.length > 0" class="ml-3 mt-3">
           <div v-if="!comment.showChildren" @click="comment.showChildren = true">
-            <div class="clickable showReplies">Show Replies</div>
+            <div class="clickable showReplies">Show Replies the replies to {{comment.displayName}}</div>
           </div>
           <div v-if="comment.showChildren">
             <CommentField :comments="comment.children"/>
@@ -58,7 +58,7 @@
               class="clickable load-more">Load more...</div>
           </div>
           <div v-if="comment.showChildren" @click="comment.showChildren = false">
-            <div class="clickable hideReplies">Hide Replies</div>
+            <div class="clickable hideReplies">Hide the replies to {{comment.displayName}}</div>
           </div>
         </div>
       </div>
