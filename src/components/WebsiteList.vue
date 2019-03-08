@@ -6,7 +6,7 @@
     @click="redirect(website.url)">
 
       <div class="website-item">
-        <div class="website-item-date">{{website.createdText}}</div>
+        <div class="website-item-date">{{website.createdAt.toLocaleString()}}</div>
         <div class="website-item-url">{{website.url}}</div>
       </div>
     </li>
@@ -19,7 +19,7 @@ export default {
   methods: {
     redirect(url) {
       this.$emit('redirect', url)
-    }
+    },
   }
 }
 </script>

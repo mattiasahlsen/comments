@@ -9,10 +9,13 @@
     font-size: 2.5em;
   }
 
-  .comment-form input[type="text"]{
-    width: 100%;
+  .comment-form input[type="text"] {
+    font-size: 1.5em;
   }
 
+  .comment-info {
+    width: 30%;
+  }
 
   footer{
     flex-direction: column;
@@ -23,6 +26,15 @@
   .wrapper {
     width: 80%;
   }
+
+  .website-item-url{
+    font-size: 1.5em;
+  }
+
+  .comment-reply{
+    margin-left: 0.5em;
+  }
+
   .search {
     font-size: 2em;
   }
@@ -36,6 +48,14 @@
 
   .wrapper {
     width: 90%;
+  }
+
+  .comment-form input[type="text"] {
+    font-size: 1em;
+  }
+
+  .comment-reply{
+    font-size: 1.5em;
   }
 
   .comment-score{

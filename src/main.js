@@ -5,15 +5,12 @@ import store from './store'
 
 import 'cookieconsent/build/cookieconsent.min.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faThumbsUp, faThumbsDown, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faThumbsUp, faThumbsDown, faTimes , faReply} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import 'modern-normalize/modern-normalize.css'
 import 'cookieconsent/build/cookieconsent.min.css'
 
-library.add(faThumbsUp)
-library.add(faThumbsDown)
-
-library.add(faTimes)
+library.add(faThumbsUp, faThumbsDown, faReply, faTimes)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false

@@ -1,18 +1,28 @@
 <template>
-  <div class="account-info">
-    <h1>{{user.displayName}}</h1>
-    <div class="account-field">
-      <div class="account-key">Email:</div>
-      <div class="account-value">{{user.username}}</div>
+  <div>
+    <div class="account-info">
+      <h1>Profile</h1>
+      <div class="account-field">
+        <div class="account-key">Username:</div>
+        <div class="account-value">{{user.displayName}}</div>
+      </div>
+      <div class="account-field">
+        <div class="account-key">Email:</div>
+        <div class="account-value">{{user.username}}</div>
+      </div>
+      <div class="account-field">
+        <div class="account-key">Created:</div>
+        <div class="account-value">{{createdAt}}</div>
+      </div>
+      <div class="account-field">
+        <div class="account-key">Email confirmed:</div>
+        <div class="account-value">{{user.confirmed ? 'Yes' : 'No'}}</div>
+      </div>
     </div>
-    <div class="account-field">
-      <div class="account-key">Created:</div>
-      <div class="account-value">{{createdAt}}</div>
-    </div>
-    <div class="account-field">
-      <div class="account-key">Email confirmed:</div>
-      <div class="account-value">{{user.confirmed ? 'Yes' : 'No'}}</div>
-    </div>
+    <p style="margin-top:2em">
+
+      Would you like to delete your account or know what's stored about you, please contact <strong>support@urlexp.com</strong>.
+    </p>
   </div>
 </template>
 

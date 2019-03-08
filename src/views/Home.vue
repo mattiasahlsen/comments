@@ -38,15 +38,15 @@
     <div v-if="comments">
       <div class="row">
         <form id="comment-form" class="comment-form">
-          <input class="form-control" placeholder="Write a comment..."
+          <input class="form-control" placeholder="What is your thoughts about this URL?"
             v-model="comment" type="text" />
-          <button type="submit" class="" @click.prevent="submit(comment)" :disabled="comment===''">Submit</button>
+          <button type="submit" class="" @click.prevent="submit(comment)" :disabled="comment===''">OK</button>
           <!-- <button type="submit" class="" @click.prevent="comment = ''">Cancel</button> -->
         </form>
       </div>
 
       <div class="sorter">
-        Sort comments by:
+        Sort by:
         <select v-model="sort" @change="changeSort" class="">
           <option selected="selected">Hot</option>
           <option>New</option>

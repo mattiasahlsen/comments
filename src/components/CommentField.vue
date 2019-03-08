@@ -40,14 +40,16 @@
               <span class="mr-3">{{comment.dislikes}}</span>
             </span>
           </div>
-
+        </div>
+        <div class="comment-reply">
+          <font-awesome-icon icon="reply" class="reply" />
         </div>
       </div>
 
       <div class="comment-replies">
         <div v-if="comment.children.length > 0" class="ml-3 mt-3">
           <div v-if="!comment.showChildren" @click="comment.showChildren = true">
-            <div class="clickable">Show replies</div>
+            <div class="clickable showReplies">Show Replies</div>
           </div>
           <div v-if="comment.showChildren">
             <CommentField :comments="comment.children"/>
@@ -56,7 +58,7 @@
               class="clickable load-more">Load more...</div>
           </div>
           <div v-if="comment.showChildren" @click="comment.showChildren = false">
-            <div class="clickable">Hide replies</div>
+            <div class="clickable hideReplies">Hide Replies</div>
           </div>
         </div>
       </div>
@@ -146,4 +148,11 @@ export default {
   color: $secondary;
 }
 
+.comment-score {
+  // background-image: url("../assets/score-bg.png");
+  // background-repeat: no-repeat;
+  // background-size: contain;
+  // background-position: center;
+  // text-align: center;
+}
 </style>

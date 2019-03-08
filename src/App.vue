@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <footer class="page-footer">
+    <footer>
       <div>
       All rights reserved &copy; urlexp.com
       </div>
@@ -20,7 +20,7 @@
         <router-link to="/about" class="link">About</router-link> -
         <router-link to="/legal/terms-of-use" class="link">Terms of Use</router-link> -
         <router-link to="/legal/privacy-policy" class="link">Privacy Policy</router-link> -
-        <router-link to="/legal/use-of-cookies" class="link">Use of cookies</router-link>
+        <a href="https://cookiesandyou.com/" target="_blank">Use of cookies</a>
       </div>
     </footer>
 
@@ -71,7 +71,7 @@ export default {
   font-family: 'Roboto', sans-serif;
 }
 
-.page-footer {
+footer {
   margin-top: 5vh;
 }
 
