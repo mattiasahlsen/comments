@@ -295,12 +295,13 @@ nav.main .logo img {
 }
 
 .website-item-url {
-  width: 95%;
   border-left: 1px solid $dark;
   font-size: 1.8em;
   font-weight: 200;
-  order:1;
   padding: 0 0.5em;
+  flex: 1 1 auto;
+  overflow: hidden;
+  margin-right: 0.1em;
 }
 
 button.nostyle {
