@@ -41,8 +41,10 @@
             </span>
           </div>
         </div>
-        <div class="comment-reply">
-          <font-awesome-icon icon="reply" class="reply" />
+        <div class="comment-reply" :class="{ replyHover: replyHover[comment._id] }">
+          <span @mouseover="hoverReply(comment)" @mouseleave="unhoverReply(comment)">
+            <font-awesome-icon icon="reply" class="reply" />
+          </span>
         </div>
       </div>
 
@@ -87,9 +89,19 @@ export default {
   components: {
     ClipLoader
   },
+  watch: {
+    comments() {
+      this.comments.forEach(c => {
+        if (this.replyHover[c._id] === undefined) {
+          this.$set(this.replyHover, c._id, false)
+        }
+      })
+    }
+  },
   data() {
     return {
       showChildren: false,
+      replyHover: {},
     }
   },
   methods: {
@@ -148,7 +160,20 @@ export default {
         reset(comment)
         this.$store.commit('error', err.message)
       })
+    },
+    hoverReply(comment) {
+      this.replyHover[comment._id] = true
+    },
+    unhoverReply(comment) {
+      this.replyHover[comment._id] = false
     }
+  },
+  mounted() {
+    this.comments.forEach(c => {
+      if (this.replyHover[c._id] === undefined) {
+        this.$set(this.replyHover, c._id, false)
+      }
+    })
   }
 }
 </script>
@@ -165,5 +190,11 @@ export default {
   // background-size: contain;
   // background-position: center;
   // text-align: center;
+}
+.replyHover {
+  cursor: pointer;
+  path {
+    color: $secondary;
+  }
 }
 </style>
