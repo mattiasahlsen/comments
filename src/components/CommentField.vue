@@ -192,11 +192,11 @@ export default {
     unhoverReply(comment) {
       this.replyHover[comment._id] = false
     },
-
     replyTo(comment) {
       this.replyingTo = comment._id
 
     },
+
     sendReply(comment, text) {
       this.$emit('reply', comment._id, text)
     }

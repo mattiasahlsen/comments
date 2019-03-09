@@ -7,16 +7,15 @@
 </template>
 
 <script>
-  import page404 from '../assets/images/page-404.png'
+import page404 from '../assets/images/page-404.png'
 
-  export default {
-    data() {
-      return {
-        page404: page404
-      }
-    },
-
-  }
+export default {
+  data() {
+    return {
+      page404: page404
+    }
+  },
+}
 </script>
 
 <style lang="scss" scoped>
