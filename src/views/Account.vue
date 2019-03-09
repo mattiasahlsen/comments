@@ -21,7 +21,7 @@
     </div>
     <p style="margin-top:2em">
 
-      If you would like to delete your account or know what's stored about you, please contact <strong>support@urlexp.com</strong>.
+      If you would like to delete your account or know what's stored about you, please contact support@urlexp.com.
     </p>
   </div>
 </template>
