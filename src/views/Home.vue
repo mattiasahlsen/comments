@@ -155,6 +155,9 @@ export default {
     ClipLoader
   },
   methods: {
+    fade() {
+
+    },
     newCommentField(url) {
       axios.post(`${URL}/website/${urlencode(normalizeUrl(url))}`).then(resp => {
         resp.data.createdAt = new Date(resp.data.createdAt)

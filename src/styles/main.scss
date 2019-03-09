@@ -41,6 +41,10 @@ h1 {
   font-size: 3em;
 }
 
+h2 {
+  font-size: 2em;
+}
+
 ul {
   list-style: none;
 }
@@ -121,6 +125,9 @@ footer {
 
 nav.main img {
   height: 4.5em;
+  &:hover{
+    transform: scale(1.03)
+  }
 }
 
 .loginout {
@@ -151,7 +158,7 @@ nav.main img {
   width: 100%;
   font-size: 5vw;
   font-weight: 200;
-  margin-bottom: 1em;
+  margin: 0.5em 0 1em 0;
 }
 
 .login {
