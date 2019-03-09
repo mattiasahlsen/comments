@@ -36,34 +36,44 @@
     </div>
 
     <div v-if="comments">
-      <div class="row">
-        <form id="comment-form" class="comment-form">
-          <input class="form-control" placeholder="What is your thoughts about this URL?"
-            v-model="comment" type="text" />
-          <button type="submit" class="" @click.prevent="submit(comment)" :disabled="comment===''">OK</button>
-          <!-- <button type="submit" class="" @click.prevent="comment = ''">Cancel</button> -->
-        </form>
-      </div>
+      <form id="comment-form" class="comment-form">
+        <div class="comment-textarea-container">
+          <textarea
+            ref="textarea"
+            v-model="comment"
+            class="comment-textarea"
+            placeholder="Say something..."
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          @click.prevent="submit(comment)"
+          :disabled="comment === ''"
+          class="submit-button"
+        >
+          Submit
+        </button>
+        <button class="cancel-button" @click.prevent="comment = ''">Clear</button>
+        <!-- <button type="submit" class="" @click.prevent="comment = ''">Cancel</button> -->
+      </form>
 
       <div class="sorter">
         Sort by:
-        <select v-model="sort" @change="changeSort" class="">
-          <option selected="selected">Hot</option>
-          <option>New</option>
-          <option>Top</option>
+        <select v-model="sort" @change="changeSort">
+          <option selected="selected" value="Hot">Hot</option>
+          <option value="New">New</option>
+          <option value="Top">Top</option>
         </select>
       </div>
 
-      <div class="row">
-        <CommentField class="col-12" :comments="comments" @loadChildren="loadChildren"/>
-      </div>
+      <CommentField class="col-12" :comments="comments" @loadChildren="loadChildren"/>
     </div>
 
     <div v-else-if="!loading" class="my-5">
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
 
-    <clip-loader class="my-3 loader" :loading="loading" color="#008ae6"></clip-loader>
+    <clip-loader :loading="loading" color="#008ae6"></clip-loader>
   </div>
 </template>
 
@@ -146,6 +156,13 @@ export default {
     normHostname() {
       if (!this.url) return null
       return normHostname(this.url)
+    },
+  },
+  watch: {
+    comment() {
+      this.$refs.textarea.style.height = 'auto'
+      if (this.comment.split('\n').length === 1) this.$refs.textarea.style.height = '1.2em'
+      else this.$refs.textarea.style.height = this.$refs.textarea.scrollHeight + 'px'
     }
   },
   components: {
@@ -175,6 +192,7 @@ export default {
     modify(comment) {
       comment.showFull = false
       comment.showChildren = false
+      comment.loadingChildren = false
       comment.score = comment.likes - comment.dislikes
       comment.createdAt = new Date(comment.createdAt)
       comment.createdText = dateString(comment.createdAt)
@@ -215,9 +233,15 @@ export default {
     },
     loadChildren(comment) {
       if (!comment.gotAllChildren) {
+        // console.log('loading children')
+        comment.loadingChildren = true
         this.getComments(this.$route.params.url, comment.children.length, comment)
           .then(comments => this.handleComments(comments, comment))
           .catch(this.loadCommentsError)
+          .finally(() => {
+            // console.log('not loading children')
+            comment.loadingChildren = false
+          })
       }
     },
     handleComments(comments, parent) {
@@ -381,6 +405,9 @@ export default {
         }
       }
     }
-  }
+  },
 }
 </script>
+
+<style lang="scss" scoped>
+</style>

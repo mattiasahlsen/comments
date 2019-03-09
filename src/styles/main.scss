@@ -1,3 +1,23 @@
+.m-1 {
+  margin: 0.1em;
+}
+.m-2 {
+  margin: 0.2em;
+}
+.my-1 {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+.my-2 {
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+}
+
+.primary-2 {
+  background-color: $primary-2 !important;
+  color: white !important;
+}
+
 * {
   font-family: 'Raleway', 'Helvetica Neue', sans-serif;
   font-weight: normal;
@@ -297,20 +317,37 @@ button.inline {
   display: flex;
   flex-direction: row;
   margin-bottom: 2em;
+  align-items: flex-end;
 }
 
-.comment-form input[type="text"] {
-  width: 100%;
+.comment-textarea {
+  padding: 0;
+  flex: 1;
   font-size: 2em;
   border: none;
   border-bottom: 1px solid $dark;
-  padding: 0;
+  resize: none;
+  overflow: hidden;
+  height: 1.2em;
+  transition: height 0s;
 }
-
+.comment-textarea-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-self: stretch;
+}
 .comment-form button {
   width: 5em;
   height: 3em;
   margin-left: 0.5em;
+}
+.comment-form .cancel-button {
+  color: $dark;
+  background-color: $light-1;
+  &:hover {
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  }
 }
 
 .sorter {
@@ -359,11 +396,6 @@ button.inline {
   justify-content: center;
   align-content: center;
   align-items: center;
-}
-
-.comment-reply path:hover {
-  cursor: pointer;
-  color: $secondary;
 }
 
 .showReplies,

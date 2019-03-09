@@ -39,7 +39,11 @@
 }
 
 @media (max-width: $sm) {
-  nav.main img{
+  .comment-textarea {
+    font-size: 1.5em;
+  }
+
+  nav.main img {
     max-height: 3.5em;
   }
 
