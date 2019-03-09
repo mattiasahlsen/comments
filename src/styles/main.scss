@@ -103,9 +103,13 @@ button {
 input[type="submit"]:disabled,
 button:disabled,
 button[disabled] {
+  color: #ecf0f1;
   background: $grey;
+  cursor: auto;
   &:hover{
     background: $grey;
+    color: #ecf0f1;
+    cursor: auto;
   }
 }
 
@@ -116,7 +120,7 @@ button[disabled] {
 }
 
 button:hover,
-.linkButton:hover{
+.linkButton:hover {
   color: $primary;
   cursor: pointer;
   background: $secondary;
