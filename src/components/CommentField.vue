@@ -41,12 +41,29 @@
             </span>
           </div>
         </div>
-        <div class="comment-reply" :class="{ replyHover: replyHover[comment._id] }">
-          <span @mouseover="hoverReply(comment)" @mouseleave="unhoverReply(comment)">
+
+        <div
+          class="comment-reply"
+          :class="{ replyHover: replyHover[comment._id] }"
+          @mouseover="hoverReply(comment)"
+          @mouseleave="unhoverReply(comment)"
+          @click="replyTo(comment)"
+        >
             <font-awesome-icon icon="reply" class="reply" />
-          </span>
+            <p class="reply-text">Reply</p>
         </div>
       </div>
+
+      <form v-if="replyingTo === comment._id" id="comment-form" class="comment-form">
+        <div class="comment-textarea-container">
+          <textarea v-focus class="comment-textarea" placeholder="Reply..."
+            v-model="replyText" type="text" ref="replyTextarea"
+          ></textarea>
+        </div>
+        <button @click.prevent="replyTo(comment)" class="submit-button"
+         :disabled="replyText === ''">Reply</button>
+        <button class="cancel-button" @click.prevent="replyingTo = null">Cancel</button>
+      </form>
 
       <div class="comment-replies">
         <div v-if="comment.children.length > 0" class="ml-3 mt-3">
@@ -96,12 +113,20 @@ export default {
           this.$set(this.replyHover, c._id, false)
         }
       })
+    },
+    replyText() {
+      const textarea = this.$refs.replyTextarea[0]
+      textarea.style.height = 'auto'
+      if (this.replyText.split('\n').length === 1) textarea.style.height = '1.2em'
+      else textarea.style.height = textarea.scrollHeight + 'px'
     }
   },
   data() {
     return {
       showChildren: false,
       replyHover: {},
+      replyingTo: null,
+      replyText: '',
     }
   },
   methods: {
@@ -166,6 +191,14 @@ export default {
     },
     unhoverReply(comment) {
       this.replyHover[comment._id] = false
+    },
+
+    replyTo(comment) {
+      this.replyingTo = comment._id
+
+    },
+    sendReply(comment, text) {
+      this.$emit('reply', comment._id, text)
     }
   },
   mounted() {
@@ -196,5 +229,9 @@ export default {
   path {
     color: $secondary;
   }
+}
+.reply-text {
+  font-size: 0.4em;
+  text-align: center;
 }
 </style>
