@@ -36,12 +36,22 @@ else {
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+
+app.get('/*', function(req, res, next) {
+  if (req.headers.host.match(/^www/) !== null ) {
+    res.redirect('http://' + req.headers.host.replace(/^www\./, '') + req.url);
+  } else {
+    next();     
+  }
+})
+
 app.use(function(req, res, next) {
   const origin = req.get('origin')
-  if (origin && origin.includes('localhost')) {
-    res.header('Access-Control-Allow-Origin', req.get('origin'))
+  const allowedOrigins = ['localhost', config.serverHost, 'www.' + config.serverHost]
+  if (origin && allowedOrigins.includes(origin.split('://')[1])) {
+    res.header('Access-Control-Allow-Origin', origin)
   } else {
-    res.header('Access-Control-Allow-Origin', config.serverUrl)
+    res.header('Access-Control-Allow-Origin', `${config.serverProtocol}://${config.serverHost}`)
   }
   res.header('Access-Control-Allow-Credentials', 'true')
   res.header('Access-Control-Allow-Headers',
