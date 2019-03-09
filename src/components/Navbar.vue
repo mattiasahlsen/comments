@@ -1,9 +1,6 @@
 <template>
   <nav class="main">
-    <div class="logo">
-      <router-link to="/"><img :src="logo" alt="Logotype" /></router-link>
-    </div>
-
+    <router-link to="/"><img :src="logo" alt="Logotype" /></router-link>
     <nav>
       <router-link class="linkButton" v-if="!loggedIn" to="/login">Log in</router-link>
       <div class="loginout" v-else>
@@ -15,8 +12,7 @@
 </template>
 
 <script>
-
-import logo from '../assets/logo.png'
+import logo from '../assets/images/logo.png'
 
 export default {
   data() {
