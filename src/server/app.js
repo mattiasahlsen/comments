@@ -12,6 +12,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
+const proxy = require('express-http-proxy');
 
 const authController = require('./controllers/auth')
 const commentsController = require('./controllers/comments')
@@ -33,6 +34,22 @@ else {
   // setup the logger
   app.use(morgan('combined', { stream: accessLogStream }))
 }
+
+// Proxy to jenkins
+app.use('/jenkins(/*)?', proxy('http://localhost:8080', {
+  proxyReqPathResolver: req => {
+    return req.originalUrl
+  },
+  https: false,
+  userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
+    // recieves an Object of headers, returns an Object of headers.
+    if (headers.location) {
+      headers.location = headers.location.replace('localhost:8080', config.serverHost)
+    }
+    return headers;
+  },
+}))
+
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
