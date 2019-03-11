@@ -54,8 +54,6 @@
           </div>
        </div>
       </div>
-
-
       <form id="comment-form" class="comment-form">
         <div class="comment-textarea-container">
           <textarea
@@ -157,7 +155,7 @@ export default {
       domainComments: null,
       loading: false,
       url: null, // the url to create
-      youtubeVideoWidth: "70%",
+      youtubeVideoWidth: '70%',
       videoVisibility: true,
     }
   },
@@ -190,7 +188,7 @@ export default {
   },
   methods: {
     youtubeVideoId() {
-      return getIdFromURL('https://'+this.$route.params.url)
+      return getIdFromURL('https://' + this.$route.params.url)
     },
     isYoutubeVideo() {
       return this.$route.params.url.includes('youtube.com/watch?v=')
@@ -432,4 +430,3 @@ export default {
   },
 }
 </script>
-

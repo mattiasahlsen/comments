@@ -7,14 +7,14 @@
 </template>
 
 <script>
-  export default {
-    name: 'Support',
-    data() {
-      return {
+export default {
+  name: 'Support',
+  data() {
+    return {
 
-      }
-    },
-  }
+    }
+  },
+}
 </script>
 
 <style lang="scss" scoped>
