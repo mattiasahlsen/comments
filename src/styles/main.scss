@@ -117,10 +117,14 @@ button {
 input[type="submit"]:disabled,
 button:disabled,
 button[disabled] {
+  color: #ecf0f1;
   background: $grey;
-  &:hover {
+  cursor: auto;
+  &:hover{
     color: $white;
     background: $grey;
+    color: #ecf0f1;
+    cursor: auto;
   }
 }
 
@@ -151,13 +155,11 @@ button[disabled] {
 
 button:hover,
 .linkButton:hover,
-.linkButton:hover path,
 .iconButton:hover,
-.iconButton:hover path{
+.iconButton:hover path {
   color: $primary;
   cursor: pointer;
   background: $secondary;
-
 }
 
 footer,
@@ -214,10 +216,10 @@ nav.main img {
 
 .search {
   width: 100%;
-  font-size: 4vw;
+  font-size: 3vw;
   font-weight: 300;
   margin-bottom: 1em;
-  line-height: 4vw;
+  line-height: 3vw;
   padding: 0.4em;
   background: $lighter-background;
   background: $beige2;
@@ -535,13 +537,12 @@ button.inline {
   height: 100%;
 }
 
-.cc-message{
+.cc-message {
   color: $white;
   font-weight: 300;
 }
 
-.cc-link{
+.cc-link {
   font-weight: 600;
   text-decoration: none !important;
 }
-

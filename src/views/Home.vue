@@ -68,7 +68,7 @@
         <button type="submit" @click.prevent="submit(comment)" :disabled="comment === ''" class="submit-button">
           Submit
         </button>
-        <button class="cancel-button" @click.prevent="comment = ''">Clear</button>
+        <button class="cancel-button" @click.prevent="clearComment">Clear</button>
       </form>
 
       <div class="sorter">
@@ -356,6 +356,10 @@ export default {
       }
       if (this.sort === 'New') this.comments.sort(sortNew)
       else if (this.sort === 'Top') this.comments.sort(sortTop)
+    },
+    clearComment() {
+      this.comment = ''
+      this.$refs.textarea.focus()
     },
 
     normalizeUrl,

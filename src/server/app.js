@@ -12,6 +12,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
+const proxy = require('express-http-proxy');
 
 const authController = require('./controllers/auth')
 const commentsController = require('./controllers/comments')
@@ -34,14 +35,47 @@ else {
   app.use(morgan('combined', { stream: accessLogStream }))
 }
 
+/*
+const forwardHeaders = (req, res, next) => {
+  req['X-Forwarded-Host'] = config.serverHost
+  req['X-Forwarded-Port'] = config.serverPort
+  next()
+}
+// Proxy to jenkins
+app.use('/jenkins(/*)?', forwardHeaders, proxy('http://localhost:8080', {
+  proxyReqPathResolver: req => {
+    return req.originalUrl
+  },
+  https: false,
+  userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
+    // recieves an Object of headers, returns an Object of headers.
+    if (headers.location) {
+      headers.location = headers.location.replace('localhost:8080', config.serverHost)
+    }
+    return headers;
+  },
+}))
+*/
+
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+
+app.get('/*', function(req, res, next) {
+  if (req.headers.host.match(/^www/) !== null ) {
+    res.redirect('http://' + req.headers.host.replace(/^www\./, '') + req.url);
+  } else {
+    next();
+  }
+})
+
 app.use(function(req, res, next) {
   const origin = req.get('origin')
-  if (origin && origin.includes('localhost')) {
-    res.header('Access-Control-Allow-Origin', req.get('origin'))
+  const allowedOrigins = ['localhost', config.serverHost, 'www.' + config.serverHost]
+  if (origin && allowedOrigins.includes(origin.split('://')[1])) {
+    res.header('Access-Control-Allow-Origin', origin)
   } else {
-    res.header('Access-Control-Allow-Origin', config.serverUrl)
+    res.header('Access-Control-Allow-Origin', `${config.serverProtocol}://${config.serverHost}`)
   }
   res.header('Access-Control-Allow-Credentials', 'true')
   res.header('Access-Control-Allow-Headers',
