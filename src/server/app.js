@@ -12,7 +12,6 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
-const proxy = require('express-http-proxy');
 
 const authController = require('./controllers/auth')
 const commentsController = require('./controllers/comments')
@@ -57,25 +56,22 @@ app.use('/jenkins(/*)?', forwardHeaders, proxy('http://localhost:8080', {
 }))
 */
 
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.get('/*', function(req, res, next) {
-  if (req.headers.host.match(/^www/) !== null ) {
-    res.redirect('http://' + req.headers.host.replace(/^www\./, '') + req.url);
-  } else {
-    next();
-  }
-})
-
 app.use(function(req, res, next) {
-  const origin = req.get('origin')
-  const allowedOrigins = ['localhost', config.serverHost, 'www.' + config.serverHost]
-  if (origin && allowedOrigins.includes(origin.split('://')[1])) {
-    res.header('Access-Control-Allow-Origin', origin)
+  const host = req.get('host').split(':')[0]
+  const allowedHosts = [
+    '127.0.0.1',
+    'localhost',
+    config.serverHost,
+    'www.' + config.serverHost
+  ]
+  if (host && allowedHosts.includes(host)) {
+    res.header('Access-Control-Allow-Origin', req.get('origin'))
   } else {
-    res.header('Access-Control-Allow-Origin', `${config.serverProtocol}://${config.serverHost}`)
+    res.header('Access-Control-Allow-Origin',
+      `${config.serverProtocol}://${config.serverHost}:${config.serverProtocol}`)
   }
   res.header('Access-Control-Allow-Credentials', 'true')
   res.header('Access-Control-Allow-Headers',
