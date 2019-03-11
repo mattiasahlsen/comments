@@ -23,6 +23,8 @@ const baseConf = {
   secret: process.env.SECRET,
   host: process.env.VUE_APP_API_HOST,
   port: normalizePort(process.env.VUE_APP_API_PORT || '3000'),
+
+  serverPort: process.env.SERVER_PORT || 443,
   serverHost: process.env.SERVER_HOST,
   serverProtocol: process.env.SERVER_PROTOCOL || 'https',
 

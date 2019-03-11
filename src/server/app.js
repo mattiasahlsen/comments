@@ -35,8 +35,14 @@ else {
   app.use(morgan('combined', { stream: accessLogStream }))
 }
 
+/*
+const forwardHeaders = (req, res, next) => {
+  req['X-Forwarded-Host'] = config.serverHost
+  req['X-Forwarded-Port'] = config.serverPort
+  next()
+}
 // Proxy to jenkins
-app.use('/jenkins(/*)?', proxy('http://localhost:8080', {
+app.use('/jenkins(/*)?', forwardHeaders, proxy('http://localhost:8080', {
   proxyReqPathResolver: req => {
     return req.originalUrl
   },
@@ -49,6 +55,7 @@ app.use('/jenkins(/*)?', proxy('http://localhost:8080', {
     return headers;
   },
 }))
+*/
 
 
 app.use(bodyParser.json())
@@ -58,7 +65,7 @@ app.get('/*', function(req, res, next) {
   if (req.headers.host.match(/^www/) !== null ) {
     res.redirect('http://' + req.headers.host.replace(/^www\./, '') + req.url);
   } else {
-    next();     
+    next();
   }
 })
 
