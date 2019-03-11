@@ -3,7 +3,10 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'npm --version'
+              sh 'yarn install --production=true'
+              sh 'yarn build'
+              sh 'yarn server'
+              input message: 'Finished serving the web site? (Click "Proceed" to continue)'
             }
         }
     }
