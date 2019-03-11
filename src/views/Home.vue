@@ -10,20 +10,15 @@
         &times;
       </button>
       <div class="blockNoteInfo">
-        <h2>There is currently no comment thread for the entered URL</h2>
+        <h3>There is currently no discussion on the entered URL</h3>
 
-        <div v-if="cache[normHostname]">
-          There is a comment field
-          <i>{{normHostname}}</i>, do you want to
-          <button class="inline" @click="redirect(normHostname)">go there?</button>
-        </div>
+          <button v-if="cache[normHostname]" class="inline" @click="redirect(normHostname)">
+            Go to discussion on: {{normHostname}}
+          </button>
 
-        <div>
-          Do you want to
           <button class="inline" @click="newCommentField(normUrl)">
-            create a new comment thread
-          </button> for <br><i class="big">{{shortHref}}</i>?
-        </div>
+            Start new discussion on: {{shortHref}}
+          </button>
 
         <div v-if="!cache[normHostname] && normUrl !== normHostname">
           Or
@@ -31,11 +26,36 @@
             create a domain-wide
           </button> for <i>{{normHostname}}</i>?
         </div>
-        <div class="small" v-else><i>All URLs are normalized to http</i></div>
       </div>
     </div>
 
     <div v-if="comments">
+      <div class="videoInterface" v-if="isYoutubeVideo()">
+        <div class="videoControlPanel">
+          <button class="inline iconButton" @click="videoVisibility = !videoVisibility">Toggle video</button>
+          <div class="videoSizeControl inline" v-if="videoVisibility">
+            Video Size:
+           <select v-model="youtubeVideoWidth">
+              <option value="100%">100%</option>
+              <option value="90%">90%</option>
+              <option value="80%" selected>80%</option>
+              <option value="70%">70%</option>
+              <option value="60%">60%</option>
+              <option value="50%">50%</option>
+           </select>
+         </div>
+        </div>
+
+        <div v-if="videoVisibility">
+         <div class="auto-resizable-iframe" :style="{ width: youtubeVideoWidth }">
+          <div>
+              <youtube :video-id="youtubeVideoId()" class="video"></youtube>
+            </div>
+          </div>
+       </div>
+      </div>
+
+
       <form id="comment-form" class="comment-form">
         <div class="comment-textarea-container">
           <textarea
@@ -45,24 +65,17 @@
             placeholder="Say something..."
           ></textarea>
         </div>
-        <button
-          type="submit"
-          @click.prevent="submit(comment)"
-          :disabled="comment === ''"
-          class="submit-button"
-        >
+        <button type="submit" @click.prevent="submit(comment)" :disabled="comment === ''" class="submit-button">
           Submit
         </button>
         <button class="cancel-button" @click.prevent="comment = ''">Clear</button>
-        <!-- <button type="submit" class="" @click.prevent="comment = ''">Cancel</button> -->
       </form>
 
       <div class="sorter">
-        Sort by:
         <select v-model="sort" @change="changeSort">
-          <option selected="selected" value="Hot">Hot</option>
-          <option value="New">New</option>
-          <option value="Top">Top</option>
+          <option selected="selected" value="Hot">Sort by: Hot</option>
+          <option value="New">Sort by: New</option>
+          <option value="Top">Sort by: Top</option>
         </select>
       </div>
 
@@ -72,7 +85,7 @@
     <div v-else-if="!loading" class="my-5">
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
-
+    <router-link v-if="comments" to="/" class="iconButton">Home <font-awesome-icon icon="home"/></router-link>
     <clip-loader :loading="loading" color="#008ae6"></clip-loader>
   </div>
 </template>
@@ -89,6 +102,8 @@ import axios from 'axios'
 
 import conf from '../config'
 import { dateString, normalizeUrl, normHostname, isValid, shortString } from '../lib'
+
+import { getIdFromURL } from 'vue-youtube-embed'
 
 const URL = conf.API_URL
 
@@ -142,6 +157,8 @@ export default {
       domainComments: null,
       loading: false,
       url: null, // the url to create
+      youtubeVideoWidth: "70%",
+      videoVisibility: true,
     }
   },
   computed: {
@@ -172,8 +189,11 @@ export default {
     ClipLoader
   },
   methods: {
-    fade() {
-
+    youtubeVideoId() {
+      return getIdFromURL('https://'+this.$route.params.url)
+    },
+    isYoutubeVideo() {
+      return this.$route.params.url.includes('youtube.com/watch?v=')
     },
     newCommentField(url) {
       axios.post(`${URL}/website/${urlencode(normalizeUrl(url))}`).then(resp => {
@@ -409,5 +429,3 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>

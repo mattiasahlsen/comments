@@ -21,7 +21,7 @@
         <router-link to="/about" class="link">About</router-link> -
         <router-link to="/legal/terms-of-use" class="link">Terms of Use</router-link> -
         <router-link to="/legal/privacy-policy" class="link">Privacy Policy</router-link> -
-        <a href="https://cookiesandyou.com/" target="_blank">Use of cookies</a>
+        <a href="https://cookiesandyou.com/" target="_blank">Cookies</a>
       </div>
     </footer>
 
@@ -62,8 +62,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,700');
-
+//@import url('https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,700');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,700');
 #app {
   width: 100%;
   min-height: 100vh;

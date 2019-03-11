@@ -7,7 +7,6 @@
         </div>
 
         <div class="comment-body">
-          <!-- <div class="commenter">{{comment.displayName}} <span class="date">{{comment.createdText}}</span></div> -->
           <div v-if="comment.someText" class="comment-text">
             <div v-if="!comment.showFull">
               <div v-html="comment.someText" class="comment-text"></div>

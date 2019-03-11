@@ -19,11 +19,12 @@
 }
 
 * {
-  font-family: 'Raleway', 'Helvetica Neue', sans-serif;
+  font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
   font-weight: normal;
   color: $primary;
   box-sizing: border-box;
   border: none;
+  border-radius: 0;
   outline: 0;
   -webkit-appearance: none;
   transition: 0.2s ease-in-out;
@@ -53,8 +54,10 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 200;
+  font-weight: 300;
   margin-bottom: 0.5em;
+  border-left: 0.1em solid $dark;
+  padding-left: 0.2em;
 }
 
 h1 {
@@ -63,6 +66,11 @@ h1 {
 
 h2 {
   font-size: 2em;
+}
+
+h3 {
+  border: none;
+  font-size: 1.5em;
 }
 
 ul {
@@ -77,9 +85,9 @@ select {
   background: none;
   border: 1px solid $dark;
   border-radius: 0;
-  padding: 0.5em;
+  padding: 0.3em;
   font-size: 1.2em;
-  font-weight: 200;
+  font-weight: 300;
   margin-bottom: 0.5%;
   resize: none;
 }
@@ -92,6 +100,7 @@ select {
   }
 }
 
+.iconButton,
 .linkButton,
 input[type="submit"],
 button {
@@ -103,35 +112,58 @@ button {
   white-space: nowrap;
 }
 
+.iconButton:disabled,
 .linkButton:disabled,
 input[type="submit"]:disabled,
 button:disabled,
 button[disabled] {
   background: $grey;
-  &:hover{
+  &:hover {
     color: $white;
     background: $grey;
   }
+}
+
+.iconButton {
+  display: inline-block;
+  padding: 0.5em;
+  -webkit-border-radius: 50em;
+  -moz-border-radius: 50em;
+  border-radius: 50em;
+}
+
+.iconButton path{
+  color: $white;
 }
 
 .linkButton {
   width: 6em;
   height: 2.5em;
   line-height: 2.5em;
+  -webkit-border-radius: 50em;
+  -moz-border-radius: 50em;
+  border-radius: 50em;
+}
+
+.linkButton path{
+  color: $white;
 }
 
 button:hover,
-.linkButton:hover{
+.linkButton:hover,
+.linkButton:hover path,
+.iconButton:hover,
+.iconButton:hover path{
   color: $primary;
   cursor: pointer;
   background: $secondary;
+
 }
 
 footer,
 nav.main {
   width: 100%;
   padding: 1em;
-  margin-top: 1em;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -142,6 +174,12 @@ footer {
   font-size: 0.8em;
   background: $light-background;
   flex: 0 1 5%;
+}
+
+nav.main{
+  //background: #bdc3c7;
+  //background: #45aaf2;
+  margin-bottom: 2em;
 }
 
 nav.main img {
@@ -175,11 +213,14 @@ nav.main img {
 }
 
 .search {
-  border-bottom: 1px solid $light-background;
   width: 100%;
-  font-size: 5vw;
-  font-weight: 200;
-  margin: 0.5em 0 1em 0;
+  font-size: 4vw;
+  font-weight: 300;
+  margin-bottom: 1em;
+  line-height: 4vw;
+  padding: 0.4em;
+  background: $lighter-background;
+  background: $beige2;
 }
 
 .login {
@@ -257,7 +298,7 @@ nav.main img {
   padding: 0 0.5em;
   border-left: 1px solid $dark;
   font-size: 1.8em;
-  font-weight: 200;
+  font-weight: 300;
   order: 1;
   flex: 1 1 auto;
   overflow: hidden;
@@ -372,7 +413,7 @@ button.inline {
   width: 10%;
   margin-right: 1em;
   font-size: 3em;
-  font-weight: 200;
+  font-weight: 300;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -424,7 +465,7 @@ button.inline {
 
 .commenter {
   font-size: 1.1em;
-  font-weight: 200;
+  font-weight: 300;
   text-align: center;
 }
 
@@ -455,3 +496,52 @@ button.inline {
 .comment-replies {
   margin-left: 12%;
 }
+
+.videoInterface {
+  width: 100%;
+  background: $beige;
+  padding: 1em;
+  margin-bottom: 3em;
+}
+
+.videoControlPanel{
+  width: 100%;
+  background: $beige;
+  padding: 0.5em;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.videoSizeControl{
+  margin-right: 0.2em;
+}
+
+.auto-resizable-iframe {
+  margin: 0px auto;
+}
+
+.auto-resizable-iframe > div {
+  position: relative;
+  padding-bottom: 75%;
+  height: 0;
+}
+
+.auto-resizable-iframe iframe{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cc-message{
+  color: $white;
+  font-weight: 300;
+}
+
+.cc-link{
+  font-weight: 600;
+  text-decoration: none !important;
+}
+

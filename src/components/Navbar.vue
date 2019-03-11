@@ -4,7 +4,7 @@
     <nav>
       <router-link class="linkButton" v-if="!loggedIn" to="/login">Log in</router-link>
       <div class="loginout" v-else>
-        <router-link to="/account" class="linkButton">{{user.displayName}}</router-link>
+        <router-link to="/account" class="linkButton">Profile <font-awesome-icon icon="user" class="profile" /></router-link>
         <button class="linkButton" @click="logOut">Log out</button>
       </div>
     </nav>
