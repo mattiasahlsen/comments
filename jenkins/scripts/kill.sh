@@ -1,2 +1,3 @@
 set -x
-kill $(cat .pidfile)o
+kill $(cat .pidfile)
+cat .pidfile
