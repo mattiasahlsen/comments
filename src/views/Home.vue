@@ -46,7 +46,7 @@
          </div>
         </div>
 
-        <div v-if="videoVisibility">
+        <div :class="{ hide: !videoVisibility }">
          <div class="auto-resizable-iframe" :style="{ width: youtubeVideoWidth }">
           <div>
               <youtube :video-id="youtubeVideoId()" class="video"></youtube>
@@ -84,6 +84,7 @@
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
     <router-link v-if="comments" to="/" class="iconButton">Home <font-awesome-icon icon="home"/></router-link>
+    <button v-if="nearBottom" v-scroll-to="'#app'" class="iconButton">Go to top</button>
     <clip-loader :loading="loading" color="#008ae6"></clip-loader>
   </div>
 </template>
@@ -157,6 +158,7 @@ export default {
       url: null, // the url to create
       youtubeVideoWidth: '70%',
       videoVisibility: true,
+      nearBottom: false,
     }
   },
   computed: {
@@ -191,7 +193,7 @@ export default {
       return getIdFromURL('https://' + this.$route.params.url)
     },
     isYoutubeVideo() {
-      return this.$route.params.url.includes('youtube.com/watch?v=')
+      return this.$route.params.url && this.$route.params.url.includes('youtube.com/watch?v=')
     },
     newCommentField(url) {
       axios.post(`${URL}/website/${urlencode(normalizeUrl(url))}`).then(resp => {
@@ -251,13 +253,11 @@ export default {
     },
     loadChildren(comment) {
       if (!comment.gotAllChildren) {
-        // console.log('loading children')
         comment.loadingChildren = true
         this.getComments(this.$route.params.url, comment.children.length, comment)
           .then(comments => this.handleComments(comments, comment))
           .catch(this.loadCommentsError)
           .finally(() => {
-            // console.log('not loading children')
             comment.loadingChildren = false
           })
       }
@@ -309,7 +309,10 @@ export default {
         else offset = 0
       }
 
-      this.loading = true
+      if (this.$route.params.url && this.comments.length > 0) {
+        this.loading = true
+      }
+
       if (sort === 'hot') {
         return this.getComments(url, offset, parent, 'new').then(newComments => {
           return this.getComments(url, offset, parent, 'top').then(topComments => {
@@ -427,6 +430,20 @@ export default {
         }
       }
     }
+
+    window.onscroll = ev2 => {
+      if (window.scrollY >= window.innerHeight * 0.90) {
+        this.nearBottom = true
+      } else {
+        this.nearBottom = false
+      }
+    }
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.hide {
+  display: none;
+}
+</style>

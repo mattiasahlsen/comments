@@ -10,6 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import 'modern-normalize/modern-normalize.css'
 import 'cookieconsent/build/cookieconsent.min.css'
 import VueYouTubeEmbed from 'vue-youtube-embed'
+import VueScrollTo from 'vue-scrollto'
+
+Vue.use(VueScrollTo)
 Vue.use(VueYouTubeEmbed)
 
 library.add(faThumbsUp, faThumbsDown, faTimes, faReply, faUser, faHome)
