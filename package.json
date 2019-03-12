@@ -70,23 +70,24 @@
     "vue-youtube-embed": "^2.2.1",
     "vuex": "^3.0.1",
     "webpack-merge": "^4.2.1",
-    "winston": "^3.1.0"
+    "winston": "^3.1.0",
+    "@vue/cli-plugin-eslint": "^3.0.5",
+    "@vue/cli-plugin-unit-jest": "^3.0.5",
+    "@vue/eslint-config-standard": "^3.0.5",
+    "@vue/test-utils": "^1.0.0-beta.20",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1",
+    "supertest": "^3.3.0",
+    "babel-jest": "^23.0.1",
+    "babel-preset-vue": "^2.0.2",
+    "jest-environment-node": "^23.4.0",
+    "@vue/cli-plugin-e2e-nightwatch": "^3.0.5"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^4.0.0-rc.6",
     "@storybook/addon-links": "^4.0.0-rc.6",
     "@storybook/addons": "^4.0.0-rc.6",
     "@storybook/vue": "^4.0.0-rc.6",
-    "@vue/cli-plugin-eslint": "^3.0.5",
-    "@vue/cli-plugin-unit-jest": "^3.0.5",
-    "@vue/eslint-config-standard": "^3.0.5",
-    "@vue/test-utils": "^1.0.0-beta.20",
-    "babel-jest": "^23.0.1",
-    "babel-preset-vue": "^2.0.2",
-    "jest-environment-node": "^23.4.0",
-    "mongodb-memory-server": "^2.6.2",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.0.1",
-    "supertest": "^3.3.0"
+    "mongodb-memory-server": "^2.6.2"
   }
 }
