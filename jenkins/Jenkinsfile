@@ -2,12 +2,18 @@ pipeline {
     agent {
       docker {
         image 'node:8.15-jessie'
-        args '-p 8000:8000'
+        args '-p 9000:9000 --name urlexp --network host'
       }
     }
     environment {
         CI = 'true'
-        SERVER_PORT: 8000
+        SERVER_PORT = '9000'
+        VUE_APP_API_PROTOCOL = 'https'
+        VUE_APP_API_PORT = '443'
+        VUE_APP_API_HOST = 'urlexp.com'
+        DB_HOST = '127.0.0.1'
+        //DB_CREDS = credentials('db')
+        //SECRET = credentials('secret')
     }
     stages {
         stage('build') {
@@ -18,6 +24,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
+              input message: 'Are you ready to deploy? (Click "Proceed" to continue)'
               sh './jenkins/scripts/deliver.sh'
               input message: 'Finished serving the web site? (Click "Proceed" to continue)'
               sh './jenkins/scripts/kill.sh'

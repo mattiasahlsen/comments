@@ -1,3 +1,5 @@
+import { logErr } from './debug'
+
 const merge = require('webpack-merge')
 const path = require('path')
 const env = require('dotenv')
@@ -18,15 +20,17 @@ if (process.env.NODE_ENV === 'development') {
 env.config({ path: path.join(__dirname, '../../.env.local') })
 env.config({ path: path.join(__dirname, '../../.env') })
 
-if (!process.env.SECRET) throw new Error('You need to defined env variable SECRET.')
+if (!process.env.SECRET) {
+  const err = new Error('You need to defined env variable SECRET.')
+  logErr(err)
+  throw err
+}
 const baseConf = {
   secret: process.env.SECRET,
   host: process.env.VUE_APP_API_HOST,
   port: normalizePort(process.env.VUE_APP_API_PORT || '3000'),
 
   serverPort: process.env.SERVER_PORT || 443,
-  serverHost: process.env.SERVER_HOST,
-  serverProtocol: process.env.SERVER_PROTOCOL || 'https',
 
   sessionMaxAge: 1000 * 3600 * 24, // 24 hours for now
 
@@ -41,14 +45,15 @@ export const devConf = merge(baseConf, {
   }
 })
 
-const userAndPass = (process.env.DB_USER && process.env.DB_PASS)
-  ? `${process.env.DB_USER}:${process.env.DB_PASS}@` : ''
+const DB_USER = process.env.DB_CREDS_USR || process.env.DB_USER
+const DB_PASS = process.env.DB_CREDS_PSW || process.env.DB_PASS
 
-const uri = `mongodb://${userAndPass}${process.env.DB_HOST || '127.0.0.1'}:27017/comments`
+const userAndPass = DB_USER && DB_PASS
+  ? `${process.env.DB_USER}:${process.env.DB_PASS}@` : ''
 
 export const prodConf = merge(baseConf, {
   db: {
-    uri: `mongodb://${userAndPass}${process.env.DB_HOST || '127.0.0.1'}:27017/comments?authSource=admin`,
+    uri: `mongodb://${userAndPass}${process.env.DB_HOST || '127.0.0.1'}:27017/comments?authSource=admin`,
     sessionCollection: 'sessions'
   }
 })
