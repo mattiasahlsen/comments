@@ -64,8 +64,8 @@ app.use(function(req, res, next) {
   const allowedHosts = [
     '127.0.0.1',
     'localhost',
-    config.serverHost,
-    'www.' + config.serverHost
+    config.host,
+    'www.' + config.host
   ]
   if (host && allowedHosts.includes(host)) {
     res.header('Access-Control-Allow-Origin', req.get('origin'))
