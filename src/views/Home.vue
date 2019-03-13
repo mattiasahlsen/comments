@@ -43,7 +43,7 @@
               <option value="60%">60%</option>
               <option value="50%">50%</option>
            </select>
-         </div>
+          </div>
         </div>
 
         <div :class="{ hide: !videoVisibility }">
