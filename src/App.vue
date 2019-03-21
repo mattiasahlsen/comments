@@ -4,7 +4,9 @@
       <p class="notification-text">{{error}}</p>
       <font-awesome-icon icon="times" size="2x" class="dismiss" @click="dismiss"/>
     </div>
-      <Navbar/>
+
+    <Navbar/>
+
     <div class="wrapper">
       <div class="content">
         <router-view/>
@@ -48,11 +50,6 @@ export default {
   components: {
     Navbar,
   },
-  /* created() {
-    axios.get(URL + '/thumbnail').then(resp => {
-      this.image = resp.data
-    })
-  }*/
   methods: {
     dismiss() {
       this.$store.commit('clearError')

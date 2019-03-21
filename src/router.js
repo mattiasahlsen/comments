@@ -41,7 +41,10 @@ const router = new Router({
       name: 'home',
       component: Home,
     },
-    { path: '*', component: NotFound }
+    {
+      path: '*',
+      component: NotFound
+    }
   ]
 })
 router.afterEach((to, from) => {

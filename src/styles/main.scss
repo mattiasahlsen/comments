@@ -56,8 +56,6 @@ h5,
 h6 {
   font-weight: 300;
   margin-bottom: 0.5em;
-  border-left: 0.1em solid $dark;
-  padding-left: 0.2em;
 }
 
 h1 {
@@ -71,6 +69,11 @@ h2 {
 h3 {
   border: none;
   font-size: 1.5em;
+}
+
+.border {
+  border-left: 0.1em solid $dark;
+  padding-left: 0.2em;
 }
 
 ul {

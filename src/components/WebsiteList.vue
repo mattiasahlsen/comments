@@ -1,6 +1,6 @@
 <template>
   <ul class="list-group mt-2">
-    <h1>Latest added URLs</h1>
+    <h1 class="border">Latest added URLs</h1>
     <li v-for="(website, index) in websites" :key="index"
     class="list-group-item py-1 "
     @click="redirect(website.url)">

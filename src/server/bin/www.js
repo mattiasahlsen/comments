@@ -7,7 +7,7 @@ const http = require('http')
 app.set('port', config.port)
 const server = http.createServer(app)
 
-server.listen(config.serverPort)
+server.listen(config.port)
 server.on('error', onError)
 server.on('listening', onListening)
 

@@ -1,9 +1,6 @@
 <template>
   <div class="container">
-    <div class="row justify-content-center">
-      <Search @submit="redirect"/>
-    </div>
-
+    <Search @submit="redirect"/>
     <div v-if="addUrl && normUrl && normHostname" class="blockNote alert">
       <button type="button" class="blockNoteClose" data-dismiss="alert" aria-label="Close"
         @click.prevent="addUrl = false">
@@ -445,5 +442,9 @@ export default {
 <style lang="scss" scoped>
 .hide {
   display: none;
+}
+
+.inline {
+  margin-right: 0.2em;
 }
 </style>

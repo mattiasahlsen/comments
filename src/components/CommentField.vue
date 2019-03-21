@@ -214,13 +214,6 @@ export default {
   color: $secondary;
 }
 
-.comment-score {
-  // background-image: url("../assets/score-bg.png");
-  // background-repeat: no-repeat;
-  // background-size: contain;
-  // background-position: center;
-  // text-align: center;
-}
 .replyHover {
   cursor: pointer;
   path {

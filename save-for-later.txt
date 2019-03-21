@@ -1,0 +1,6 @@
+/*  ORGINIALLY COMMENTED OUT IN APP.VUE
+created() {
+  axios.get(URL + '/thumbnail').then(resp => {
+    this.image = resp.data
+})
+}*/

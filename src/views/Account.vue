@@ -4,11 +4,13 @@
       <h1>Profile</h1>
       <div class="account-field">
         <div class="account-key">Username:</div>
-        <div class="account-value">{{user.displayName}}</div>
+        <div class="account-value" v-if="!editProfile">{{user.displayName}}</div>
+        <input type="text" v-model="displayName" :placeholder="user.displayName" v-else>
       </div>
       <div class="account-field">
         <div class="account-key">Email:</div>
-        <div class="account-value">{{user.username}}</div>
+        <div class="account-value" v-if="!editProfile">{{user.username}}</div>
+        <input type="email" v-model="username" :placeholder="user.username" v-else>
       </div>
       <div class="account-field">
         <div class="account-key">Created:</div>
@@ -18,6 +20,8 @@
         <div class="account-key">Email confirmed:</div>
         <div class="account-value">{{user.confirmed ? 'Yes' : 'No'}}</div>
       </div>
+      <button @click="editProfile = true" v-show="!editProfile" class="iconButton">Edit Profile</button>
+      <button @click="saveProfile" v-show="editProfile" class="iconButton">Save Profile</button>
     </div>
     <p style="margin-top:2em">
 
@@ -29,6 +33,13 @@
 <script>
 export default {
   name: 'Account',
+  data() {
+    return {
+      displayName: '',
+      username: '',
+      editProfile: false
+    }
+  },
   computed: {
     user() {
       return this.$store.getters.user
@@ -37,6 +48,24 @@ export default {
       return this.user.createdAt.toLocaleString()
     }
   },
+  methods: {
+    saveProfile() {
+      this.$store.commit('clearError')
+
+      if (this.displayName.trim() === '') {
+        return this.$store.commit('error', 'You must enter a display name!')
+      } else if (this.username.trim() === '') {
+        return this.$store.commit('error', 'You must enter an email!')
+      } else if (!this.username.includes('@')) {
+        return this.$store.commit('error', 'Please enter a valid email!')
+      } else {
+
+
+
+        
+      }
+    }
+  }
 }
 </script>
 

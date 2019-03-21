@@ -71,7 +71,7 @@ app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', req.get('origin'))
   } else {
     res.header('Access-Control-Allow-Origin',
-      `${config.serverProtocol}://${config.serverHost}:${config.serverProtocol}`)
+      `${config.serverProtocol}://${config.serverHost}:${config.serverPort}`)
   }
   res.header('Access-Control-Allow-Credentials', 'true')
   res.header('Access-Control-Allow-Headers',
