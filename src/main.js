@@ -5,7 +5,7 @@ import store from './store'
 
 import 'cookieconsent/build/cookieconsent.min.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faThumbsUp, faThumbsDown, faTimes, faReply, faUser, faHome } from '@fortawesome/free-solid-svg-icons'
+import { faThumbsUp, faThumbsDown, faTimes, faReply, faUser, faHome, faPen, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import 'modern-normalize/modern-normalize.css'
 import 'cookieconsent/build/cookieconsent.min.css'
@@ -15,7 +15,7 @@ import VueScrollTo from 'vue-scrollto'
 Vue.use(VueScrollTo)
 Vue.use(VueYouTubeEmbed)
 
-library.add(faThumbsUp, faThumbsDown, faTimes, faReply, faUser, faHome)
+library.add(faThumbsUp, faThumbsDown, faTimes, faReply, faUser, faHome, faPen, faCheck)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false

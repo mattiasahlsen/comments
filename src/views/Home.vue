@@ -80,7 +80,7 @@
     <div v-else-if="!loading" class="my-5">
       <WebsiteList :websites="websites" @redirect="redirect"/>
     </div>
-    <router-link v-if="comments" to="/" class="iconButton">Home <font-awesome-icon icon="home"/></router-link>
+    <router-link v-if="comments" to="/" class="iconButton">Home</router-link>
     <button v-if="nearBottom" v-scroll-to="'#app'" class="iconButton">Go to top</button>
     <clip-loader :loading="loading" color="#008ae6"></clip-loader>
   </div>
@@ -296,10 +296,12 @@ export default {
     },
     loadCommentsError(err) {
       this.$store.commit('axiosError', err)
-      this.goHome()
+
+      this.addUrl = true
     },
     getComments(url = this.$route.params.url, offset, parent,
       sort = this.sort.toLowerCase()) {
+
       if (offset === undefined) {
         if (parent) offset = parent.children.length
         else if (this.comments) offset = this.comments.length
@@ -363,14 +365,30 @@ export default {
     normalizeUrl,
   },
   beforeRouteEnter(to, from, next) {
-    // console.log('Before route enter.')
-    next(vm => {
-      loadComments(vm, to.params.url)
-        .then(comments => vm.handleComments(comments))
-        .catch(vm.loadCommentsError)
-    })
+    if (to.params.url === undefined) {
+      return
+    } else if (isValid(to.params.url)) {
+
+      const normalized = normalizeUrl(to.params.url)
+
+      next(vm => {
+        vm.$router.replace(normalized)
+        loadComments(vm, normalized)
+          .then(comments => {
+            vm.handleComments(comments)
+          })
+          .catch(() => {
+            vm.loadCommentsError
+          })
+      })
+    } else {
+      next({name: '404', replace: true})
+    }
   },
   beforeRouteUpdate(to, from, next) {
+
+    const normalized = to.params.url
+
     // console.log('Before route update.')
     this.addUrl = false
 
@@ -383,10 +401,8 @@ export default {
       .catch(err => {
         if (err.response && err.response.status === 404) {
           if (to.params.url) {
-            this.url = normalizeUrl(to.params.url)
-            const normUrl = normalizeUrl(to.params.url)
             const normHost = normHostname(to.params.url)
-            if (normUrl !== normHost) {
+            if (normalized !== normHost) {
               loadComments(this, normHost).then(comments => {
                 this.$set(this.cache, normHost, comments)
               }).catch(err => this.loadCommentsError)

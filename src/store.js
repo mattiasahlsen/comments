@@ -26,7 +26,7 @@ const status = (state, code) => {
 
 export default new Vuex.Store({
   state: {
-    error: null
+    error: null,
   },
   mutations: {
     error(state, err) {

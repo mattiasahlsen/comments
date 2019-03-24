@@ -19,10 +19,11 @@
       </div>
 
       <div>
-        <router-link to="/support" class="link">Support</router-link> -
-        <router-link to="/about" class="link">About</router-link> -
-        <router-link to="/legal/terms-of-use" class="link">Terms of Use</router-link> -
-        <router-link to="/legal/privacy-policy" class="link">Privacy Policy</router-link> -
+        <router-link to="/about">About</router-link> -
+        <router-link to="/faq">FAQ</router-link> -
+        <router-link to="/support">Support</router-link> -
+        <router-link to="/legal/terms-of-use">Terms of Use</router-link> -
+        <router-link to="/legal/privacy-policy">Privacy Policy</router-link> -
         <a href="https://cookiesandyou.com/" target="_blank">Cookies</a>
       </div>
     </footer>

@@ -1,8 +1,4 @@
 @media (max-width: $lg) {
-  h1{
-    font-size: 2em;
-  }
-
   .search {
     font-size: 2.5em;
   }
@@ -35,6 +31,14 @@
 
   .search {
     font-size: 2em;
+  }
+
+  h1{
+    font-size: 2em;
+  }
+
+  h2 {
+    font-size: 1.5em;
   }
 }
 
@@ -72,6 +76,24 @@
   .login-form,
   .registration-form{
     width: 100%;
+  }
+
+  .account-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5em;
+  }
+
+  .account-value,
+  .account-value input{
+    text-align: left !important;
+  }
+
+  .account-value input[type="text"]:disabled,
+  .account-value input[type="email"]:disabled,
+  .account-value input[type="password"]:disabled {
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
 }

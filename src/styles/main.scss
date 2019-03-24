@@ -55,7 +55,7 @@ h4,
 h5,
 h6 {
   font-weight: 300;
-  margin-bottom: 0.5em;
+  margin: 0.5em 0;
 }
 
 h1 {
@@ -69,6 +69,15 @@ h2 {
 h3 {
   border: none;
   font-size: 1.5em;
+}
+
+.box {
+  background: $beige;
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  border-radius: 1em;
+  padding: 2em;
+  margin: 2em 0;
 }
 
 .border {
@@ -549,4 +558,20 @@ button.inline {
 .cc-link {
   font-weight: 600;
   text-decoration: none !important;
+}
+
+.observe {
+  font-style: italic;
+  font-size: 0.8em;
+  margin-top: 2em;
+}
+
+.inlineField {
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  padding: 0.5em !important;
+  border: none !important;
+  text-align: right !important;
+  width: 100% !important;
+  border-radius: 0.5em !important;
 }

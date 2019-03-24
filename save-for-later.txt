@@ -1,6 +1,15 @@
-/*  ORGINIALLY COMMENTED OUT IN APP.VUE
+- Origin: App.vue
+/*
 created() {
   axios.get(URL + '/thumbnail').then(resp => {
     this.image = resp.data
 })
+}*/
+
+
+- Origin: lib.js
+/*export function ucFirstWord(string) {
+  const words = string.toLowerCase().split(' ')
+  const wordsUpper = words.map( x => ucFirst(x)).join(' ')
+  return wordsUpper.replace(/(\s+\b(Of|A|The|In)\b\s+)/, /!*Perform case change on capture group*!/)
 }*/
