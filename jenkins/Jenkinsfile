@@ -18,6 +18,8 @@ pipeline {
     stages {
         stage('build') {
             steps {
+              sh 'apt-get --assume-yes update'
+              sh 'apt-get --assume-yes install vim'
               sh 'yarn install --production=true'
               sh 'yarn build'
             }

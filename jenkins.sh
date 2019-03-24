@@ -6,5 +6,5 @@ docker run \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "$HOME":/home \
   --name jenkins \
-  --network host --name host \
+  --network host \
   jenkinsci/blueocean
