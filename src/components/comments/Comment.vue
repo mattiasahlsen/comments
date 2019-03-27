@@ -21,7 +21,7 @@
 
 		<div class="comment-info">
 			<div class="commenter">{{comment.displayName}}</div>
-			<div class="comment-date">{{comment.createdAt.toDateString() + comment.createdAt.toLocaleTimeString()}}</div>
+			<div class="comment-date">{{comment.createdText}}</div>
 			<div class="comment-rating">
 				<span class="vote-box">
 					<font-awesome-icon icon="thumbs-up" class="vote"
