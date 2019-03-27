@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home'
+import Url from './views/Url'
 import NotFound from './views/NotFound'
 import store from './store'
+import {
+} from './lib'
 
 Vue.use(Router)
 
@@ -55,12 +58,17 @@ const router = new Router({
       path: '/not-found',
       name: '404',
       component: NotFound
-    },
+		},
+		{
+			path: '/',
+			name: 'home',
+			component: Home,
+		},
     {
-      path: '/:url?',
-      name: 'home',
-      component: Home,
-    },
+      path: '/:url',
+      name: 'url',
+			component: Url,
+		},
     {
       path: '*',
       redirect: { name: '404' },

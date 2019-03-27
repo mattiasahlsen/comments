@@ -1,15 +1,17 @@
 <template>
   <div class="subnav box">
     <h4>Navigate: </h4>
-    <template v-for="(link, index) in getLinks()">
-        <span v-if="subnavLink(link)">
-          <span v-show="index !== 0"> - </span>
-          <strong title="Current link">{{ ucLink(link) }}</strong>
-        </span>
-        <span v-else>
-          <span v-show="index !== 0"> - </span>
-          <router-link class="unlink" :to="toLink(link)" :title="linkTitle(link)">{{ ucLink(link) }}</router-link>
-        </span>
+     <template v-for="(link, index) in getLinks()">
+			 <span :key="index">
+					<span v-if="subnavLink(link)">
+						<span v-show="index !== 0"> - </span>
+						<strong title="Current link">{{ ucLink(link) }}</strong>
+					</span>
+					<span v-else>
+						<span v-show="index !== 0"> - </span>
+						<router-link class="unlink" :to="toLink(link)" :title="linkTitle(link)">{{ ucLink(link) }}</router-link>
+					</span>
+			 </span>
     </template>
   </div>
 </template>

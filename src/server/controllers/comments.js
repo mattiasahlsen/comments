@@ -39,18 +39,14 @@ router.use('/comment/:id/*', (req, res, next) => {
   })
 })
 
-router.get(['/comments/:url/:sort/:offset?'], (req, res) => {
+router.get(['/comments/:url/:sort/:parentId/:offset?'], (req, res) => {
   const website = req.website
   const offset = parseInt(req.params.offset) || 0
 
-  let parentId
+  const parentId = req.params.parentId === 'undefined' ? undefined : req.params.parentId
   let sort
   if (req.params.sort === 'new') sort = { createdAt: -1 }
-  else if (req.params.sort === 'top') sort = { score: -1 }
-  else {
-    parentId = req.params.sort
-    sort = { createdAt: -1 }
-  }
+  else sort = { score: -1 }
 
   Comment.find({
     websiteId: website._id,
