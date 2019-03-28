@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input class="search" v-bind:placeholder="currentUrl" v-model="url" v-on:keyup.enter.prevent="$emit('submit', url)" spellcheck="false"/>
+    <input class="search" v-bind:placeholder="currentUrl" v-model="url" v-on:keyup.enter.prevent="redirect(url)" spellcheck="false"/>
   </div>
 </template>
 
@@ -24,6 +24,17 @@ export default {
     router.afterEach((to, from) => {
       this.url = ''
     })
+  },
+  methods: {
+    redirect(url) {
+      if (!url) return
+      this.addUrl = false
+
+      if (!isValid(url)) {
+        return this.$store.commit('error', 'Badly formated url.')
+			}
+      this.$router.push({ name: 'url', params: { url, } })
+    },
   }
 }
 </script>

@@ -8,8 +8,10 @@
       <div v-for="comment in comments" :key="comment._id" class="mb-3">
         <Comment
           :comment="comment"
-          :replyingTo="replyingTo === comment"
-          @reply="this.replyingTo = comment._id"
+          :replyingTo="replyingTo === comment._id"
+          @reply="replyingTo = comment._id"
+          @cancelReply="replyingTo = null"
+          @submitReply="reply => submitReply(comment, reply)"
         ></Comment>
         <CommentField v-if="comment.children.length > 0" :parent="comment" :sort="sort"></CommentField>
       </div>
@@ -97,7 +99,11 @@ export default {
     }
   },
   methods: {
-    submit(comment) {
+    submitReply(parent, reply) {
+      comment.prio = true
+      parent.children.unshift(reply)
+    },
+    submitComment(comment) {
       comment.prio = true // if I submit a comment, I want it to come to the top instantly
 			this.newComments.unshift(comment)
 		},

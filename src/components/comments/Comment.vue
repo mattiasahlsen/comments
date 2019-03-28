@@ -1,55 +1,62 @@
 <template>
-	<div class="comment">
+  <div>
+    <div class="comment">
 
-		<div class="comment-score">
-			{{comment.likes - comment.dislikes}}
-		</div>
+      <div class="comment-score">
+        {{comment.likes - comment.dislikes}}
+      </div>
 
-		<div class="comment-body">
-			<div v-if="comment.someText" class="comment-text">
-				<div v-if="!showFull">
-					<div v-html="comment.someText" class="comment-text"></div>
-					<div @click="showFull = true"><div class="clickable my-2">Show more</div></div>
-				</div>
-				<div v-else>
-					<div v-html="comment.text" class="comment-text"></div>
-					<div @click="showFull = false"><div class="clickable my-2">Show less</div></div>
-				</div>
-			</div>
-			<div v-else v-html="comment.text" class="comment-text"></div>
-		</div>
+      <div class="comment-body">
+        <div v-if="comment.someText" class="comment-text">
+          <div v-if="!showFull">
+            <div v-html="comment.someText" class="comment-text"></div>
+            <div @click="showFull = true"><div class="clickable my-2">Show more</div></div>
+          </div>
+          <div v-else>
+            <div v-html="comment.text" class="comment-text"></div>
+            <div @click="showFull = false"><div class="clickable my-2">Show less</div></div>
+          </div>
+        </div>
+        <div v-else v-html="comment.text" class="comment-text"></div>
+      </div>
 
-		<div class="comment-info">
-			<div class="commenter">{{comment.displayName}}</div>
-			<div class="comment-date">{{comment.createdText}}</div>
-			<div class="comment-rating">
-				<span class="vote-box">
-					<font-awesome-icon icon="thumbs-up" class="vote"
-					:class="{ isVoted: hasLiked }" @click="vote(true)" />
-					<span class="mr-3">{{likes}}</span>
-				</span>
-				<span class="vote-box">
-						<font-awesome-icon icon="thumbs-down" class="vote"
-					:class="{ isVoted: hasDisliked }" @click="vote(false)" />
-					<span class="mr-3">{{dislikes}}</span>
-				</span>
-			</div>
-		</div>
+      <div class="comment-info">
+        <div class="commenter">{{comment.displayName}}</div>
+        <div class="comment-date">{{comment.createdText}}</div>
+        <div class="comment-rating">
+          <span class="vote-box">
+            <font-awesome-icon icon="thumbs-up" class="vote"
+            :class="{ isVoted: hasLiked }" @click="vote(true)" />
+            <span class="mr-3">{{likes}}</span>
+          </span>
+          <span class="vote-box">
+              <font-awesome-icon icon="thumbs-down" class="vote"
+            :class="{ isVoted: hasDisliked }" @click="vote(false)" />
+            <span class="mr-3">{{dislikes}}</span>
+          </span>
+        </div>
+      </div>
 
-		<div
-			class="comment-reply"
-			:class="{ replyHover }"
-			@mouseover="replyHover = true"
-			@mouseleave="replyHover = false"
-			@click="reply(comment)"
-		>
-			<font-awesome-icon icon="reply" class="reply" />
-				<p class="reply-text">Reply</p>
-		</div>
+      <div
+        class="comment-reply"
+        :class="{ replyHover }"
+        @mouseover="replyHover = true"
+        @mouseleave="replyHover = false"
+        @click="$emit('reply')"
+      >
+        <font-awesome-icon icon="reply" class="reply" />
+          <p class="reply-text">Reply</p>
+      </div>
 
-    <CommentForm v-if="replyingTo" @submit="submit" :parent="comment"></CommentForm>
+    </div>
 
-	</div>
+    <CommentForm
+      v-if="replyingTo"
+      @submit="reply => $emit('submitReply', reply)"
+      @cancelReply="$emit('cancelReply')"
+      :parent="comment">
+    </CommentForm>
+  </div>
 </template>
 
 <script>
@@ -135,17 +142,21 @@ export default {
         this.$store.commit('error', err.message)
       })
     },
-    reply(comment) {
-			this.$emit('reply')
-    },
-    sendReply(comment, text) {
-      this.$emit('reply', comment._id, text)
-    }
 	}
 }
 </script>
 
 <style scoped lang="scss">
+.comment {
+  margin-bottom: 1em;
+  background: $beige;
+  box-shadow: 0 4px 5px -2px rgba(211, 211, 211, 0.5);
+  border-radius: 1.5em;
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+}
+
 .replyHover {
   cursor: pointer;
   path {

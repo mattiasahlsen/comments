@@ -29,7 +29,7 @@
       <VideoInterface></VideoInterface>
     </div>
 
-    <CommentForm @submit="comment => $refs.rootComments.submit(comment)"></CommentForm>
+    <CommentForm @submit="comment => $refs.rootComments.submitComment(comment)"></CommentForm>
     <div class="sorter">
       <select v-model="sort">
         <option selected="selected" value="Hot">Sort by: Hot</option>

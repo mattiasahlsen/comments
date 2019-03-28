@@ -1,18 +1,18 @@
 <template>
-	<form id="comment-form" class="comment-form">
-		<div class="comment-textarea-container">
-			<textarea
-				ref="textarea"
-				v-model="comment"
-				class="comment-textarea"
-				placeholder="Say something..."
-			></textarea>
-		</div>
-		<button type="submit" @click.prevent="submit(comment)" :disabled="comment === ''" class="submit-button">
-			Submit
-		</button>
-		<button class="cancel-button" @click.prevent="clearComment">Clear</button>
-	</form>
+  <form class="comment-form">
+    <div class="comment-textarea-container">
+      <textarea
+        ref="textarea"
+        v-model="comment"
+        class="comment-textarea"
+        placeholder="Say something..."
+      ></textarea>
+    </div>
+    <button type="submit" @click.prevent="submit(comment)" :disabled="comment === ''" class="submit-button">
+      Submit
+    </button>
+    <button class="cancel-button" @click.prevent="clearComment">{{parent ? 'Cancel' : 'Clear'}}</button>
+  </form>
 </template>
 
 <script>
@@ -60,13 +60,18 @@ export default {
       }
 		},
     clearComment() {
-      this.comment = ''
-      this.$refs.textarea.focus()
+      if (this.parent) this.$emit('cancelReply')
+      else {
+        this.comment = ''
+        this.$refs.textarea.focus()
+      }
 		},
 	}
 }
 </script>
 
 <style scoped>
-
+.comment-form {
+  display: 
+}
 </style>

@@ -31,16 +31,6 @@ export default {
 		Search,
   },
   methods: {
-    redirect(url) {
-      if (!url) return
-      this.addUrl = false
-
-      if (!isValid(url)) {
-        return this.$store.commit('error', 'Badly formated url.')
-			}
-      this.$router.push({ name: 'url', params: { url, } })
-    },
-
     normalizeUrl,
   },
   created() {
