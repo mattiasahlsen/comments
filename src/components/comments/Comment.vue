@@ -25,13 +25,13 @@
 			<div class="comment-rating">
 				<span class="vote-box">
 					<font-awesome-icon icon="thumbs-up" class="vote"
-					:class="{ isVoted: comment.hasLiked }" @click="vote(comment, true)" />
-					<span class="mr-3">{{comment.likes}}</span>
+					:class="{ isVoted: hasLiked }" @click="vote(true)" />
+					<span class="mr-3">{{likes}}</span>
 				</span>
 				<span class="vote-box">
 						<font-awesome-icon icon="thumbs-down" class="vote"
-					:class="{ isVoted: comment.hasDisliked }" @click="vote(comment, false)" />
-					<span class="mr-3">{{comment.dislikes}}</span>
+					:class="{ isVoted: hasDisliked }" @click="vote(false)" />
+					<span class="mr-3">{{dislikes}}</span>
 				</span>
 			</div>
 		</div>
@@ -71,60 +71,67 @@ export default {
 		return {
       replyHover: false,
       showFull: false,
+
+      score: this.comment.score,
+      likes: this.comment.likes,
+      dislikes: this.comment.dislikes,
+      hasLiked: this.comment.hasLiked,
+      hasDisliked: this.comment.hasDisliked,
 		}
 	},
   props: ['comment', 'replyingTo'],
 	methods: {
-    vote(comment, like) {
-      const likes = comment.likes
-      const dislikes = comment.dislikes
-      const hasLiked = comment.hasLiked
-      const reset = comment => {
-        comment.likes = likes
-        comment.dislikes = dislikes
-        comment.hasLiked = hasLiked
-        comment.score = likes - dislikes
+    vote(like) {
+      const likes = this.likes
+      const dislikes = this.dislikes
+      const hasLiked = this.hasLiked
+      const hasDisliked = this.hasDisliked
+      const reset = () => {
+        this.likes = likes
+        this.dislikes = dislikes
+        this.hasLiked = hasLiked
+        this.hasDisliked = hasDisliked
       }
       let endpoint
 
-      if ((like && comment.hasLiked) || (!like && comment.hasDisliked)) endpoint = 'undovote'
+      if ((like && this.hasLiked) || (!like && this.hasDisliked)) endpoint = 'undovote'
       else if (like) endpoint = 'like'
       else endpoint = 'dislike'
 
       if (like) {
-        if (comment.hasLiked) {
-          comment.likes--
-          comment.hasLiked = false
+        if (this.hasLiked) {
+          this.likes--
+          this.hasLiked = false
         } else {
-          comment.likes++
-          comment.hasLiked = true
-          if (comment.hasDisliked) {
-            comment.dislikes--
-            comment.hasDisliked = false
+          this.likes++
+          this.hasLiked = true
+          if (this.hasDisliked) {
+            this.dislikes--
+            this.hasDisliked = false
           }
         }
       } else {
-        if (comment.hasDisliked) {
-          comment.dislikes--
-          comment.hasDisliked = false
+        if (this.hasDisliked) {
+          this.dislikes--
+          this.hasDisliked = false
         } else {
-          comment.dislikes++
-          comment.hasDisliked = true
-          if (comment.hasLiked) {
-            comment.likes--
-            comment.hasLiked = false
+          this.dislikes++
+          this.hasDisliked = true
+          if (this.hasLiked) {
+            this.likes--
+            this.hasLiked = false
           }
         }
       }
-      comment.score = comment.likes - comment.dislikes
+      this.score = this.likes - this.dislikes
 
-      axios.post(URL + '/comment/' + comment._id + '/' + endpoint).then(resp => {
+      axios.post(URL + '/comment/' + this.comment._id + '/' + endpoint).then(resp => {
         if (resp.status !== 200) {
-          reset(comment)
+          reset()
           this.$store.commit('status', resp.status)
         }
       }).catch(err => {
-        reset(comment)
+        reset()
         this.$store.commit('error', err.message)
       })
     },
