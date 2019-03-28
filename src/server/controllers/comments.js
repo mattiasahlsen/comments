@@ -151,11 +151,13 @@ router.post('/website/:url', (req, res) => {
   if (!req.isAuthenticated()) return res.status(401).end()
   if (!isValid(req.params.url)) return res.status(422).end()
 
-  console.log(normalizeUrl(req.params.url))
-
   new Website({ url: normalizeUrl(req.params.url) }).save().then(website => {
     return res.json(website)
-  }).catch(err => res.status(500).end())
+  }).catch(err => {
+    console.log(err)
+    if (err.code === 11000) res.status(409).end()
+    else res.status(500).end()
+  })
 })
 
 module.exports = router

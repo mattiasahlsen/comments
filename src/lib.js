@@ -144,12 +144,4 @@ export const sortPrio = (c1, c2) => {
   else return 1
 }
 
-export const guard = (to, from, next) => {
-  if (isValid(to.params.url)) {
-    const normalized = normalizeUrl(to.params.url)
-    if (normalized === to.params.url) next()
-    else next({ path: normalized, replace: true })
-  } else {
-    next({ name: '404', replace: true })
-  }
-}
+

@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <Search @submit="redirect"/>
+    <Search></Search>
 
     <div class="my-5">
-      <WebsiteList :websites="websites" @redirect="redirect"/>
+      <WebsiteList :websites="urls" @redirect="redirect"/>
     </div>
   </div>
 </template>
@@ -13,7 +13,15 @@ import Search from '@/components/Search'
 import WebsiteList from '@/components/WebsiteList'
 import axios from 'axios'
 
-import { dateString, normalizeUrl, normHostname, isValid, shortString, modify } from '../lib'
+import {
+  dateString,
+  normalizeUrl,
+  normHostname,
+  isValid,
+  shortString,
+  modify,
+} from '../lib'
+import { redirect } from '../dependent-lib'
 import conf from '../config'
 
 const URL = conf.API_URL
@@ -26,24 +34,25 @@ export default {
       websites: [],
     }
   },
+  computed: {
+    urls() {
+      return this.$store.getters.urls
+    }
+  },
   components: {
 		WebsiteList,
 		Search,
   },
   methods: {
     normalizeUrl,
+    redirect,
   },
   created() {
     axios.get(URL + '/websites').then(resp => {
-      this.websites = resp.data.websites
-      this.websites.forEach(el => {
-        el.createdAt = new Date(el.createdAt)
-        el.createdText = dateString(el.createdAt)
-      })
+      this.$store.commit('addUrls', resp.data.websites)
     }).catch(err => {
       this.$store.commit('axiosError', err)
     })
-
   },
 }
 </script>

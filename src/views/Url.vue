@@ -1,48 +1,57 @@
 <template>
 	<div>
+    <Search></Search>
+
     <div v-if="notFound" class="blockNote alert">
       <button type="button" class="blockNoteClose" data-dismiss="alert" aria-label="Close"
-        @click.prevent="notFound = false">
+        @click.prevent="$router.push('/')">
         &times;
       </button>
       <div class="blockNoteInfo">
         <h3>There is currently no discussion on the entered URL</h3>
 
           <button v-if="hostnameComments" class="inline" @click="redirect(hostname)">
-            Go to discussion on: {{hostname}}
+            Go to discussion on <span class="url-link">{{hostname}}</span>
           </button>
 
-          <button class="inline" @click="newCommentField($route.params.url)">
-            Start new discussion on: {{shortHref}}
+          <button class="inline" @click="newUrl($route.params.url)">
+            Start new discussion on <span class="url-link">{{$route.params.url}}</span>
           </button>
 
         <div v-if="!hostnameComments && $route.params.url !== hostname">
           Or
-          <button class="inline" @click="newCommentField(hostname)">
+          <button class="inline" @click="newUrl(hostname)">
             create a domain-wide
-          </button> for <i>{{hostname}}</i>?
+          </button> for <span class="url-link">{{hostname}}</span>?
         </div>
       </div>
     </div>
 
-    <div class="videoInterface" v-if="isYoutubeVideo()">
-      <VideoInterface></VideoInterface>
-    </div>
+    <div v-if="!loadError">
 
-    <CommentForm @submit="comment => $refs.rootComments.submitComment(comment)"></CommentForm>
-    <div class="sorter">
-      <select v-model="sort">
-        <option selected="selected" value="Hot">Sort by: Hot</option>
-        <option value="New">Sort by: New</option>
-        <option value="Top">Sort by: Top</option>
-      </select>
-    </div>
+      <div class="videoInterface" v-if="loaded && isYoutubeVideo()">
+        <VideoInterface></VideoInterface>
+      </div>
 
-		<CommentField @loaded="loaded = true" @404="handle404" :sort="sort" ref="rootComments"></CommentField>
+      <CommentForm @submit="comment => $refs.rootComments.submitComment(comment)"></CommentForm>
+      <div class="sorter">
+        <select v-model="sort">
+          <option selected="selected" value="Hot">Sort by: Hot</option>
+          <option value="New">Sort by: New</option>
+          <option value="Top">Sort by: Top</option>
+        </select>
+      </div>
+
+      <CommentField @loaded="loaded = true" @loadError="handleLoadError" :sort="sort" ref="rootComments"></CommentField>
+    </div>
 	</div>
 </template>
 
 <script>
+import axios from 'axios'
+import urlencode from 'urlencode'
+
+import Search from '../components/Search'
 import VideoInterface from '../components/comments/VideoInterface'
 import CommentField from '../components/comments/CommentField'
 import CommentForm from '../components/comments/CommentForm'
@@ -51,8 +60,9 @@ import {
 	loadComments,
 	modify,
 	normHostname,
-	guard,
+  dateString,
 } from '../lib'
+import { guard, redirect, newUrl } from '../dependent-lib'
 import conf from '../config'
 
 const URL = conf.API_URL
@@ -62,15 +72,20 @@ export default {
 	components: {
 		VideoInterface,
 		CommentField,
-		CommentForm,
+    CommentForm,
+    Search,
 	},
 	data() {
 		return {
 			comments: null,
       comment: '',
-			notFound: false,
 			loaded: false,
       sort: 'Hot',
+
+      hostnameComments: null,
+
+			notFound: false,
+      loadError: false,
 		}
 	},
 	computed: {
@@ -79,37 +94,38 @@ export default {
       return shortString(this.normUrl, 55)
     },
     hostname() {
-      return normHostname(this.$route.path.url)
+      return normHostname(this.$route.params.url)
     },
 	},
 	methods: {
-    handle404(hostnameComments) {
-      this.notFound = true
+    handleLoadError(err, hostnameComments) {
+      this.loadError = true
+      if (err === 404) this.notFound = true
       this.hostnameComments = hostnameComments
     },
     isYoutubeVideo() {
-      return this.loaded && this.$route.params.url.includes('youtube.com/watch?v=')
+      return this.$route.params.url.includes('youtube.com/watch?v=')
     },
-    newCommentField(url) {
-      axios.post(`${URL}/website/${urlencode(normalizeUrl(url))}`).then(resp => {
-        resp.data.createdAt = new Date(resp.data.createdAt)
-        resp.data.createdText = dateString(resp.data.createdAt)
-        this.websites.unshift(resp.data)
-
-        this.redirect(url)
-        this.notFound = false
-      }).catch(err => {
-        if (err.response && err.response.status === 401) {
-          this.$store.commit('error', 'You must be logged in to add new comment fields.')
-        } else this.$store.commit('axiosError', err)
-      })
+    newUrl(url) {
+      newUrl(url).then(() => {
+        this.clearErrors()
+      }).catch(() => {})
     },
+    clearErrors() {
+      this.notFound = false
+      this.loadError = false
+    }
 	},
 	beforeRouteEnter: guard,
-	beforeRouteUpdate: guard,
+	beforeRouteUpdate(to, from, next) {
+    this.clearErrors()
+    guard(to, from, next)
+  }
 }
 </script>
 
-<style>
-
+<style scoped lang="scss">
+.url-link {
+  color: $light-2;
+}
 </style>

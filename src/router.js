@@ -4,8 +4,6 @@ import Home from './views/Home'
 import Url from './views/Url'
 import NotFound from './views/NotFound'
 import store from './store'
-import {
-} from './lib'
 
 Vue.use(Router)
 

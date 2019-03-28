@@ -5,7 +5,8 @@
 </template>
 
 <script>
-import { shortString } from '../lib'
+import { shortString, } from '../lib'
+import { redirect } from '../dependent-lib'
 import router from '../router'
 
 export default {
@@ -26,15 +27,7 @@ export default {
     })
   },
   methods: {
-    redirect(url) {
-      if (!url) return
-      this.addUrl = false
-
-      if (!isValid(url)) {
-        return this.$store.commit('error', 'Badly formated url.')
-			}
-      this.$router.push({ name: 'url', params: { url, } })
-    },
+    redirect,
   }
 }
 </script>

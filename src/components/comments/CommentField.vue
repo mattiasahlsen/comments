@@ -37,7 +37,6 @@ import urlencode from 'urlencode'
 import axios from 'axios'
 import conf from '../../config'
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
-import Comment from './Comment'
 import {
 	extend,
 	normHostname,
@@ -46,6 +45,8 @@ import {
   sortTop,
   sortPrio,
 } from '../../lib'
+import router from '../../router'
+import Comment from './Comment'
 
 const URL = conf.API_URL
 
@@ -84,7 +85,7 @@ export default {
       return comments
     },
     hostname() {
-      return normHostname(this.$route.path.url)
+      return normHostname(this.$route.params.url)
     },
 	},
   watch: {
@@ -116,21 +117,34 @@ export default {
           .then(() => this.loadComments(url, 'top'))
 			}
 			else{
+        let error
+        let hostnameComments
         return axios.get(`${URL}/comments/${urlencode(url)}/${sort}/${this.parent && this.parent._id}/${offset}`).then(resp => {
 
           if (resp.data.comments.length < conf.commentsLimit) this.gotAll = true
-          this.$emit('loaded')
           if (sort === 'new') this.newComments = this.newComments.concat(resp.data.comments)
           else this.topComments = this.topComments.concat(resp.data.comments)
 				}).catch(err => {
 	        if (err.response && err.response.status === 404) {
 						if (url !== this.hostname) {
               this.loadComments(this.hostname)
-                .then(comments => this.$emit('404', comments))
-                .catch(err => this.$emit('404'))
-						} else this.$emit('404')
-	        } else this.loadCommentsError(err)
-	      }).finally(() => setTimeout(() => { this.loading = false }, 1000)) // min 1s loading for reduced lag
+                .then(comments => {
+                  error = 404
+                  hostnameComments = comments
+                })
+                .catch(err => {
+                  error = 404
+                })
+						} else error = 404
+	        } else error = err
+	      }).finally(() => setTimeout(() => {
+          this.loading = false
+          if (error) {
+            if (error !== 404) this.loadCommentsError(error)
+            this.$emit('loadError', error, hostnameComments)
+          }
+          else this.$emit('loaded')
+        }, 500)) // min 0.5s loading for reduced lag
 			}
 		},
     loadCommentsError(err) {
@@ -140,8 +154,11 @@ export default {
 		},
   },
   mounted() {
-		this.loadComments()
-	},
+    this.loadComments()
+    router.afterEach((to, from) => {
+      this.loadComments()
+    })
+  },
 	created() {
     window.onscroll = ev => {
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9 &&

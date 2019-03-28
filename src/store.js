@@ -2,8 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import auth from './vuex-modules/auth'
+import { dateString } from './lib'
 
 Vue.use(Vuex)
+
+const modify = url => ({
+  ...url,
+  createdAt: new Date(url.createdAt),
+  createdText: dateString(new Date(url.createdAt))
+})
 
 const status = (state, code) => {
   switch (code) {
@@ -27,6 +34,11 @@ const status = (state, code) => {
 export default new Vuex.Store({
   state: {
     error: null,
+    urls: [],
+  },
+  getters: {
+    error: state => state.error,
+    urls: state => state.urls,
   },
   mutations: {
     error(state, err) {
@@ -44,6 +56,14 @@ export default new Vuex.Store({
     },
     status(state, code) {
       status(state, code)
+    },
+
+    addUrls(state, urls) {
+      state.urls = state.urls.concat(urls.map(url => modify(url)))
+        .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos) // remove duplicates
+    },
+    newUrl(state, url) {
+      state.urls.unshift(modify(url))
     }
   },
   actions: {
