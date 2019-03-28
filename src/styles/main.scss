@@ -192,9 +192,8 @@ footer {
 }
 
 nav.main{
-  //background: #bdc3c7;
-  //background: #45aaf2;
-  margin-bottom: 2em;
+  border-bottom: 0.5px solid $light-background;
+  margin-bottom: 3em;
 }
 
 nav.main img {

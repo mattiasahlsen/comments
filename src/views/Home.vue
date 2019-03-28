@@ -12,15 +12,6 @@
 import Search from '@/components/Search'
 import WebsiteList from '@/components/WebsiteList'
 import axios from 'axios'
-
-import {
-  dateString,
-  normalizeUrl,
-  normHostname,
-  isValid,
-  shortString,
-  modify,
-} from '../lib'
 import { redirect } from '../dependent-lib'
 import conf from '../config'
 
@@ -29,23 +20,20 @@ export default {
   name: 'home',
   data() {
     return {
-      comments: null,
-      error: null,
-      websites: [],
+      error: null
     }
+  },
+  components: {
+    WebsiteList,
+    Search,
   },
   computed: {
     urls() {
       return this.$store.getters.urls
     }
   },
-  components: {
-		WebsiteList,
-		Search,
-  },
   methods: {
-    normalizeUrl,
-    redirect,
+    redirect
   },
   created() {
     axios.get(URL + '/websites').then(resp => {
