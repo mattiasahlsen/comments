@@ -34,8 +34,8 @@
       </div>
 
       <CommentForm @submit="comment => $refs.rootComments.submitComment(comment)"></CommentForm>
-      <div class="sorter">
-        <select v-model="sort">
+      <div>
+        <select class="sorter" v-model="sort">
           <option selected="selected" value="Hot">Sort by: Hot</option>
           <option value="New">Sort by: New</option>
           <option value="Top">Sort by: Top</option>

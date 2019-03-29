@@ -95,11 +95,6 @@ export default {
     },
   },
   watch: {
-    sort() {
-      if (!this.parent) {
-        this.tryLoadComments()
-      }
-    },
     replyText() {
       const textarea = this.$refs.replyTextarea[0]
       textarea.style.height = 'auto'
