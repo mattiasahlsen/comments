@@ -1,11 +1,11 @@
 <template>
-  <div :class="{ 'comment-field': !parent, 'comment-replies': parent }">
+  <div class="comment-field" :style="{ marginLeft }">
 
     <p v-if="parent && !show" @click="show = true"
       class="clickable showReplies">Show Replies the replies to {{parent.displayName}}</p>
 
     <div v-if="show">
-      <div v-for="comment in comments" :key="comment._id" class="mb-3">
+      <div v-for="comment in comments" :key="comment._id">
         <Comment
           :comment="comment"
           :replyingTo="replyingTo === comment._id"
@@ -13,7 +13,11 @@
           @cancelReply="replyingTo = null"
           @submitReply="reply => submitComment(reply, comment)"
         ></Comment>
-        <CommentField v-if="comment.children.length > 0" :parent="comment" :sort="sort"></CommentField>
+        <CommentField
+          :parent="comment"
+          :sort="sort"
+          :depth="depth + 1"
+        ></CommentField>
       </div>
 
       <div v-if="!parent">
@@ -57,10 +61,10 @@ export default {
     ClipLoader,
     Comment,
   },
-  props: ['parent', 'sort'],
+  props: ['parent', 'sort', 'depth'],
   data() {
     return {
-      show: !this.parent,
+      show: this.depth < 5,
       gotAll: false,
       loading: false,
       nearBottom: false,
@@ -93,6 +97,9 @@ export default {
     hostname() {
       return normHostname(this.$route.params.url)
     },
+    marginLeft() {
+      return this.depth * 50 + 'px'
+    }
   },
   watch: {
     replyText() {
@@ -112,8 +119,11 @@ export default {
 
     // don't stack loadComments, all tryLoadComments called while loading is true will have no effect
     async tryLoadComments() {
-      if (this.gotAll) return
-      if (!this.loading) this.loadComments()
+      if (this.gotAll) return false
+      if (!this.loading) {
+        await this.loadComments()
+        return true
+      }
       return
     },
     loadComments(url = this.$route.params.url, sort = this.sort.toLowerCase()) { // resolves to undefined
@@ -178,8 +188,13 @@ export default {
         }
       }
     } else {
+      console.log('check')
       this.newComments = this.parent.children
-      if (this.newComments.length < conf.childrenLimit) this.gotAll = true
+      if (this.newComments.length === 0 && this.depth < 5) {
+        this.tryLoadComments()
+      } else if (this.newComments.length < conf.childrenLimit) {
+        this.gotAll = true
+      }
     }
   },
 }

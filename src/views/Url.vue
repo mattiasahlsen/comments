@@ -42,7 +42,13 @@
         </select>
       </div>
 
-      <CommentField @loaded="loaded = true" @loadError="handleLoadError" :sort="sort" ref="rootComments"></CommentField>
+      <CommentField
+        ref="rootComments"
+        @loaded="loaded = true"
+        @loadError="handleLoadError"
+        :sort="sort"
+        :depth="0"
+      ></CommentField>
     </div>
 	</div>
 </template>

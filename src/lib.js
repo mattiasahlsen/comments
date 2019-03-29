@@ -143,5 +143,3 @@ export const sortPrio = (c1, c2) => {
   else if (c1.prio) return -1
   else return 1
 }
-
-

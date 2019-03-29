@@ -90,7 +90,7 @@ const initDb = async () => {
       userId: accounts[0]._id,
       websiteId: website._id,
       text: 'Random text ' + i,
-      createdAt: Date.now() - Math.floor(Math.random() * 3600 * 20 * 1000),
+      createdAt: Date.now() - Math.floor(i / 45 * 3600 * 20 * 1000),
     })
   }
 
@@ -134,7 +134,7 @@ const initDb = async () => {
       new Vote({
         userId: accounts[i]._id,
         commentId: rootComments[j]._id,
-        like: Math.random() < 0.5
+        like: i / 10 < 0.7
       }).save()
     }
   }
@@ -146,31 +146,31 @@ const initDb = async () => {
       new Comment(el).save((err, comment) => {
         if (err) throw err
         replyComments[index] = comment
-        if (++count === rootComments.length) resolve()
+        if (++count === replyComments.length) resolve()
       })
     })
   })
 
+  const text = 'Test comment blah blah blah blah blah blah blahs\n blah blah blah blah blah '
   let comment = {
     userId: accounts[1]._id,
     websiteId: website._id,
     parentId: replyComments[0]._id,
-    text: 'Test comment blah blah blah blah blah blah blahs\n blah blah blah blah blah ',
   }
   for (let i = 0; i < 10; i++) {
-    comment.text += i
-    await new Comment(comment).save((err, comm) => {
+    comment.text = text + i
+    comment.parentId = await new Promise((resolve, reject) => new Comment(comment).save((err, comm) => {
       if (err) throw err
-      comment.parent_id = comm._id
-    })
+      resolve(comm._id)
+    }))
   }
   comment.parentId = replyComments[1]._id
   for (let i = 0; i < 10; i++) {
-    comment.text += i
-    await new Comment(comment).save((err, comm) => {
+    comment.text = (text + 1) + i
+    comment.parentId = await new Promise((resolve, reject) => new Comment(comment).save((err, comm) => {
       if (err) throw err
-      comment.parent_id = comm._id
-    })
+      resolve(comm._id)
+    }))
   }
 }
 initDb()
