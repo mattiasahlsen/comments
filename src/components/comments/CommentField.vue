@@ -127,7 +127,6 @@ export default {
         let error
         let hostnameComments
         return axios.get(`${URL}/comments/${urlencode(url)}/${sort}/${this.parent && this.parent._id}/${offset}`).then(resp => {
-
           if (!parent && resp.data.comments.length < conf.commentsLimit) this.gotAll = true
           else if (parent && resp.data.comments.length < conf.childrenLimit) this.gotAll = true
 
@@ -180,6 +179,7 @@ export default {
       }
     } else {
       this.newComments = this.parent.children
+      if (this.newComments.length < conf.childrenLimit) this.gotAll = true
     }
   },
 }

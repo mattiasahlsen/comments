@@ -8,7 +8,7 @@ app.set('port', config.port)
 const server = http.createServer(app)
 
 server.listen(config.port)
-console.log('Started server at port ' + config.port)
+if (process.env.NODE_ENV === 'production') console.log('Started server at port ' + config.port)
 server.on('error', onError)
 server.on('listening', onListening)
 

@@ -128,6 +128,7 @@ const initDb = async () => {
     })
   })
 
+
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       new Vote({
@@ -149,6 +150,28 @@ const initDb = async () => {
       })
     })
   })
+
+  let comment = {
+    userId: accounts[1]._id,
+    websiteId: website._id,
+    parentId: replyComments[0]._id,
+    text: 'Test comment blah blah blah blah blah blah blahs\n blah blah blah blah blah ',
+  }
+  for (let i = 0; i < 10; i++) {
+    comment.text += i
+    await new Comment(comment).save((err, comm) => {
+      if (err) throw err
+      comment.parent_id = comm._id
+    })
+  }
+  comment.parentId = replyComments[1]._id
+  for (let i = 0; i < 10; i++) {
+    comment.text += i
+    await new Comment(comment).save((err, comm) => {
+      if (err) throw err
+      comment.parent_id = comm._id
+    })
+  }
 }
 initDb()
 
