@@ -11,7 +11,7 @@
           :replyingTo="replyingTo === comment._id"
           @reply="replyingTo = comment._id"
           @cancelReply="replyingTo = null"
-          @submitReply="reply => submitReply(comment, reply)"
+          @submitReply="reply => submitComment(reply, comment)"
         ></Comment>
         <CommentField v-if="comment.children.length > 0" :parent="comment" :sort="sort"></CommentField>
       </div>
@@ -21,14 +21,15 @@
         <button v-if="nearBottom" v-scroll-to="'#app'" class="iconButton">Go to top</button>
       </div>
       <div v-else>
-        <p v-if="!gotAll" @click="loadComments" class="clickable load-more">Load more...</p>
+        <p v-if="!gotAll" @click="tryLoadComments" class="clickable load-more">Load more...</p>
         <p class="clickable hideReplies" v-if="show" @click="show = false">
           Hide the replies to {{parent.displayName}}
         </p>
       </div>
+
+      <clip-loader class="loader" :loading="loading" color="#008ae6"></clip-loader>
     </div>
 
-    <clip-loader :loading="loading" color="#008ae6"></clip-loader>
   </div>
 </template>
 
@@ -68,10 +69,14 @@ export default {
       newComments: [],
       topComments: [],
       myNewComments: [],
+
+      displayComments: [], // the comments displayed to the user, updated when loading is finished
     }
   },
   computed: {
     comments() {
+      if (this.loading) return this.displayComments // return last comments
+
       const comments = this.newComments.concat(this.topComments).concat(this.myNewComments)
         .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos) // remove duplicates
         .map(extend)
@@ -82,6 +87,7 @@ export default {
       else throw new Error('Invalid value of this.sort')
       comments.sort(sortPrio)
 
+      this.displayComments = comments
       return comments
     },
     hostname() {
@@ -90,38 +96,46 @@ export default {
   },
   watch: {
     sort() {
-      this.loadComments()
+      if (!this.parent) {
+        this.tryLoadComments()
+      }
     },
     replyText() {
       const textarea = this.$refs.replyTextarea[0]
       textarea.style.height = 'auto'
       if (this.replyText.split('\n').length === 1) textarea.style.height = '1.2em'
       else textarea.style.height = textarea.scrollHeight + 'px'
-    }
+    },
   },
   methods: {
-    submitReply(parent, reply) {
-      comment.prio = true
-      parent.children.unshift(reply)
-    },
-    submitComment(comment) {
+    submitComment(comment, parent) {
       comment.prio = true // if I submit a comment, I want it to come to the top instantly
-      this.newComments.unshift(comment)
+      if (!parent) this.newComments.unshift(comment)
+      else parent.children.unshift(comment)
     },
-    loadComments(url = this.$route.params.url, sort = this.sort.toLowerCase()) {
+
+
+    // don't stack loadComments, all tryLoadComments called while loading is true will have no effect
+    async tryLoadComments() {
+      if (this.gotAll) return
+      if (!this.loading) this.loadComments()
+      return
+    },
+    loadComments(url = this.$route.params.url, sort = this.sort.toLowerCase()) { // resolves to undefined
       // 2 margin offset to not "jump over" new comments
       const offset = Math.max(0, (sort === 'new' ? this.newComments.length : this.topComments.length) - 2)
       this.loading = true
       if (sort === 'hot') {
-        return this.loadComments(url, 'new')
-          .then(() => this.loadComments(url, 'top'))
+        return this.loadComments(url, 'new').then(() => this.loadComments(url, 'top'))
       }
-      else{
+      else {
         let error
         let hostnameComments
         return axios.get(`${URL}/comments/${urlencode(url)}/${sort}/${this.parent && this.parent._id}/${offset}`).then(resp => {
 
-          if (resp.data.comments.length < conf.commentsLimit) this.gotAll = true
+          if (!parent && resp.data.comments.length < conf.commentsLimit) this.gotAll = true
+          else if (parent && resp.data.comments.length < conf.childrenLimit) this.gotAll = true
+
           if (sort === 'new') this.newComments = this.newComments.concat(resp.data.comments)
           else this.topComments = this.topComments.concat(resp.data.comments)
         }).catch(err => {
@@ -142,9 +156,8 @@ export default {
           if (error) {
             if (error !== 404) this.loadCommentsError(error)
             this.$emit('loadError', error, hostnameComments)
-          }
-          else this.$emit('loaded')
-        }, 500)) // min 0.5s loading for reduced lag
+          } else this.$emit('loaded')
+        }, 500)) // min 1s loading for reduced lag
       }
     },
     loadCommentsError(err) {
@@ -154,25 +167,31 @@ export default {
     },
   },
   mounted() {
-    this.loadComments()
-    router.afterEach((to, from) => {
-      this.loadComments()
-    })
-  },
-  created() {
-    window.onscroll = ev => {
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9 &&
-        window.scrollY > 0) {
-        if (!this.gotAll && this.$route.params.url) {
-          this.loadComments()
-        }
+    if (!this.parent) {
+      this.tryLoadComments()
+      router.afterEach((to, from) => {
+        this.tryLoadComments()
+      })
 
-        this.nearBottom = true
-      } else this.nearBottom = false
+      window.onscroll = ev => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9 && window.scrollY > 0) {
+          if (!this.gotAll && this.$route.params.url) {
+            this.tryLoadComments()
+          }
+          this.nearBottom = true
+        } else {
+          this.nearBottom = false
+        }
+      }
+    } else {
+      this.newComments = this.parent.children
     }
-  }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
+.loader {
+  margin: 2em 0;
+}
 </style>

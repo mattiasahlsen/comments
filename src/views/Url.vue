@@ -57,7 +57,6 @@ import CommentField from '../components/comments/CommentField'
 import CommentForm from '../components/comments/CommentForm'
 import {
 	normalizeUrl,
-	loadComments,
 	modify,
 	normHostname,
   dateString,
@@ -87,7 +86,7 @@ export default {
 			notFound: false,
       loadError: false,
 		}
-	},
+  },
 	computed: {
     shortHref() {
       if (!this.normUrl) return ''

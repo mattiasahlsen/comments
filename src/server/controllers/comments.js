@@ -52,7 +52,7 @@ router.get(['/comments/:url/:sort/:parentId/:offset?'], (req, res) => {
     websiteId: website._id,
     parentId,
   }, null, {
-    limit: req.params.parentId ? conf.childrenLimit : conf.commentsLimit,
+    limit: parentId ? conf.childrenLimit : conf.commentsLimit,
     skip: offset,
     sort
   }, (err, comments) => {
@@ -154,7 +154,7 @@ router.post('/website/:url', (req, res) => {
   new Website({ url: normalizeUrl(req.params.url) }).save().then(website => {
     return res.json(website)
   }).catch(err => {
-    console.log(err)
+    logErr(err)
     if (err.code === 11000) res.status(409).end()
     else res.status(500).end()
   })

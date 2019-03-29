@@ -33,11 +33,10 @@ export function newUrl(url) {
     store.commit('newUrl', resp.data)
   }).catch(err => {
     if (err.response && err.response.status === 401) {
-        store.commit('error', 'You must be logged in to add new comment fields.')
+      store.commit('error', 'You must be logged in to add new comment fields.')
     } else if (err.response && err.response.status === 409) {
-        store.commit('error', 'Url already exists.')
+      store.commit('error', 'Url already exists.')
     } else store.commit('axiosError', err)
     throw err
   })
 }
-
