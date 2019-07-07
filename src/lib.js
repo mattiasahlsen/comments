@@ -94,6 +94,7 @@ export function isValid(url) {
   return validUrl.isWebUri(url) && parseUrl(url).hostname.indexOf('.') !== -1
 }
 
+// adds properties and modifies a comment object
 export function extend(comment) {
   const someText = comment => {
     if ((comment.text.match(/\n/g) || []).length >= 10) { // more than 10 newlines?

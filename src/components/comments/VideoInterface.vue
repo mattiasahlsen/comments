@@ -15,7 +15,7 @@
 			</div>
 		</div>
 
-		<div :class="{ hide: !videoVisibility }">
+		<div v-show="videoVisibility">
 			<div class="auto-resizable-iframe" :style="{ width: youtubeVideoWidth }">
 			<div>
 					<youtube :video-id="youtubeVideoId()" class="video"></youtube>
@@ -44,5 +44,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

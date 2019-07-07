@@ -18,10 +18,11 @@ export function redirect(url) {
 }
 
 export const guard = (to, from, next) => {
+  console.log('guard')
   if (isValid(to.params.url)) {
     const normalized = normalizeUrl(to.params.url)
     if (normalized === to.params.url) next()
-    else next({ path: normalized, replace: true })
+    else next({ path: urlencode(normalized), replace: true })
   } else {
     next('/')
     store.commit('error', 'Badly formated url.')
