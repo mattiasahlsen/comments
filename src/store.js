@@ -33,17 +33,17 @@ const status = (state, code) => {
 
 export default new Vuex.Store({
   state: {
-    error: null,
+    errors: [],
     urls: [],
   },
   getters: {
-    error: state => state.error,
+    errors: state => state.errors,
     urls: state => state.urls,
   },
   mutations: {
     error(state, err) {
-      if (err.message) state.error = err.message
-      else if (typeof err === 'string') state.error = err
+      if (err.message) state.errors.push(err.message)
+      else if (typeof err === 'string') state.errors.push(err)
       else throw new Error('Invalid argument err to error mutation of store.')
     },
     axiosError(state, err) {
@@ -52,7 +52,7 @@ export default new Vuex.Store({
       else state.error = err.message
     },
     clearError(state) {
-      state.error = null
+      state.errors = []
     },
     status(state, code) {
       status(state, code)

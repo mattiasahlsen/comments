@@ -23,8 +23,8 @@ export const guard = (to, from, next) => {
     if (normalized === to.params.url) next()
     else next({ path: normalized, replace: true })
   } else {
+    next('/')
     store.commit('error', 'Badly formated url.')
-    next(false)
   }
 }
 

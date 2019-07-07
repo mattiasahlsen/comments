@@ -56,17 +56,17 @@ const router = new Router({
       path: '/not-found',
       name: '404',
       component: NotFound
-		},
-		{
-			path: '/',
-			name: 'home',
-			component: Home,
-		},
+    },
+    {
+      path: '/',
+      name: 'home',
+      component: Home,
+    },
     {
       path: '/:url',
       name: 'url',
-			component: Url,
-		},
+      component: Url,
+    },
     {
       path: '*',
       redirect: { name: '404' },

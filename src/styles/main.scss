@@ -264,27 +264,6 @@ nav.main img {
   height: 3.5em;
 }
 
-.notification {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 1em;
-  margin-bottom: 1em;
-  background: $warning;
-
-  .dismiss path {
-    &:hover {
-      cursor: pointer;
-      color: $secondary;
-    }
-  }
-
-  .notification-text {
-    flex: 1;
-    color: $white;
-    text-align: center;
-  }
-}
 
 .website-item {
   height: 3.5em;

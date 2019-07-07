@@ -188,7 +188,6 @@ export default {
         }
       }
     } else {
-      console.log('check')
       this.newComments = this.parent.children
       if (this.newComments.length === 0 && this.depth < 5) {
         this.tryLoadComments()

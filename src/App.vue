@@ -1,10 +1,7 @@
 <template>
   <div id="app">
-    <div class="notification warning" v-if="error">
-      <p class="notification-text">{{error}}</p>
-      <font-awesome-icon icon="times" size="2x" class="dismiss" @click="dismiss"/>
-    </div>
-
+    <Error :fixed="false"/>
+    <Error :fixed="true"/>
     <Navbar/>
 
     <div class="wrapper">
@@ -34,6 +31,7 @@
 <script>
 import axios from 'axios'
 import Navbar from './components/Navbar'
+import Error from './components/Error'
 import conf from './config'
 const URL = conf.API_URL
 
@@ -43,19 +41,10 @@ export default {
       image: null
     }
   },
-  computed: {
-    error() {
-      return this.$store.getters.error
-    }
-  },
   components: {
     Navbar,
+    Error,
   },
-  methods: {
-    dismiss() {
-      this.$store.commit('clearError')
-    }
-  }
 }
 </script>
 
