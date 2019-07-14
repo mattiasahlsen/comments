@@ -27,6 +27,7 @@ export default {
 <style lang="scss" scoped>
 .fixed {
   position: fixed;
+  z-index: 1000;
 }
 .relative {
   position: relative;

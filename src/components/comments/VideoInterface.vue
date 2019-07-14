@@ -27,11 +27,12 @@
 
 <script>
 import { getIdFromURL } from 'vue-youtube-embed'
+import { SM, MD } from '../../constants'
 
 export default {
 	data() {
 		return {
-      youtubeVideoWidth: '70%',
+      youtubeVideoWidth: window.innerWidth > MD ? '70%' : window.innerWidth > SM ? '90%' : '100%',
       videoVisibility: true,
 		}
 	},
