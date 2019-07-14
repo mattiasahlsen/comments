@@ -1,8 +1,13 @@
 <template>
   <div class="comment-field" :style="{ marginLeft }">
 
-    <p v-if="parent && !show" @click="show = true"
-      class="clickable showReplies">Show Replies the replies to {{parent.displayName}}</p>
+    <div v-if="parent && comments.length > 0">
+      <p v-if="!show" @click="show = true"
+        class="clickable showReplies">Show Replies the replies to {{parent.displayName}}</p>
+      <p v-else class="clickable hideReplies" @click="show = false">
+        Hide the replies to {{parent.displayName}}
+      </p>
+    </div>
 
     <div v-if="show">
       <div v-for="comment in comments" :key="comment._id">
@@ -26,9 +31,6 @@
       </div>
       <div v-else>
         <p v-if="!gotAll" @click="tryLoadComments" class="clickable load-more">Load more...</p>
-        <p class="clickable hideReplies" v-if="show" @click="show = false">
-          Hide the replies to {{parent.displayName}}
-        </p>
       </div>
 
       <clip-loader class="loader" :loading="loading" color="#008ae6"></clip-loader>
@@ -64,7 +66,7 @@ export default {
   props: ['parent', 'sort', 'depth'],
   data() {
     return {
-      show: this.depth < 5,
+      show: this.depth < 2,
       gotAll: false,
       loading: false,
       nearBottom: false,
@@ -124,7 +126,7 @@ export default {
         await this.loadComments()
         return true
       }
-      return
+      return false
     },
     loadComments(url = this.$route.params.url, sort = this.sort.toLowerCase()) { // resolves to undefined
       // 2 margin offset to not "jump over" new comments
@@ -202,5 +204,18 @@ export default {
 <style lang="scss" scoped>
 .loader {
   margin: 2em 0;
+}
+.showReplies,
+.hideReplies {
+  display: block;
+  background: $beige;
+  box-shadow: 0 4px 5px -2px rgba(211, 211, 211, 0.5);
+  border-radius: 0.5em;
+  padding: 0.5em;
+  &:hover {
+    cursor: pointer;
+    color: $dark;
+    background: rgba(211, 211, 211, 1);
+  }
 }
 </style>

@@ -29,7 +29,7 @@ const initDb = async () => {
     { username: 'mattias.ahlsen@gmail.com', displayName: 'Mattias Ahlsén', password: 'mattias' },
     { username: 'gabriel.lindgren@gmail.com', displayName: 'Gabriel Lindgren', password: 'gabriel' }
   ]
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 5; i++) {
     accounts.push({
       username: 'test' + i + '@gmail.com',
       displayName: 'Test user ' + i,
@@ -55,7 +55,7 @@ const initDb = async () => {
     url: 'youtube.com',
   })
   const websites = []
-  for (let i = 0; i < 45; i++) {
+  for (let i = 0; i < 5; i++) {
     websites.push(new Website({ url: 'test' + i + '.com' }))
     await websites[websites.length - 1].save()
   }
@@ -129,11 +129,11 @@ const initDb = async () => {
   })
 
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < accounts.length; i++) {
     for (let j = 0; j < 10; j++) {
       new Vote({
         userId: accounts[i]._id,
-        commentId: rootComments[j]._id,
+        objectId: rootComments[j]._id,
         like: i / 10 < 0.7
       }).save()
     }

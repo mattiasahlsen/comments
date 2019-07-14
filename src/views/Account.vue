@@ -148,5 +148,9 @@ export default {
   white-space: nowrap;
   text-align: right;
 }
-
+.observe {
+  font-style: italic;
+  font-size: 0.8em;
+  margin-top: 2em;
+}
 </style>

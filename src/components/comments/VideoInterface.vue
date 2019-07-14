@@ -44,5 +44,36 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.videoControlPanel{
+  width: 100%;
+  background: $beige;
+  padding: 0.5em;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.videoSizeControl{
+  margin-right: 0.2em;
+}
+</style>
+<style lang="scss">
+.auto-resizable-iframe {
+  margin: 0px auto;
+}
+
+.auto-resizable-iframe > div {
+  position: relative;
+  padding-bottom: 75%;
+  height: 0;
+}
+
+.auto-resizable-iframe iframe{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 </style>

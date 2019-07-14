@@ -29,7 +29,7 @@ Comment.on('error', err => logErr(err)) // backup
 
 Comment.method('getScore', function(obj, userId) {
   return new Promise((resolve, reject) => {
-    Vote.find({ commentId: this._id }, (err, votes) => {
+    Vote.find({ objectId: this._id }, (err, votes) => {
       if (err) reject(err)
       obj.likes = 0
       obj.dislikes = 0

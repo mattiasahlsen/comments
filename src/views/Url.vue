@@ -133,4 +133,38 @@ export default {
 .url-link {
   color: $light-2;
 }
+.videoInterface {
+  width: 100%;
+  background: $beige;
+  margin-bottom: 3em;
+}
+.sorter {
+  margin-bottom: 1em;
+}
+
+.blockNote {
+  background: $light-background;
+  margin-bottom: 1em;
+  padding: 0.2em;
+  line-height: 1.5em;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.blockNoteClose {
+  font-size: 3em;
+  min-height: 100%;
+  background: $dark;
+  color: $white;
+  margin-right: 0.2em;
+  padding: 0.2em;
+}
+
+.blockNoteInfo {
+  padding: 0.5em 0;
+  button {
+    padding: 0.5em;
+  }
+}
 </style>

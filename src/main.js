@@ -32,7 +32,6 @@ if (process.env.NODE_ENV === 'development') localStorage.setItem('loggedIn', 'tr
 if (localStorage.getItem('loggedIn') === 'true') {
   store.dispatch('getUser')
     .then(user => {
-      console.log(user)
       store.commit('login', user)
     }).catch(err => {
       localStorage.removeItem('loggedIn')

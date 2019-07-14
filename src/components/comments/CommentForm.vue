@@ -70,8 +70,44 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .comment-form {
-  display: 
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 2em;
+  align-items: flex-end;
+}
+
+.comment-textarea {
+  padding: 0;
+  flex: 1;
+  font-size: 2em;
+  border: none;
+  border-bottom: 1px solid $dark;
+  resize: none;
+  overflow: hidden;
+  height: 1.2em;
+  transition: height 0s;
+}
+
+.comment-textarea-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.comment-form button {
+  width: 5em;
+  height: 3em;
+  margin-left: 0.5em;
+}
+
+.comment-form .cancel-button {
+  color: $dark;
+  background-color: $light-1;
+  &:hover {
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  }
 }
 </style>

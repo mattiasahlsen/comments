@@ -12,7 +12,6 @@ export default {
   props: ['fixed'],
   computed: {
     errors() {
-      console.log(this.$store.getters.errors.length)
       return this.$store.getters.errors
     }
   },

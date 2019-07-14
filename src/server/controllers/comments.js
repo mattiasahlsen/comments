@@ -105,20 +105,7 @@ router.post('/comment/:id/like', (req, res) => {
   Vote.like(req.user._id, req.params.id, (err, vote) => {
     if (err) res.status(500).end()
     else {
-      let scoreChange
-      if (vote) {
-        // if this user already had voted on this comment
-        if (vote.like) scoreChange = 0
-        else scoreChange = 2
-      } else scoreChange = 1
-      Comment.findOneAndUpdate({ _id: req.params.id },
-        { $inc: { score: scoreChange } }, (err, comment) => {
-          if (err) {
-            logErr(err)
-            return res.status(500).end()
-          }
-          res.json({ scoreChange })
-        })
+      res.end()
     }
   })
 })
@@ -134,30 +121,11 @@ router.post('/comment/:id/dislike', (req, res) => {
 })
 router.post('/comment/:id/undovote', (req, res) => {
   if (!req.isAuthenticated()) return res.status(401).end()
-  Vote.deleteOne({ userId: req.user._id, commentId: req.params.id }, err => {
+  Vote.deleteOne({ userId: req.user._id, objectId: req.params.id }, err => {
     if (err) res.status(500).end()
     else res.end()
   })
 })
 
-router.get('/websites', (req, res) => {
-  Website.find({}, null, { limit: 20, sort: { createdAt: -1 } }, (err, docs) => {
-    if (err) return res.status(500).end()
-    return res.json({ websites: docs })
-  })
-})
-
-router.post('/website/:url', (req, res) => {
-  if (!req.isAuthenticated()) return res.status(401).end()
-  if (!isValid(req.params.url)) return res.status(422).end()
-
-  new Website({ url: normalizeUrl(req.params.url) }).save().then(website => {
-    return res.json(website)
-  }).catch(err => {
-    logErr(err)
-    if (err.code === 11000) res.status(409).end()
-    else res.status(500).end()
-  })
-})
 
 module.exports = router

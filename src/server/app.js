@@ -15,7 +15,9 @@ const MongoStore = require('connect-mongo')(session)
 
 const authController = require('./controllers/auth')
 const commentsController = require('./controllers/comments')
+const websitesController = require('./controllers/websites')
 const youtubeController = require('./controllers/youtube')
+const newsController = require('./controllers/news')
 
 const DIST = path.join(__dirname, '../../dist')
 
@@ -127,8 +129,12 @@ passport.deserializeUser((id, done) => {
 // routes
 app.use(express.static(DIST))
 app.use('/api', authController)
-app.use('/api', commentsController)
+app.use('/api', websitesController)
+app.use('/api', newsController)
 app.use('/api', youtubeController)
+
+// should be last
+app.use('/api', commentsController)
 
 app.get('/api/ping', function(req, res) {
   res.status(200).send('pong!')
