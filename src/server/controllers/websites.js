@@ -10,14 +10,13 @@ const express = require('express')
 const router = express.Router()
 
 router.get('/websites', (req, res) => {
-  Website.find({}, null, { limit: 20, sort: { createdAt: -1 } }).then(websites => {
-    Promise.all(websites.map(website => website.toObj(req.user && req.user._id))).then(websites => {
-      return res.json({ websites })
+  Website.find({}, null, { limit: 20, sort: { createdAt: -1 } })
+    .then(websites => Promise.all(websites.map(website => website.toObj(req.user && req.user._id)))
+      .then(websites => res.json({ websites })))
+    .catch(err => {
+      logErr(err)
+      res.status(500).end()
     })
-  }).catch(err => {
-    logErr(err)
-    res.status(500).end()
-  })
 })
 
 router.post('/website/:url', (req, res) => {

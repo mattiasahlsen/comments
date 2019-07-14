@@ -55,30 +55,13 @@ router.get(['/comments/:url/:sort/:parentId/:offset?'], (req, res) => {
     limit: parentId ? conf.childrenLimit : conf.commentsLimit,
     skip: offset,
     sort
-  }, (err, comments) => {
-    if (err) {
-      logErr(err)
-      return res.status(500).end()
-    }
-    if (comments.length === 0) {
-      if (offset === 0) log('Website without comments.')
-      return res.json({ comments: [] })
-    }
-
-    let count = 0
-    for (let i = 0; i < comments.length; i++) {
-      comments[i].toObj(req.user && req.user._id).then(comment => {
-        comments[i] = comment
-
-        if (++count === comments.length) {
-          return res.json({ comments })
-        }
-      }).catch(err => {
-        logErr(err)
-        return res.status(500).end()
-      })
-    }
   })
+    .then(comments => Promise.all(comments.map(comment => comment.toObj(req.user && req.user._id)))
+      .then(comments => res.json({ comments })))
+    .catch(err => {
+      logErr(err)
+      res.status(500).end()
+    })
 })
 
 router.post('/comments/:url/submit', (req, res) => {
@@ -126,6 +109,5 @@ router.post('/comment/:id/undovote', (req, res) => {
     else res.end()
   })
 })
-
 
 module.exports = router
