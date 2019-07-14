@@ -9,8 +9,12 @@ const Website = require('../models/website')
 const express = require('express')
 const router = express.Router()
 
-router.get('/websites', (req, res) => {
-  Website.find({}, null, { limit: 20, sort: { createdAt: -1 } })
+router.get('/websites/:offset', (req, res) => {
+  Website.find({}, null, {
+    limit: conf.websitesLimit,
+    sort: { createdAt: -1 },
+    skip: parseInt(req.params.offset) || 0,
+  })
     .then(websites => Promise.all(websites.map(website => website.toObj(req.user && req.user._id)))
       .then(websites => res.json({ websites })))
     .catch(err => {

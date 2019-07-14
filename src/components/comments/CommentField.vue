@@ -25,11 +25,7 @@
         ></CommentField>
       </div>
 
-      <div v-if="!parent">
-        <router-link v-if="comments" to="/" class="iconButton">Home</router-link>
-        <button v-if="nearBottom" v-scroll-to="'#app'" class="iconButton">Go to top</button>
-      </div>
-      <div v-else>
+      <div v-if="parent">
         <p v-if="!gotAll" @click="tryLoadComments" class="clickable load-more">Load more...</p>
       </div>
 
@@ -179,16 +175,19 @@ export default {
         this.tryLoadComments()
       })
 
-      window.onscroll = ev => {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9 && window.scrollY > 0) {
-          if (!this.gotAll && this.$route.params.url) {
-            this.tryLoadComments()
+      this.$store.commit('onScroll', {
+        index: 0,
+        fun: () => {
+          if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9 && window.scrollY > 0) {
+            if (!this.gotAll && this.$route.params.url) {
+              this.tryLoadComments()
+            }
+            this.nearBottom = true
+          } else {
+            this.nearBottom = false
           }
-          this.nearBottom = true
-        } else {
-          this.nearBottom = false
         }
-      }
+      })
     } else {
       this.newComments = this.parent.children
       if (this.newComments.length === 0 && this.depth < 5) {

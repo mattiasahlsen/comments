@@ -38,12 +38,11 @@ export default new Vuex.Store({
   state: {
     errors: [],
     urls: [],
+    onScroll: [],
   },
   getters: {
     errors: state => state.errors,
-    urls: state => {
-      return state.urls
-    }
+    urls: state => state.urls,
   },
   mutations: {
     error(state, err) {
@@ -69,6 +68,10 @@ export default new Vuex.Store({
     },
     newUrl(state, url) {
       state.urls.unshift(modify(url))
+    },
+    onScroll(state, { index, fun }) {
+      state.onScroll[index] = fun
+      window.onscroll = () => state.onScroll.forEach(fun => fun())
     }
   },
   actions: {

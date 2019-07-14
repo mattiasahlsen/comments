@@ -3,6 +3,7 @@ import merge from 'webpack-merge'
 const baseConf = {
   commentsLimit: 20,
   childrenLimit: 10,
+  websitesLimit: 20,
   hotLimit: 15,
 
   API_HOST: process.env.VUE_APP_API_HOST,

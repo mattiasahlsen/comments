@@ -1,25 +1,28 @@
 <template>
-  <ul class="list-group mt-2">
+  <div>
     <h1 class="border">Latest added URLs</h1>
-    <li v-for="(website, index) in websites" :key="index"
-    class="list-group-item py-1 "
-    @click="redirect(website.url)">
 
-      <div class="website-item">
-        <div class="website-item-url">{{urls[index]}}</div>
-        <div class="info">
-          <div class="website-item-date">{{website.createdAt.toLocaleString()}}</div>
-          <Rating
-            :likes="website.likes"
-            :dislikes="website.dislikes || 0"
-            :hasLiked="website.hasLiked"
-            :hasDisliked="website.hasDisliked"
-            @like="vote(website, true)" @dislike="vote(website, false)"
-          />
+    <ul class="list-group mt-2">
+      <li v-for="(website, index) in websites" :key="index"
+      class="list-group-item py-1 "
+      @click="redirect(website.url)">
+
+        <div class="website-item">
+          <div class="website-item-url">{{urls[index]}}</div>
+          <div class="info">
+            <div class="website-item-date">{{website.createdAt.toLocaleString()}}</div>
+            <Rating
+              :likes="website.likes"
+              :dislikes="website.dislikes || 0"
+              :hasLiked="website.hasLiked"
+              :hasDisliked="website.hasDisliked"
+              @like="vote(website, true)" @dislike="vote(website, false)"
+            />
+          </div>
         </div>
-      </div>
-    </li>
-  </ul>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -29,6 +32,11 @@ import { shortString } from '../lib'
 export default {
   components: {
     Rating,
+  },
+  data() {
+    return {
+      loading: true
+    }
   },
   props: ['websites'],
   computed: {
@@ -61,7 +69,8 @@ export default {
         websiteId: website._id,
         like,
         likes, dislikes, hasLiked, hasDisliked
-      }).then(data => Object.assign(website, data)).catch(err => reset())
+      })
+      .then(data => Object.assign(website, data)).catch(err => reset())
     }
   },
 }

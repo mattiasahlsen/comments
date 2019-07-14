@@ -8,7 +8,13 @@
       <div class="content">
         <router-view/>
       </div>
+
+      <div>
+        <a v-if="$route.path !== '/'" href="#" @click.prevent="toHome" class="iconButton">Home</a>
+        <button v-if="nearBottom" v-scroll-to="'#app'" class="iconButton">Go to top</button>
+      </div>
     </div>
+
 
     <footer>
       <div>
@@ -38,13 +44,34 @@ const URL = conf.API_URL
 export default {
   data() {
     return {
-      image: null
+      image: null,
+      nearBottom: false,
     }
   },
   components: {
     Navbar,
     Error,
   },
+  methods: {
+    toHome() {
+      this.$router.push('/')
+      window.scrollTo(0, 0)
+    }
+  },
+  mounted() {
+    this.$store.commit('onScroll', {
+      index: 2,
+      fun: () => {
+        console.log('scrolling')
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9 && window.scrollY > 0) {
+          this.nearBottom = true
+          console.log('near bottom')
+        } else {
+          this.nearBottom = false
+        }
+      }
+    })
+  }
 }
 </script>
 
@@ -58,6 +85,19 @@ export default {
   flex-direction: column;
 }
 
+.content {
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper {
+  width: 80%;
+  margin: 0 auto;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 footer {
   margin-top: 5vh;
 }

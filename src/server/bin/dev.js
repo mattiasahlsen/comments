@@ -55,7 +55,7 @@ const initDb = async () => {
     url: 'youtube.com',
   })
   const websites = []
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 40; i++) {
     websites.push(new Website({ url: 'test' + i + '.com' }))
     await websites[websites.length - 1].save()
   }
