@@ -52,6 +52,20 @@ h3 {
   font-size: 1.5em;
 }
 
+// end of normalize
+
+.spacing {
+  margin: 0.5em;
+}
+.spacing-x {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+.spacing-y {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
 .box {
   background: $beige;
   -webkit-border-radius: 1em;

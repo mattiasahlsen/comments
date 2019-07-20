@@ -29,8 +29,11 @@
 
     <div v-if="!loadError">
 
-      <div class="videoInterface" v-if="loaded && isYoutubeVideo()">
-        <VideoInterface></VideoInterface>
+      <div class="interface" v-if="isYoutubeVideo">
+        <VideoInterface/>
+      </div>
+      <div class="interface" v-if="url && url.news">
+        <NewsInterface :news="url.news"/>
       </div>
 
       <CommentForm @submit="comment => $refs.rootComments.submitComment(comment)"></CommentForm>
@@ -59,6 +62,7 @@ import urlencode from 'urlencode'
 
 import Search from '../components/Search'
 import VideoInterface from '../components/comments/VideoInterface'
+import NewsInterface from '../components/comments/NewsInterface'
 import CommentField from '../components/comments/CommentField'
 import CommentForm from '../components/comments/CommentForm'
 import {
@@ -71,18 +75,22 @@ import { guard, redirect, newUrl } from '../dependent-lib'
 import conf from '../config'
 
 const URL = conf.API_URL
+const NEWS_API_KEY = process.env.VUE_APP_NEWS_API_KEY
+if (!NEWS_API_KEY) throw new Error('NEWS_API_KEY not defined in env.')
+const getNewsSources = axios.get(URL + '/news/sources').then(resp => resp.data)
+const getNewsHeadlines = axios.get(URL + '/news/headlines').then(resp => resp.data)
 
 
 export default {
 	components: {
-		VideoInterface,
+    VideoInterface,
+    NewsInterface,
 		CommentField,
     CommentForm,
     Search,
 	},
 	data() {
 		return {
-			comments: null,
       comment: '',
 			loaded: false,
       sort: 'Hot',
@@ -91,25 +99,32 @@ export default {
 
 			notFound: false,
       loadError: false,
+
+      newsSources: null,
+      newsSourceHosts: null,
+
+      url: null,
 		}
   },
 	computed: {
-    shortHref() {
-      if (!this.normUrl) return ''
-      return shortString(this.normUrl, 55)
+    normUrl() {
+      return normalizeUrl(this.$route.params.url)
     },
     hostname() {
       return normHostname(this.$route.params.url)
     },
-	},
+    isYoutubeVideo() {
+      return this.$route.params.url.includes('youtube.com/watch?v=')
+    },
+  },
+  watch: {
+    normUrl: url => this.getUrlObject(url)
+  },
 	methods: {
     handleLoadError(err, hostnameComments) {
       this.loadError = true
       if (err === 404) this.notFound = true
       this.hostnameComments = hostnameComments
-    },
-    isYoutubeVideo() {
-      return this.$route.params.url.includes('youtube.com/watch?v=')
     },
     newUrl(url) {
       newUrl(url).then(() => {
@@ -119,12 +134,37 @@ export default {
     clearErrors() {
       this.notFound = false
       this.loadError = false
+    },
+    getUrlObject(url = this.normUrl) {
+      axios.get(URL + '/website/' + urlencode(url)).then(resp => {
+        this.url = resp.data
+        console.log(this.url)
+      }).catch(err => {
+        this.$store.commit('axiosError', err)
+      })
     }
-	},
+  },
+  mounted() {
+    getNewsHeadlines.then(headlines => {
+      console.log(headlines)
+    })
+    getNewsSources.then(sources => {
+      this.newsSources = sources
+      this.newsSourceHosts = sources.map(source => normHostname(source.url))
+    }).catch(err => {
+      this.$store.commit('axiosError', err)
+    })
+    this.getUrlObject()
+  },
 	beforeRouteEnter: guard,
 	beforeRouteUpdate(to, from, next) {
     this.clearErrors()
     guard(to, from, next)
+
+    console.log(this.hostname)
+    if (this.newsSourceHosts.find(host => host === this.hostname)) {
+      console.log('check')
+    }
   }
 }
 </script>
@@ -133,7 +173,7 @@ export default {
 .url-link {
   color: $light-2;
 }
-.videoInterface {
+.interface {
   width: 100%;
   background: $beige;
   margin-bottom: 3em;

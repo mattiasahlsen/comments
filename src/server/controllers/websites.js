@@ -35,6 +35,18 @@ router.post('/website/:url', (req, res) => {
     else res.status(500).end()
   })
 })
+router.get('/website/:url', (req, res) => {
+  if (!isValid(req.params.url)) return res.status(422).end()
+
+  Website.findOne({ url: normalizeUrl(req.params.url) }).then(website => website.toObj()).then(website => {
+    return res.json(website)
+  }).catch(err => {
+    logErr(err)
+    if (err.code === 11000) res.status(409).end()
+    else res.status(500).end()
+  })
+})
+
 router.post('/website/:id/like', (req, res) => {
   if (!req.isAuthenticated()) return res.status(401).end()
 

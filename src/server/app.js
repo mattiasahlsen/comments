@@ -130,7 +130,7 @@ passport.deserializeUser((id, done) => {
 app.use(express.static(DIST))
 app.use('/api', authController)
 app.use('/api', websitesController)
-app.use('/api', newsController)
+app.use('/api/news', newsController)
 app.use('/api', youtubeController)
 
 // should be last

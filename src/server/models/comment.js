@@ -27,91 +27,37 @@ Comment.index({ websiteId: 1, createdAt: -1 })
 
 Comment.on('error', err => logErr(err)) // backup
 
-Comment.method('getScore', function(obj, userId) {
-  return new Promise((resolve, reject) => {
-    Vote.find({ objectId: this._id }, (err, votes) => {
-      if (err) reject(err)
-      obj.likes = 0
-      obj.dislikes = 0
-      obj.hasLiked = obj.hasDisliked = false
-
-      for (let i = 0; i < votes.length; i++) {
-        if (votes[i].like) obj.likes++
-        else obj.dislikes++
-
-        if (votes[i].userId.equals(userId)) {
-          if (votes[i].like) obj.hasLiked = true
-          else obj.hasDisliked = true
-        }
-      }
-      resolve()
-    })
-  })
-})
-Comment.method('getUser', function(obj) {
-  return new Promise((resolve, reject) => {
-    Account.findOne({ _id: this.userId }, (err, user) => {
-      if (err) reject(err)
-
-      obj.displayName = user.displayName
-      resolve(user)
-    })
-  })
-})
-Comment.method('getChildren', function(obj, userId, offset = 0) {
-  return new Promise((resolve, reject) => {
-    this.constructor.find({ parentId: this._id }, null, {
-      limit: 10,
-      skip: offset,
-      sort: {
-        createdAt: -1
-      }
-    }, (err, comments) => {
-      if (err) reject(err)
-
-      if (comments.length === 0) return resolve([])
-
-      let count = 0
-      for (let i = 0; i < comments.length; i++) {
-        comments[i].toObj(userId, false).then(comment => {
-          obj.children.push(comment)
-          if (++count === comments.length) {
-            resolve(comments)
-          }
-        }).catch(err => reject(err))
+Comment.method('getScore', function(userId) {
+  return Vote.find({ objectId: this._id }).then(votes => {
+    const obj = { likes: 0, dislikes: 0, hasLiked: false, hasDisliked: false }
+    votes.forEach(vote => {
+      if (vote.like) obj.likes++
+      else obj.dislikes++
+      if (vote.userId.equals(userId)) {
+        if (vote.like) obj.hasLiked = true
+        else obj.hasDisliked = true
       }
     })
+    return obj
   })
 })
-Comment.method('fetchAll', function(userId, hasChildren) {
-  return new Promise((resolve, reject) => {
-    const obj = {}
-    obj.children = []
-
-    let gotScore = false
-    let gotUser = false
-    let gotChildren = !hasChildren
-
-    this.getUser(obj).then(() => {
-      gotUser = true
-      if (gotScore && gotChildren) resolve(obj)
-    }).catch(err => reject(err))
-    this.getScore(obj, userId).then(() => {
-      gotScore = true
-      if (gotUser && gotChildren) resolve(obj)
-    }).catch(err => reject(err))
-    if (hasChildren) {
-      this.getChildren(obj, userId).then(() => {
-        gotChildren = true
-        if (gotScore && gotUser) resolve(obj)
-      }).catch(err => reject(err))
+Comment.method('getUser', function() {
+  return Account.findOne({ _id: this.userId }).then(user => ({ displayName: user.displayName }))
+})
+Comment.method('getChildren', function(userId, offset = 0) {
+  return this.constructor.find({ parentId: this._id }, null, {
+    limit: 10,
+    skip: offset,
+    sort: {
+      createdAt: -1
     }
-  })
+  }).then(children => Promise.all(children.map(child => child.toObj()))
+    .then(children => ({ children }))
+  )
 })
 Comment.method('toObj', function(userId, hasChildren = true) {
-  return this.fetchAll(userId, hasChildren).then(obj => {
-    return Object.assign(this.toObject(), obj)
-  })
+  return Promise.all([this.getUser(), this.getChildren(), this.getScore()])
+    .then(objs => objs.reduce((acc, obj) => ({ ...acc, ...obj }), this.toObject()))
 })
 
 const CommentModel = mongoose.model('Comment', Comment)

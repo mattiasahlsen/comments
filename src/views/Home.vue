@@ -35,20 +35,21 @@ export default {
   },
   computed: {
     urls() {
+      console.log(this.$store.getters.urls)
       return this.$store.getters.urls
     }
   },
   methods: {
     redirect,
-    async tryLoadWebsites() {
+    async tryLoadUrls() {
       if (this.gotAll) return false
       if (!this.loading) {
-        await this.loadWebsites()
+        await this.loadUrls()
         return true
       }
       return false
     },
-    loadWebsites() {
+    loadUrls() {
       this.loading = true
       return axios.get(URL + '/websites/' + this.urls.length).then(resp => {
         this.$store.commit('addUrls', resp.data.websites)
@@ -61,12 +62,12 @@ export default {
     }
   },
   created() {
-    this.tryLoadWebsites()
+    this.tryLoadUrls()
     this.$store.commit('onScroll', {
       index: 1,
       fun: () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9 && window.scrollY > 0) {
-          if (!this.gotAll) this.tryLoadWebsites()
+          if (!this.gotAll) this.tryLoadUrls()
           this.nearBottom = true
         } else {
           this.nearBottom = false

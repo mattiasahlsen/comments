@@ -5,11 +5,11 @@ import conf from '../../config'
 const { google } = require('googleapis')
 const express = require('express')
 
-if (!process.env.YOUTUBE_API_KEY) throw new Error('YOUTUBE_API_KEY not defined in env.')
+/*if (!process.env.YOUTUBE_API_KEY) throw new Error('YOUTUBE_API_KEY not defined in env.')
 const youtube = google.youtube({
   version: 'v3',
   auth: process.env.YOUTUBE_API_KEY
-})
+})*/
 const router = express.Router()
 
 /*

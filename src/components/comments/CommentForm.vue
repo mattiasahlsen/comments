@@ -81,10 +81,10 @@ export default {
 .comment-textarea {
   padding: 0;
   flex: 1;
+  width: 1em;
   font-size: 2em;
   border: none;
   border-bottom: 1px solid $dark;
-  resize: none;
   overflow: hidden;
   height: 1.2em;
   transition: height 0s;

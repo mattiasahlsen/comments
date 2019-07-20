@@ -55,10 +55,10 @@ const initDb = async () => {
     url: 'youtube.com',
   })
   const websites = []
-  for (let i = 0; i < 40; i++) {
+  /*jfor (let i = 0; i < 40; i++) {
     websites.push(new Website({ url: 'test' + i + '.com' }))
     await websites[websites.length - 1].save()
-  }
+  }*/
   await website.save()
 
   // Afer that, create all root comments

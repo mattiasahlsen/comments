@@ -62,10 +62,8 @@ export default {
     this.$store.commit('onScroll', {
       index: 2,
       fun: () => {
-        console.log('scrolling')
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9 && window.scrollY > 0) {
           this.nearBottom = true
-          console.log('near bottom')
         } else {
           this.nearBottom = false
         }

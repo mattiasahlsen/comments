@@ -18,7 +18,6 @@ export function redirect(url) {
 }
 
 export const guard = (to, from, next) => {
-  console.log('guard')
   if (isValid(to.params.url)) {
     const normalized = normalizeUrl(to.params.url)
     if (normalized === to.params.url) next()
