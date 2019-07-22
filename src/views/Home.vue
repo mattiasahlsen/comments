@@ -35,7 +35,6 @@ export default {
   },
   computed: {
     urls() {
-      console.log(this.$store.getters.urls)
       return this.$store.getters.urls
     }
   },

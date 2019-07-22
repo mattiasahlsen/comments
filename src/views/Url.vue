@@ -118,7 +118,9 @@ export default {
     },
   },
   watch: {
-    normUrl: url => this.getUrlObject(url)
+    normUrl(url) {
+      this.getUrlObject(url)
+    }
   },
 	methods: {
     handleLoadError(err, hostnameComments) {
@@ -138,14 +140,13 @@ export default {
     getUrlObject(url = this.normUrl) {
       axios.get(URL + '/website/' + urlencode(url)).then(resp => {
         this.url = resp.data
-        console.log(this.url)
       }).catch(err => {
         this.$store.commit('axiosError', err)
       })
     }
   },
   mounted() {
-    getNewsHeadlines.then(headlines => {
+    /*getNewsHeadlines.then(headlines => {
       console.log(headlines)
     })
     getNewsSources.then(sources => {
@@ -153,18 +154,13 @@ export default {
       this.newsSourceHosts = sources.map(source => normHostname(source.url))
     }).catch(err => {
       this.$store.commit('axiosError', err)
-    })
+    })*/
     this.getUrlObject()
   },
 	beforeRouteEnter: guard,
 	beforeRouteUpdate(to, from, next) {
     this.clearErrors()
     guard(to, from, next)
-
-    console.log(this.hostname)
-    if (this.newsSourceHosts.find(host => host === this.hostname)) {
-      console.log('check')
-    }
   }
 }
 </script>

@@ -106,6 +106,14 @@ export default {
       if (this.replyText.split('\n').length === 1) textarea.style.height = '1.2em'
       else textarea.style.height = textarea.scrollHeight + 'px'
     },
+    '$route.path': function() {
+      this.newComments = []
+      this.topComments = []
+      this.myNewComments = []
+      this.displayComments = []
+      this.gotAll = false
+      this.tryLoadComments()
+    }
   },
   methods: {
     submitComment(comment, parent) {
@@ -171,9 +179,6 @@ export default {
   mounted() {
     if (!this.parent) {
       this.tryLoadComments()
-      router.afterEach((to, from) => {
-        this.tryLoadComments()
-      })
 
       this.$store.commit('onScroll', {
         index: 0,
