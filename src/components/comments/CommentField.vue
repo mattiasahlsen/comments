@@ -172,8 +172,6 @@ export default {
     },
     loadCommentsError(err) {
       this.$store.commit('axiosError', err)
-
-      this.addUrl = true
     },
   },
   mounted() {

@@ -38,12 +38,12 @@ router.post('/website/:url', (req, res) => {
 router.get('/website/:url', (req, res) => {
   if (!isValid(req.params.url)) return res.status(422).end()
 
-  Website.findOne({ url: normalizeUrl(req.params.url) }).then(website => website.toObj()).then(website => {
+  Website.findOne({ url: normalizeUrl(req.params.url) }).then(website => website && website.toObj()).then(website => {
+    if (website === null) return res.status(404).end()
     return res.json(website)
   }).catch(err => {
     logErr(err)
-    if (err.code === 11000) res.status(409).end()
-    else res.status(500).end()
+    res.status(500).end()
   })
 })
 

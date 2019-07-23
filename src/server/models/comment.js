@@ -44,20 +44,21 @@ Comment.method('getScore', function(userId) {
 Comment.method('getUser', function() {
   return Account.findOne({ _id: this.userId }).then(user => ({ displayName: user.displayName }))
 })
-Comment.method('getChildren', function(userId, offset = 0) {
+Comment.method('getChildren', function(userId) {
   return this.constructor.find({ parentId: this._id }, null, {
     limit: 10,
-    skip: offset,
     sort: {
       createdAt: -1
     }
-  }).then(children => Promise.all(children.map(child => child.toObj()))
+  }).then(children => Promise.all(children.map(child => child.toObj(userId, false)))
     .then(children => ({ children }))
   )
 })
-Comment.method('toObj', function(userId, hasChildren = true) {
-  return Promise.all([this.getUser(), this.getChildren(), this.getScore()])
-    .then(objs => objs.reduce((acc, obj) => ({ ...acc, ...obj }), this.toObject()))
+Comment.method('toObj', function(userId, getChildren = true) {
+  const promises = [this.getUser(), this.getScore(userId)]
+  if (getChildren) promises.push(this.getChildren(userId))
+  return Promise.all(promises)
+    .then(objs => objs.reduce((acc, obj) => ({ ...acc, ...obj }), { ...this.toObject(), children: [] }))
 })
 
 const CommentModel = mongoose.model('Comment', Comment)

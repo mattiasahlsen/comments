@@ -18,19 +18,19 @@ const modify = url => ({
 const status = (state, code) => {
   switch (code) {
     case 401:
-      state.error = 'Authentication failed'
+      state.errors.push('Authentication failed')
       return
     case 404:
-      state.error = 'Couldn\'t find resource.'
+      state.errors.push('Couldn\'t find resource.')
       return
     case 422:
-      state.error = 'Invalid fields.'
+      state.errors.push('Invalid fields.')
       return
     case 500:
-      state.error = 'Error on the server.'
+      state.errors.push('Error on the server.')
       return
     default:
-      state.error = 'HTTP error ' + code
+      state.errors.push('HTTP error ' + code)
   }
 }
 
@@ -52,10 +52,11 @@ export default new Vuex.Store({
     },
     axiosError(state, err) {
       if (err.response) status(state, err.response.status)
-      else if (err.request) state.error = 'Couldn\'t reach server: ' + err.message
-      else state.error = err.message
+      else if (err.request) state.errors.push('Couldn\'t reach server: ' + err.message)
+      else state.errors.push(err.message)
     },
     clearError(state) {
+      console.log('clearing error')
       state.errors = []
     },
     status(state, code) {

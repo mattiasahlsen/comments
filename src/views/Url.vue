@@ -1,5 +1,9 @@
 <template>
 	<div>
+    <div class="spacing-y">
+      <a target="_blank" :href="'http://' + normUrl" class="website-link">Go to website</a>
+    </div>
+
     <Search></Search>
 
     <div v-if="notFound" class="blockNote alert">
@@ -120,7 +124,7 @@ export default {
   watch: {
     normUrl(url) {
       this.getUrlObject(url)
-    }
+    },
   },
 	methods: {
     handleLoadError(err, hostnameComments) {
@@ -141,6 +145,7 @@ export default {
       axios.get(URL + '/website/' + urlencode(url)).then(resp => {
         this.url = resp.data
       }).catch(err => {
+        if (err.response && err.response.status === 404) return
         this.$store.commit('axiosError', err)
       })
     }
@@ -202,5 +207,9 @@ export default {
   button {
     padding: 0.5em;
   }
+}
+
+.website-link {
+  font-size: 1.2em;
 }
 </style>
