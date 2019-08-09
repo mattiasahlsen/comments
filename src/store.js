@@ -16,22 +16,25 @@ const modify = url => ({
 })
 
 const status = (state, code) => {
+  let err
   switch (code) {
     case 401:
-      state.errors.push('Authentication failed')
-      return
+      err = 'Authentication failed'
+      break
     case 404:
-      state.errors.push('Couldn\'t find resource.')
-      return
+      err = 'Couldn\'t find resource.'
+      break
     case 422:
-      state.errors.push('Invalid fields.')
-      return
+      err = 'Invalid fields.'
+      break
     case 500:
-      state.errors.push('Error on the server.')
-      return
+      err = 'Error on the server.'
+      break
     default:
-      state.errors.push('HTTP error ' + code)
+      err = 'HTTP error ' + code
   }
+
+  if (state.errors.length === 0 || state.errors[state.errors.length - 1] !== err) state.errors.push(err)
 }
 
 export default new Vuex.Store({
