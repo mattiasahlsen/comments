@@ -2,7 +2,6 @@ import config from './config'
 import log, { logErr, debug, debugErr } from './debug'
 
 const fs = require('fs')
-const request = require('request')
 const express = require('express')
 const path = require('path')
 const morgan = require('morgan')

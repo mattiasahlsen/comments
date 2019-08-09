@@ -20,9 +20,10 @@ const getSources = axios.get('https://newsapi.org/v2/sources?apiKey=' + NEWS_API
   throw err
 })
 const getNewHeadlines = () => axios.get('https://newsapi.org/v2/top-headlines?language=en&apiKey=' + NEWS_API_KEY).then(resp => {
-  resp.data.articles.forEach(article => new News(article).save().then(article =>
-    new Website({ url: normalizeUrl(article.url), newsId: article._id }).save()
-  ).catch(err => logErr(err)))
+  resp.data.articles.forEach(article => new News(article).save().then(article => {
+    const url = normalizeUrl(article.url)
+    return Website.findOneAndUpdate({ url }, { newsId: article._id }, { new: true, upsert: true })
+  }).catch(err => logErr(err)))
   return resp.data.articles
 }).catch(err => {
   logErr(err)
