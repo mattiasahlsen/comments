@@ -16,10 +16,12 @@
     </div>
 
 
-    <footer>
+    <footer class="main">
       <div>
       All rights reserved &copy; urlexp.com
       </div>
+
+      <a target="_blank" href="https://newsapi.org">Powered by News API</a>
 
       <div>
         <router-link to="/about">About</router-link> -
