@@ -116,8 +116,8 @@ export default {
 <style scoped lang="scss">
 .comment {
   margin-bottom: 1em;
-  background: $beige;
-  box-shadow: 0 4px 5px -2px rgba(211, 211, 211, 0.5);
+  background: $light-2;
+  box-shadow: 0 5px 5px -2px rgba(0, 0, 0, 0.4);
   border-radius: 1.5em;
   padding: 1em;
 }

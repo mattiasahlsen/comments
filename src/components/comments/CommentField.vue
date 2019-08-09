@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-field" :style="{ marginLeft }">
+  <div class="comment-field">
 
     <div v-if="parent && comments.length > 0">
       <p v-if="!show" @click="show = true"
@@ -9,33 +9,38 @@
       </p>
     </div>
 
-    <div v-if="show">
-      <div v-for="comment in comments" :key="comment._id">
-        <Comment
-          :comment="comment"
-          :replyingTo="replyingTo === comment._id"
-          @reply="replyingTo = comment._id"
-          @cancelReply="replyingTo = null"
-          @submitReply="reply => submitComment(reply, comment)"
-        ></Comment>
-        <CommentField
-          :parent="comment"
-          :sort="sort"
-          :depth="depth + 1"
-        ></CommentField>
-      </div>
+    <div v-if="show" class="comment-field-content">
+      <Margin v-if="haveMargin" class="margin" @collapsed="hasSpace = false"/>
+      <div class="stretch">
+        <div v-for="comment in comments" :key="comment._id">
+          <Comment
+            :comment="comment"
+            :replyingTo="replyingTo === comment._id"
+            @reply="replyingTo = comment._id"
+            @cancelReply="replyingTo = null"
+            @submitReply="reply => submitComment(reply, comment)"
+          ></Comment>
+          <CommentField
+            :parent="comment"
+            :sort="sort"
+            :depth="depth + 1"
+            :allowMargin="haveMargin"
+          ></CommentField>
+        </div>
 
-      <div v-if="parent">
-        <p v-if="!gotAll" @click="tryLoadComments" class="clickable load-more">Load more...</p>
-      </div>
+        <div v-if="parent">
+          <p v-if="!gotAll" @click="tryLoadComments" class="clickable load-more">Load more...</p>
+        </div>
 
-      <clip-loader class="loader" :loading="loading" color="#008ae6"></clip-loader>
+        <clip-loader class="loader" :loading="loading" color="#008ae6"></clip-loader>
+      </div>
     </div>
 
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
 import urlencode from 'urlencode'
 import axios from 'axios'
 import conf from '../../config'
@@ -50,16 +55,31 @@ import {
 } from '../../lib'
 import router from '../../router'
 import Comment from './Comment'
+import eventBus from '../../eventBus'
 
 const URL = conf.API_URL
+
+const removeDuplicates = (el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos
+
+const Margin = Vue.component('Margin', {
+  render: create => create('div', {}),
+  mounted() {
+    console.log(this.$el.offsetWidth)
+    if (this.$el.offsetWidth < 25) {
+      console.log('collapsed')
+      this.$emit('collapsed')
+    }
+  }
+})
 
 export default {
   name: 'CommentField',
   components: {
     ClipLoader,
     Comment,
+    Margin,
   },
-  props: ['parent', 'sort', 'depth'],
+  props: ['parent', 'sort', 'depth', 'allowMargin'],
   data() {
     return {
       show: this.depth < 2,
@@ -73,14 +93,19 @@ export default {
       myNewComments: [],
 
       displayComments: [], // the comments displayed to the user, updated when loading is finished
+
+      hasSpace: true,
     }
   },
   computed: {
+    haveMargin() {
+      return (!this.parent || this.allowMargin) && this.hasSpace
+    },
     comments() {
       if (this.loading) return this.displayComments // return last comments
 
       const comments = this.newComments.concat(this.topComments).concat(this.myNewComments)
-        .filter((el1, pos, self) => self.findIndex(el2 => el1._id === el2._id) === pos) // remove duplicates
+        .filter(removeDuplicates) // remove duplicates
         .map(extend)
 
       if (this.sort === 'Hot') comments.sort(sortHot)
@@ -95,11 +120,11 @@ export default {
     hostname() {
       return normHostname(this.$route.params.url)
     },
-    marginLeft() {
-      return this.depth * 50 + 'px'
-    }
   },
   watch: {
+    'parent.children': function(children) {
+      this.newComments = this.newComments.concat(children).filter(removeDuplicates)
+    },
     replyText() {
       const textarea = this.$refs.replyTextarea[0]
       textarea.style.height = 'auto'
@@ -147,8 +172,8 @@ export default {
           if (!parent && resp.data.comments.length < conf.commentsLimit) this.gotAll = true
           else if (parent && resp.data.comments.length < conf.childrenLimit) this.gotAll = true
 
-          if (sort === 'new') this.newComments = this.newComments.concat(resp.data.comments)
-          else this.topComments = this.topComments.concat(resp.data.comments)
+          if (sort === 'new') this.newComments = this.newComments.concat(resp.data.comments).filter(removeDuplicates)
+          else this.topComments = this.topComments.concat(resp.data.comments).filter(removeDuplicates)
 
           this.$emit('loaded')
         }).catch(async err => {
@@ -188,17 +213,33 @@ export default {
       })
     } else {
       this.newComments = this.parent.children
-      if (this.newComments.length === 0 && this.depth < 5) {
-        this.tryLoadComments()
-      } else if (this.newComments.length < conf.childrenLimit) {
-        this.gotAll = true
-      }
+      if (this.newComments.length === 0) this.tryLoadComments()
+      else if (this.newComments.length < conf.childrenLimit) this.gotAll = true
     }
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.comment-field {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.comment-field-content {
+  display: flex;
+}
+.margin {
+  border-left: 2px solid rgba(150, 150, 150, 0.4);
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-right: 0.5em;
+  flex: 0 1000 25px;
+}
+.stretch {
+  flex: 1 1 auto;
+}
+
 .loader {
   margin: 2em 0;
 }
