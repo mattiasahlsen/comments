@@ -14,15 +14,19 @@
       <div class="blockNoteInfo">
         <h3>There is currently no discussion on the entered URL</h3>
 
-          <button v-if="hostnameComments" class="inline" @click="redirect(hostname)">
+        <div class="small-spacing">
+          <button v-if="hostUrlExists" class="inline" @click="redirect(hostname)">
             Go to discussion on <span class="url-link">{{hostname}}</span>
           </button>
+        </div>
 
+        <div class="small-spacing">
           <button class="inline" @click="newUrl($route.params.url)">
             Start new discussion on <span class="url-link">{{$route.params.url}}</span>
           </button>
+        </div>
 
-        <div v-if="!hostnameComments && $route.params.url !== hostname">
+        <div class="small-spacing" v-if="!hostUrlExists && $route.params.url !== hostname">
           Or
           <button class="inline" @click="newUrl(hostname)">
             create a domain-wide
@@ -94,7 +98,7 @@ export default {
 			loaded: false,
       sort: 'Hot',
 
-      hostnameComments: null,
+      hostUrlExists: false,
 
 			notFound: false,
       loadError: false,
@@ -122,10 +126,12 @@ export default {
     },
   },
 	methods: {
-    handleLoadError(err, hostnameComments) {
+    handleLoadError(err, hostUrlExists) {
       this.loadError = true
-      if (err === 404) this.notFound = true
-      this.hostnameComments = hostnameComments
+      if (err === 404) {
+        this.notFound = true
+      }
+      this.hostUrlExists = hostUrlExists
     },
     newUrl(url) {
       newUrl(url).then(() => {
@@ -143,7 +149,9 @@ export default {
         if (err.response && err.response.status === 404) return
         this.$store.commit('axiosError', err)
       })
-    }
+    },
+
+    redirect: redirect,
   },
   mounted() {
     this.getUrlObject()

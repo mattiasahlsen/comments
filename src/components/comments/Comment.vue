@@ -4,7 +4,7 @@
 
       <div class="flex-start">
         <div class="comment-score">
-          {{comment.likes - comment.dislikes}}
+          {{score}}
         </div>
 
         <div class="comment-body">
@@ -77,16 +77,22 @@ export default {
       replyHover: false,
       showFull: false,
 
-      score: this.comment.score,
       likes: this.comment.likes,
       dislikes: this.comment.dislikes,
       hasLiked: this.comment.hasLiked,
       hasDisliked: this.comment.hasDisliked,
 		}
-	},
+  },
+  computed: {
+    score() {
+      return this.likes - this.dislikes
+    }
+  },
   props: ['comment', 'replyingTo'],
 	methods: {
     vote(like) {
+      if (!this.$store.getters.isAuthenticated) return this.$store.commit('error', 'You must be logged in to like and dislike comments.')
+
       const likes = this.likes
       const dislikes = this.dislikes
       const hasLiked = this.hasLiked

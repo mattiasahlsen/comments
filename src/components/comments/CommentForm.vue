@@ -42,6 +42,8 @@ export default {
 	methods: {
     submit(comment) {
       if (comment) {
+        if (!this.$store.getters.isAuthenticated) return this.$store.commit('error', 'You must be logged in to comment.')
+
         const url = urlencode(this.$route.params.url)
         axios.post(`${URL}/comments/${url}/submit`, {
           comment: {
@@ -54,7 +56,9 @@ export default {
         }).catch(err => {
           console.log(err)
           if (err.response && err.response.status === 401) {
-            return this.$store.commit('error', 'You must be logged in to comment.')
+            this.$router.push('/login')
+            this.$store.commit('error', 'Session has expired, log in again.')
+            this.$store.commit('logout')
           } else this.$store.commit('axiosError', err)
         })
       }

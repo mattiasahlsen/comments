@@ -55,6 +55,8 @@ export default {
       this.$emit('redirect', url)
     },
     vote(website, like) {
+      if (!this.$store.getters.isAuthenticated) return this.$store.commit('error', 'You must be logged in to like and dislike websites.')
+
       const likes = website.likes
       const dislikes = website.dislikes
       const hasLiked = website.hasLiked

@@ -4,6 +4,7 @@ import Home from './views/Home'
 import Url from './views/Url'
 import NotFound from './views/NotFound'
 import store from './store'
+import { normalizeUrl } from './lib';
 
 Vue.use(Router)
 
@@ -69,7 +70,9 @@ const router = new Router({
     },
     {
       path: '*',
-      redirect: { name: '404' },
+      beforeEnter(to, from, next) {
+        next({ name: 'url', params: { url: normalizeUrl(to.path.slice(1)) } })
+      }
     }
   ]
 })

@@ -141,32 +141,27 @@ export default {
       }
       else {
         let error
-        let hostnameComments
+        let hostWebsiteExists = false
+
         return axios.get(`${URL}/comments/${urlencode(url)}/${sort}/${this.parent && this.parent._id}/${offset}`).then(resp => {
           if (!parent && resp.data.comments.length < conf.commentsLimit) this.gotAll = true
           else if (parent && resp.data.comments.length < conf.childrenLimit) this.gotAll = true
 
           if (sort === 'new') this.newComments = this.newComments.concat(resp.data.comments)
           else this.topComments = this.topComments.concat(resp.data.comments)
-        }).catch(err => {
+
+          this.$emit('loaded')
+        }).catch(async err => {
+          let error = err
           if (err.response && err.response.status === 404) {
+            error = 404
             if (url !== this.hostname) {
-              this.loadComments(this.hostname)
-                .then(comments => {
-                  error = 404
-                  hostnameComments = comments
-                })
-                .catch(err => {
-                  error = 404
-                })
-            } else error = 404
-          } else error = err
+              hostWebsiteExists = await axios.get(URL + '/websites/' + this.hostname).then(resp => resp && resp.status === 200)
+            }
+          } else this.loadCommentsError(err)
+          this.$emit('loadError', error, hostWebsiteExists)
         }).finally(() => setTimeout(() => {
           this.loading = false
-          if (error) {
-            if (error !== 404) this.loadCommentsError(error)
-            this.$emit('loadError', error, hostnameComments)
-          } else this.$emit('loaded')
         }, 500)) // min 1s loading for reduced lag
       }
     },
