@@ -16,9 +16,6 @@
 <script>
   export default {
     props: ['likes', 'dislikes', 'hasLiked', 'hasDisliked'],
-    mounted() {
-      //console.log(this.hasLiked)
-    }
   }
 </script>
 

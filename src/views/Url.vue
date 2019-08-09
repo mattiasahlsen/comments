@@ -79,11 +79,6 @@ import { guard, redirect, newUrl } from '../dependent-lib'
 import conf from '../config'
 
 const URL = conf.API_URL
-const NEWS_API_KEY = process.env.VUE_APP_NEWS_API_KEY
-if (!NEWS_API_KEY) throw new Error('NEWS_API_KEY not defined in env.')
-const getNewsSources = axios.get(URL + '/news/sources').then(resp => resp.data)
-const getNewsHeadlines = axios.get(URL + '/news/headlines').then(resp => resp.data)
-
 
 export default {
 	components: {
@@ -151,15 +146,6 @@ export default {
     }
   },
   mounted() {
-    /*getNewsHeadlines.then(headlines => {
-      console.log(headlines)
-    })
-    getNewsSources.then(sources => {
-      this.newsSources = sources
-      this.newsSourceHosts = sources.map(source => normHostname(source.url))
-    }).catch(err => {
-      this.$store.commit('axiosError', err)
-    })*/
     this.getUrlObject()
   },
 	beforeRouteEnter: guard,

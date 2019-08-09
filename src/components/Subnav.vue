@@ -46,7 +46,7 @@
         } else if (this.accountLinks.includes(page)) {
           return this.accountLinks
         } else {
-          console.log('Error in getLinks()')
+          console.log('Error in getLinks')
         }
       }
     },

@@ -56,7 +56,6 @@ export default new Vuex.Store({
       else state.errors.push(err.message)
     },
     clearError(state) {
-      console.log('clearing error')
       state.errors = []
     },
     status(state, code) {
