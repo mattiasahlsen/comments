@@ -24,18 +24,17 @@ router.use('/comments/:url/*', (req, res, next) => {
     next()
   })
 })
-router.use('/comment/:id/*', (req, res, next) => {
-  Comment.findById(req.params.id, (err, comment) => {
-    if (err || !comment) {
-      if (err) {
+router.get('/comment/:id', (req, res, next) => {
+  Comment.findById(req.params.id).then(comment => {
+    if (!comment) return res.status(404).end()
+    comment.toObj(req.user && req.user._id).then(comment => res.json(comment))
+      .catch(err => {
         logErr(err)
-        return res.status(500).end()
-      }
-      debug('Didn\'t find comment.')
-      return res.status(404).end()
-    }
-    req.comment = comment
-    next()
+        res.status(500).end()
+      })
+  }).catch(err => {
+    logErr(err)
+    return res.status(500).end()
   })
 })
 

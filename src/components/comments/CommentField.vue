@@ -3,14 +3,15 @@
 
     <div v-if="parent && comments.length > 0">
       <p v-if="!show" @click="show = true"
-        class="clickable showReplies">Show Replies the replies to {{parent.displayName}}</p>
+        class="clickable showReplies">Show replies to {{parent.displayName}}</p>
       <p v-else class="clickable hideReplies" @click="show = false">
         Hide the replies to {{parent.displayName}}
       </p>
     </div>
 
-    <div v-if="show" class="comment-field-content">
+    <div v-show="show" class="comment-field-content" :class="{ background: show && !haveMargin }">
       <Margin v-if="haveMargin" class="margin" @collapsed="hasSpace = false"/>
+
       <div class="stretch">
         <div v-for="comment in comments" :key="comment._id">
           <Comment
@@ -64,9 +65,7 @@ const removeDuplicates = (el1, pos, self) => self.findIndex(el2 => el1._id === e
 const Margin = Vue.component('Margin', {
   render: create => create('div', {}),
   mounted() {
-    console.log(this.$el.offsetWidth)
     if (this.$el.offsetWidth < 25) {
-      console.log('collapsed')
       this.$emit('collapsed')
     }
   }
@@ -107,7 +106,7 @@ export default {
       const comments = this.newComments.concat(this.topComments).concat(this.myNewComments)
         .filter(removeDuplicates) // remove duplicates
         .map(extend)
-
+      
       if (this.sort === 'Hot') comments.sort(sortHot)
       else if (this.sort === 'New') comments.sort(sortNew)
       else if (this.sort === 'Top') comments.sort(sortTop)
@@ -194,7 +193,7 @@ export default {
       this.$store.commit('axiosError', err)
     },
   },
-  mounted() {
+    mounted() {
     if (!this.parent) {
       this.tryLoadComments()
 
@@ -221,6 +220,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.background {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
 .comment-field {
   display: flex;
   flex-direction: column;
@@ -246,14 +249,13 @@ export default {
 .showReplies,
 .hideReplies {
   display: block;
-  background: $beige;
   box-shadow: 0 4px 5px -2px rgba(211, 211, 211, 0.5);
   border-radius: 0.5em;
   padding: 0.5em;
   &:hover {
     cursor: pointer;
     color: $dark;
-    background: rgba(211, 211, 211, 1);
+    background: rgba(0, 0, 0, 0.2);
   }
 }
 </style>
