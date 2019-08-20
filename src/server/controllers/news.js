@@ -20,6 +20,7 @@ const getSources = axios.get('https://newsapi.org/v2/sources?apiKey=' + NEWS_API
   throw err
 })
 const getNewHeadlines = () => axios.get('https://newsapi.org/v2/top-headlines?language=en&apiKey=' + NEWS_API_KEY).then(resp => {
+  log('Getting new headlines...')
   resp.data.articles.forEach(article => new News(article).save().then(article => {
     const url = normalizeUrl(article.url)
     return Website.findOneAndUpdate({ url }, { newsId: article._id }, { new: true, upsert: true })
@@ -27,7 +28,6 @@ const getNewHeadlines = () => axios.get('https://newsapi.org/v2/top-headlines?la
   return resp.data.articles
 }).catch(err => {
   logErr(err)
-  throw err
 })
 let getHeadlines = getNewHeadlines()
 setInterval(() => {

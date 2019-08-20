@@ -4,11 +4,11 @@ import app from '../app'
 
 const http = require('http')
 
-app.set('port', config.port)
+app.set('port', config.serverPort)
 const server = http.createServer(app)
 
 server.listen(config.port)
-if (process.env.NODE_ENV === 'production') console.log('Started server at port ' + config.port)
+if (process.env.NODE_ENV === 'production') console.log('Started server at port ' + config.serverPort)
 server.on('error', onError)
 server.on('listening', onListening)
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "server": "VUE_CLI_BABEL_TARGET_NODE=true NODE_ENV=production npx babel-node src/server/bin/www.js",
+    "server": "VUE_CLI_BABEL_TARGET_NODE=true NODE_ENV=production npx babel-node src/server/bin/greenlock.js",
     "dev-server": "VUE_CLI_BABEL_TARGET_NODE=true NODE_ENV=production DEBUG=app:log,app:error npx babel-node src/server/bin/greenlock.js",
     "server-debug": "VUE_CLI_BABEL_TARGET_NODE=true NODE_ENV=production DEBUG=app:log,app:error VUE_APP_DEBUG=true npx babel-node src/server/bin/www",
     "serve": "vue-cli-service serve",
