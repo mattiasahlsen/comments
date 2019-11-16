@@ -14,13 +14,6 @@ module.exports = {
       ]
     }
   },
-
-  devServer: {
-    host: process.env.SERVER_HOST,
-    port: process.env.SERVER_PORT,
-    https: process.env.SERVER_PROTOCOL === 'https'
-  },
-  productionSourceMap: false
 }
 
 function addStyleResource (rule) {
@@ -29,8 +22,6 @@ function addStyleResource (rule) {
     .options({
       patterns: [
         path.resolve(__dirname, './src/styles/imports.scss'),
-        path.resolve(__dirname, './src/styles/main.scss'),
-        path.resolve(__dirname, './src/styles/queries.scss'),
       ],
     })
 }
