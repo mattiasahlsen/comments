@@ -51,7 +51,10 @@ router.post('/website/:id/like', (req, res) => {
   if (!req.isAuthenticated()) return res.status(401).end()
 
   Vote.like(req.user._id, req.params.id, (err, vote) => {
-    if (err) res.status(500).end()
+    if (err) {
+      logErr(err)
+      res.status(500).end()
+    }
     else {
       res.end()
     }
@@ -61,7 +64,10 @@ router.post('/website/:id/dislike', (req, res) => {
   if (!req.isAuthenticated()) return res.status(401).end()
 
   Vote.dislike(req.user._id, req.params.id, (err, vote) => {
-    if (err) res.status(500).end()
+    if (err) {
+      logErr(err)
+      res.status(500).end()
+    }
     else {
       res.end()
     }
