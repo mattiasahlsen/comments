@@ -41,7 +41,7 @@ const baseConf = {
 
 export const devConf = merge(baseConf, {
   dbOptions: {
-    autoIndex: false,
+    autoIndex: true,
   }
 })
 

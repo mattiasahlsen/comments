@@ -25,5 +25,7 @@ Vote.statics.dislike = function(userId, objectId, cb) {
 Vote.index({ objectId: 1, userId: 1 }, { unique: true })
 
 const VoteModel = mongoose.model('Vote', Vote)
+VoteModel.on('index', err => err && console.log(err))
+
 
 export default VoteModel
