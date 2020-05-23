@@ -6,6 +6,7 @@ const Account = require('../models/account')
 const router = express.Router()
 const { check, validationResult } = require('express-validator/check')
 
+
 // Dev env
 if (process.env.NODE_ENV === 'development') {
   router.get('/user', (req, res, next) => {
